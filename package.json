@@ -1,0 +1,36 @@
+{
+  "name": "e2e-workflow",
+  "description": "execute workflows in html frontend",
+  "version": "0.1.1",
+  "license": "MIT",
+  "keywords": [
+    "html",
+    "test"
+  ],
+  "author": {
+    "name": "Uwe Gerdes",
+    "email": "entwicklung@uwegerdes.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uwegerdes/docker-e2e-workflow"
+  },
+  "devDependencies": {
+    "del": "^3.0.0",
+    "glob": "^7.1.2",
+    "gulp": "^3.9.1",
+    "gulp-changed-in-place": "^2.3.0",
+    "gulp-jscs": "^4.1.0",
+    "gulp-jscs-stylish": "^1.4.0",
+    "gulp-jshint": "^2.1.0",
+    "gulp-jsonlint": "^1.2.1",
+    "jscs": "^3.0.7",
+    "jscs-stylish": "^0.3.1",
+    "jshint": "^2.9.5",
+    "run-sequence": "^2.2.1"
+  },
+  "scripts": {
+    "start": "gulp",
+    "test": "echo 'no tests specified' && exit 1"
+  }
+}

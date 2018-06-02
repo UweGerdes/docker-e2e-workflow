@@ -1,0 +1,4 @@
+# .dockerignore for compare-layouts
+.git
+node_modules
+results/*
