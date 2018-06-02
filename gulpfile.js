@@ -25,7 +25,8 @@ let watchFilesFor = {},
   verbose = false;
 
 watchFilesFor.jshint = [
-  path.join(baseDir, '*.js')
+  path.join(baseDir, '*.js'),
+  path.join(baseDir, 'config', 'modules', '**', 'tests', 'e2e-workflow', '*.js')
 ];
 /**
  * jshint: javascript files
@@ -37,6 +38,7 @@ gulp.task('jshint', () => {
     .pipe(jscs())
     .pipe(jscsStylish.combineWithHintResults())
     .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'))
     ;
 });
 
