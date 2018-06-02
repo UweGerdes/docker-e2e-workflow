@@ -51,7 +51,8 @@ $ docker run -it \
 	-v $(pwd):/home/node/app \
 	-v /home/uwe/Projekte/publish/docker-vcard/projekt/modules:/home/node/app/config/modules \
 	--name e2e-workflow-dev \
-	--add-host acteam4:192.168.1.18 \
+	--network="$(docker inspect --format='{{.HostConfig.NetworkMode}}' vcard-dev)" \
+	--add-host vcards:$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' vcard-dev) \
 	uwegerdes/e2e-workflow \
 	bash
 ```
