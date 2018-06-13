@@ -36,6 +36,7 @@
   },
   "scripts": {
     "start": "gulp",
+    "dev": "nodemon --watch gulpfile.js --watch gulp --watch configuration.yaml --delay 1 --exec gulp",
     "test": "echo 'no tests specified' && exit 1"
   }
 }

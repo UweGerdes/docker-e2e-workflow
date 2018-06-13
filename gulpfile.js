@@ -26,6 +26,7 @@ let watchFilesFor = {},
 
 watchFilesFor.jshint = [
   path.join(baseDir, '*.js'),
+  path.join(baseDir, 'config', '*.js'),
   path.join(baseDir, 'config', 'modules', '**', 'tests', 'e2e-workflow', '*.js')
 ];
 /**
@@ -55,37 +56,6 @@ gulp.task('jsonlint', () => {
     .pipe(jsonlint())
     .pipe(jsonlint.reporter())
     ;
-});
-
-watchFilesFor['teststeps-neukunde_2018_acteamBASIS'] = [
-//  path.join(baseDir, 'config', 'neukunde_2018_acteamBASIS.js'),
-];
-/**
- * e2e-workflow: acteam admin workflow lizenzvereinbarungStandard2018
- *
- * @param {function} callback - gulp callback
- */
-gulp.task('teststeps-neukunde_2018_acteamBASIS', function (callback) {
-  del([
-      path.join(baseDir, 'results', 'neukunde_2018_acteamBASIS', '*')
-    ], { force: true });
-  const loader = exec('casperjs test index.js --cfg=config/neukunde_2018_acteamBASIS.js',
-    { cwd: baseDir });
-  loader.stdout.on('data', (data) => { // jscs:ignore jsDoc
-    if (!data.match(/PASS/) || verbose) { console.log(data.trim()); }
-  });
-  loader.stderr.on('data', (data) => { // jscs:ignore jsDoc
-    console.log('stderr: ' + data.toString().trim());
-  });
-  loader.on('error', (err) => { // jscs:ignore jsDoc
-    console.log('error: ' + err.toString().trim());
-  });
-  loader.on('close', (code) => { // jscs:ignore jsDoc
-    if (code > 0) {
-      console.log('teststeps-neukunde_2018_acteamBASIS exit-code: ' + code);
-    }
-    callback();
-  });
 });
 
 watchFilesFor['e2e-workflow-default'] = [
@@ -122,8 +92,8 @@ gulp.task('e2e-workflow-default', (callback) => {
   });
 });
 
-watchFilesFor['test-e2e-workflow'] = [
-  //  path.join(baseDir, 'config', '*.js')
+watchFilesFor['test-modules-e2e-workflow'] = [
+  path.join(baseDir, 'config', 'vcards.js'),
   path.join(baseDir, 'config', 'modules', '**', 'tests', 'e2e-workflow', '*.js')
 ];
 /**
@@ -131,8 +101,8 @@ watchFilesFor['test-e2e-workflow'] = [
  *
  * @param {function} callback - gulp callback
  */
-gulp.task('test-e2e-workflow', ['jshint'], (callback) => {
-  getRecentFile(watchFilesFor['test-e2e-workflow'])
+gulp.task('test-modules-e2e-workflow', ['jshint'], (callback) => {
+  getRecentFile(watchFilesFor['test-modules-e2e-workflow'])
   .then(getConfig)
   .then(getRequest)
   .then(() => { // jscs:ignore jsDoc
@@ -264,8 +234,3 @@ gulp.task('default', (callback) => {
     'watch',
     callback);
 });
-
-module.exports = {
-  gulp: gulp,
-  watchFilesFor: watchFilesFor
-};
