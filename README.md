@@ -42,7 +42,7 @@ Build the docker image with:
 $ docker build -t uwegerdes/e2e-workflow .
 ```
 
-## Development / Self Test
+## Development
 
 For the development time a gulpfile.js is included to generate css from less and restart the server.
 
@@ -53,6 +53,7 @@ $ docker run -it \
 	--name e2e-workflow-dev \
 	--network="$(docker inspect --format='{{.HostConfig.NetworkMode}}' vcards-dev)" \
 	--add-host vcards-dev:$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' vcards-dev) \
+	--add-host vcards-hub:$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' vcards-hub) \
 	uwegerdes/e2e-workflow \
 	bash
 ```
