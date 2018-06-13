@@ -59,10 +59,8 @@ gulp.task('jsonlint', () => {
 });
 
 watchFilesFor['e2e-workflow-default'] = [
-  //path.join(baseDir, 'config', 'default.js'),
-  //path.join(baseDir, 'index.js'),
-  //path.join(baseDir, 'bin', 'load-page-styles.js'),
-  //path.join(baseDir, 'bin', 'style-tree.js')
+  path.join(baseDir, 'index.js'),
+  path.join(baseDir, 'config', 'default.js'),
 ];
 /**
  * e2e-workflow-default: test task
@@ -70,11 +68,11 @@ watchFilesFor['e2e-workflow-default'] = [
  * @param {function} callback - gulp callback
  */
 gulp.task('e2e-workflow-default', (callback) => {
-  const resultsDir = path.join('results', 'default');
+  const resultsDir = path.join(baseDir, 'results', 'default');
   del([
-      path.join(baseDir, resultsDir, '*')
+      path.join(resultsDir, '*')
     ], { force: true });
-  const loader = exec('casperjs test index.js --cfg=config/default.js', { cwd: baseDir });
+  const loader = exec('node index.js --cfg=config/default.js', { cwd: baseDir });
   loader.stdout.on('data', (data) => { // jscs:ignore jsDoc
     console.log(data.toString().trim());
   });
@@ -93,7 +91,6 @@ gulp.task('e2e-workflow-default', (callback) => {
 });
 
 watchFilesFor['test-modules-e2e-workflow'] = [
-  path.join(baseDir, 'config', 'vcards.js'),
   path.join(baseDir, 'config', 'modules', '**', 'tests', 'e2e-workflow', '*.js')
 ];
 /**

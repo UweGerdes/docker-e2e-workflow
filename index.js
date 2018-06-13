@@ -10,80 +10,123 @@
 
 'use strict';
 
-/* jshint esversion: 5, varstmt: false, phantom: true */
-// jscs:disable jsDoc
+const { Builder, By, Key, until } = require('selenium-webdriver');
+const webdriver = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+const firefox = require('selenium-webdriver/firefox');
 
-/* globals casper, document, XPathResult */
+let viewportSize = { width: 1024, height: 768 };
+let driver = new webdriver.Builder()
+  .forBrowser('firefox')
+  .usingServer('http://vcards-hub:4444/wd/hub')
+  .setChromeOptions(
+    new chrome.Options()
+      .headless()
+      .windowSize(viewportSize)
+  )
+  .setFirefoxOptions(
+    new firefox.Options()
+      .headless()
+      .windowSize(viewportSize)
+  )
+  .build();
 
-var fs = require('fs'),
-  x = require('casper').selectXPath;
+const chai = require('chai'),
+  assert = chai.assert,
+  expect = chai.expect,
+  chaiAsPromised = require('chai-as-promised'),
+  fs = require('fs'),
+  makeDir = require('make-dir'),
+  argv = require('minimist')(process.argv.slice(2)),
+  path = require('path');
 
-var testData = null;
-var testsSuccessful = 0;
-var testsExecuted = 0;
+chai.use(chaiAsPromised);
 
-if (casper.cli.options.cfg) {
-  var path = casper.cli.options.cfg;
-  if (fs.exists(fs.absolute(fs.workingDirectory + '/' + path))) {
-    casper.echo('Executing: "' + fs.absolute(fs.workingDirectory + '/' + path) + '"', 'INFO');
-    testData = require(fs.absolute(fs.workingDirectory + '/' + path));
+let testData = null;
+let testsSuccessful = 0;
+let testsExecuted = 0;
+let errorCount = 0;
+
+if (argv.cfg) {
+  const filename = argv.cfg;
+  console.log('path', filename);
+  if (fs.existsSync(path.join(__dirname, filename))) {
+    console.log('Executing: "' + path.join(__dirname, filename) + '"');
+    testData = require(path.join(__dirname, filename));
   } else {
-    casper.echo('ERROR: file not found: "' + fs.absolute(fs.workingDirectory + '/' + path) + '"');
+    console.log('ERROR: file not found: "' + path.join(__dirname, filename) + '"');
   }
 } else {
-  casper.echo('Executing default: "' + fs.absolute(fs.workingDirectory + '/config/default.js') +
-    '"', 'INFO');
-  testData = require(fs.absolute(fs.workingDirectory + '/config/default.js'));
+  console.log('Executing default: "' + path.join(__dirname, 'config', 'default.js') + '"');
+  testData = require(path.join(__dirname, 'config', 'default.js'));
 }
+console.log('testData', testData);
 
-casper.options.waitTimeout = 20000;
-
-var errorCount = 0;
 if (testData) {
-  fs.makeTree(testData.dumpDir);
+  makeDir(testData.dumpDir);
 
   if (testData.viewportSize) {
-    casper.options.viewportSize = testData.viewportSize;
-  } else {
-    casper.options.viewportSize = { width: 1024, height: 768 };
+    viewportSize = testData.viewportSize;
   }
 
-  casper.on('http.status.404', function (resource) {
-    this.echo('Error 404: ' + resource.url, 'WARNING');
-  });
-  /* jslint unused: false */
-  casper.on('error', function (msg, trace) {
-    this.echo('error: ' + msg, 'ERROR');
-  });
-  /* jslint unused: true */
-  casper.on('remote.message', function (msg) {
-    this.echo('remote.message: ' + msg, 'INFO');
-  });
-  casper.on('page.error', function (msg, trace) {
-    this.echo('page.error ' + errorCount + ': ' + msg + '\n' + trace2string(trace), 'WARNING');
-    fs.write('pageError' + errorCount + '.html', casper.getHTML(), 0);
-    casper.capture('pageError' + errorCount + '.png', undefined, { format: 'png' });
-    errorCount++;
-  });
+  // TODO: 404, 500, console.log, error
 
-  var browserAlerts = [];
-  casper.on('remote.alert', function (message) {
-    browserAlerts.push(message);
-    console.log('// alert: ' + message);
-  });
+  // TODO: let browserAlerts = []; collect alerts
 
+  console.log('Test: ' + testData.name);
+
+  testData.testCases.forEach(function (testCase) {
+    console.log('Test: ' + testData.name + ', Testcase: ' + testCase.name +
+      ', URI: ' + testCase.uri);
+
+    let promise = driver.get('http://vcards-dev:8080/vcards/');
+    promise = promise.then(() => driver.getTitle());
+    promise = promise.then((title) => {
+        console.log('title', title);
+        return driver.findElement(By.id('headline')).getText();
+      });
+    promise = promise.then(function (headline) {
+        console.log('headline', headline);
+        return driver.findElement(By.id('headline')).takeScreenshot(true);
+      });
+    promise = promise.then(function (screenshot) {
+        console.log('screenshot.length', screenshot.length);
+      });
+    promise.then(
+        () => driver.quit(),
+        e => driver.quit().then(() => { throw e; })
+      );
+
+    /*
+    let promise = driver.get(testCase.uri);
+
+    if (testCase.title) {
+      promise.then(_ => driver.getTitle())
+      .then((title) => {
+        return assert.eventually.equal(title.getText(), 'Webserver - vcards');
+      })
+      .then((screenshot) => {
+        return driver.findElement(By.className('headline')).takeScreenshot(true);
+      })
+      .then((screenshot) => {
+          console.log('screenshot.length', screenshot.length);
+        })
+      .then(
+        _ => driver.quit(),
+        e => driver.quit().then(() => { throw e; })
+      );
+    }
+    */
+  });
+  /*
   casper.test.begin('Test: ' + testData.name, function suite(test) {
     casper.start();
 
-    testData.testCases.forEach(function (testCase) {
-      var logLabel = testData.name + ' ' + testCase.name + ': ';
 
       casper.thenOpen(testCase.uri, function () {
-        this.echo('Test: ' + testData.name + ', Testcase: ' + testCase.name + ', URI: ' + testCase.uri, 'INFO');
+        this.echo('Test: ' + testData.name + ', Testcase: ' + testCase.name +
+          ', URI: ' + testCase.uri, 'INFO');
         fs.write(testData.dumpDir + testCase.name + '.html', casper.getHTML(), 0);
-        if (testCase.title) {
-          test.assertEquals(this.getTitle(), testCase.title, logLabel + 'page title before submit');
-        }
       });
       testCase.steps.forEach(function (testStep) {
         nextStep(test, testCase, testStep, testData, logLabel);
@@ -101,112 +144,5 @@ if (testData) {
       test.done();
     });
   });
-} else {
-  casper.test.done();
-}
-
-function nextStep(test, testCase, testStep, testData, logLabel) {
-  casper.then(function () {
-    this.echo('Test: ' + testCase.name + ' ' + testStep.name, 'INFO');
-    browserAlerts = [];
-    if (testStep.input) {
-      test.assertExists(testStep.input[0], logLabel + testStep.input[0] + ' element found');
-      this.fill(testStep.input[0], testStep.input[1], false);
-    }
-    if (testStep.inputXPath) {
-      test.assertExists(testStep.inputXPath[0], logLabel + testStep.inputXPath[0] +
-        ' element found');
-      this.fillXPath(testStep.inputXPath[0], testStep.inputXPath[1], false);
-    }
-  });
-  if (testStep.waitForSelector) {
-    casper.then(function () {
-      casper.waitForSelector({ type: 'xpath', path: testStep.waitForSelector });
-    });
-  }
-  if (testStep.click) {
-    casper.then(function () {
-      casper.click(x(testStep.click));
-    });
-  }
-  casper.then(function () {
-    if (testStep.title) {
-      var timeout = 20000;
-      if (testStep.titleTimeout) {
-        timeout = testStep.titleTimeout;
-      }
-      casper.waitForSelector({ type: 'xpath',
-        path: '//head/title[text()="' +  testStep.title + '"]' },
-        function () {
-          fs.write(testData.dumpDir + testCase.name + '_' + testStep.name + '.html',
-            casper.getHTML(), 0);
-          casper.capture(testData.dumpDir + testCase.name + '_' + testStep.name + '.png', undefined,
-            { format: 'png' });
-        },
-        function () {
-          fs.write(testData.dumpDir + testCase.name + '_' + testStep.name + '.html',
-            casper.getHTML(), 0);
-          casper.capture(testData.dumpDir + testCase.name + '_' + testStep.name + '.png', undefined,
-            { format: 'png' });
-          casper.echo('Title not found: ' + testCase.name + ' ' + testStep.name + ' expected: "' +
-            testStep.title + '"', 'ERROR');
-        },
-        timeout)
-      ;
-    } else {
-      fs.write(testData.dumpDir + testCase.name + '_' + testStep.name + '.html', casper.getHTML(),
-        0);
-      casper.capture(testData.dumpDir + testCase.name + '_' + testStep.name + '.png', undefined,
-        { format: 'png' });
-    }
-  });
-  casper.then(function () {
-    if (testStep.hasOwnProperty('alerts')) {
-      test.assertEquals(browserAlerts, testStep.alerts, logLabel + 'alerts');
-    }
-    Object.keys(testStep.elements).forEach(function (selector) {
-      test.assertExists(x(selector), logLabel + selector + ' element found');
-      if (testStep.elements[selector] || testStep.elements[selector] === false) {
-        if (typeof testStep.elements[selector] === 'string') {
-          test.assertEquals(casper.fetchText(x(selector)).trim(), testStep.elements[selector],
-            logLabel + selector + ' content');
-        } else {
-          test.assertEquals(casper.isChecked(selector), testStep.elements[selector], logLabel +
-            selector + ' content');
-        }
-      }
-    });
-    if (testStep.elementsNotExist) {
-      testStep.elementsNotExist.forEach(function (selector) {
-        test.assertNotExists(x(selector), logLabel + selector + ' element not there');
-      });
-    }
-    testsSuccessful++;
-  });
-}
-
-casper.isChecked = function (selector) {
-  /* jshint browser: true */
-  var result = this.evaluate(function (selector) {
-    var el = document.evaluate(selector, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
-      .singleNodeValue;
-    return el ? el.checked : null;
-  }, selector);
-  /* jshint browser: false */
-  if (result === null) {
-    casper.echo('Selector not found', 'WARNING');
-  }
-  return result;
-};
-
-function trace2string(trace) {
-  var result = [];
-  Object.keys(trace).forEach(function (entry) {
-    var lines = [];
-    Object.keys(trace[entry]).forEach(function (key) {
-      lines.push(trace[entry][key]);
-    });
-    result.push(lines.join(' '));
-  });
-  return result.join('\n');
+  */
 }
