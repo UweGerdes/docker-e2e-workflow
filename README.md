@@ -116,6 +116,6 @@ You will find a lot of files (the cache for the server app) in a subdirectory of
 
 ## Changelog
 
-0.5.3 bug fixing, better logging, integration in other project
+0.2.0 rebuild index.js with webdriver, mocha, chai
 
-0.5.2 refactoring
+0.1.1 refactoring

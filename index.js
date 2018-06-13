@@ -10,30 +10,17 @@
 
 'use strict';
 
-const { Builder, By, Key, until } = require('selenium-webdriver');
+//const { Builder, By, Key, until } = require('selenium-webdriver');
+const { By } = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 
 let viewportSize = { width: 1024, height: 768 };
-let driver = new webdriver.Builder()
-  .forBrowser('firefox')
-  .usingServer('http://vcards-hub:4444/wd/hub')
-  .setChromeOptions(
-    new chrome.Options()
-      .headless()
-      .windowSize(viewportSize)
-  )
-  .setFirefoxOptions(
-    new firefox.Options()
-      .headless()
-      .windowSize(viewportSize)
-  )
-  .build();
 
 const chai = require('chai'),
-  assert = chai.assert,
-  expect = chai.expect,
+  //assert = chai.assert,
+  //expect = chai.expect,
   chaiAsPromised = require('chai-as-promised'),
   fs = require('fs'),
   makeDir = require('make-dir'),
@@ -43,13 +30,13 @@ const chai = require('chai'),
 chai.use(chaiAsPromised);
 
 let testData = null;
-let testsSuccessful = 0;
-let testsExecuted = 0;
-let errorCount = 0;
+//let testsSuccessful = 0;
+//let testsExecuted = 0;
+//let errorCount = 0;
 
 if (argv.cfg) {
   const filename = argv.cfg;
-  console.log('path', filename);
+  console.log('config filename:', filename);
   if (fs.existsSync(path.join(__dirname, filename))) {
     console.log('Executing: "' + path.join(__dirname, filename) + '"');
     testData = require(path.join(__dirname, filename));
@@ -60,7 +47,7 @@ if (argv.cfg) {
   console.log('Executing default: "' + path.join(__dirname, 'config', 'default.js') + '"');
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
-console.log('testData', testData);
+//console.log('testData', testData);
 
 if (testData) {
   makeDir(testData.dumpDir);
@@ -69,20 +56,40 @@ if (testData) {
     viewportSize = testData.viewportSize;
   }
 
+  let driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .usingServer('http://vcards-hub:4444/wd/hub')
+    .setChromeOptions(
+      new chrome.Options()
+        .headless()
+        .windowSize(viewportSize)
+    )
+    .setFirefoxOptions(
+      new firefox.Options()
+        .headless()
+        .windowSize(viewportSize)
+    )
+    .build();
+
   // TODO: 404, 500, console.log, error
 
   // TODO: let browserAlerts = []; collect alerts
-
-  console.log('Test: ' + testData.name);
 
   testData.testCases.forEach(function (testCase) {
     console.log('Test: ' + testData.name + ', Testcase: ' + testCase.name +
       ', URI: ' + testCase.uri);
 
-    let promise = driver.get('http://vcards-dev:8080/vcards/');
-    promise = promise.then(() => driver.getTitle());
-    promise = promise.then((title) => {
-        console.log('title', title);
+    let promise = driver.get(testCase.uri);
+
+    if (testCase.title) {
+      promise = promise.then(() => driver.getTitle());
+      promise = promise.then(
+        (title) => {
+          console.log('title', title);
+        }
+      );
+    }
+    promise = promise.then(() => {
         return driver.findElement(By.id('headline')).getText();
       });
     promise = promise.then(function (headline) {
@@ -98,7 +105,6 @@ if (testData) {
       );
 
     /*
-    let promise = driver.get(testCase.uri);
 
     if (testCase.title) {
       promise.then(_ => driver.getTitle())

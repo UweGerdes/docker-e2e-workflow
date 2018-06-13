@@ -47,7 +47,7 @@ testCases.push(
         title: 'Webserver - vcard',
         click: 'input[type="submit"]',
         alerts: [],
-        //waitForSelector: '//*[@class="result-list"]',
+        waitForSelector: '//*[@class="result-list"]',
         elements: {
           '//*[@id="searchLayer"]/div/h2': 'Suchen',
           '//a[@class="button open"]': 'öffn',
