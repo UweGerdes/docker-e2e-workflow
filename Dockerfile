@@ -1,4 +1,3 @@
-#
 # Dockerfile for e2e-workflow
 
 FROM uwegerdes/nodejs
@@ -22,13 +21,8 @@ RUN apt-get update && \
 				casperjs \
 				gulp \
 				nodemon && \
-	npm install -g git+https://github.com/laurentj/slimerjs.git && \
 	npm install && \
 	chown -R ${USER_NAME}:${USER_NAME} ${NODE_HOME}
-
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod 755 /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 COPY . ${APP_HOME}
 
@@ -41,3 +35,4 @@ USER ${USER_NAME}
 VOLUME [ "${APP_HOME}" ]
 
 CMD [ "npm", "start" ]
+
