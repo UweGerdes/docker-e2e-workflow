@@ -109,19 +109,37 @@ if (testData) {
             promise = promise.then(() => {
                 return driver.findElement(By.xpath(selector)).getText();
               }
-            );
-            promise = promise.then(
+            )
+            .then(
               (text) => {
-                console.log(selector, text);
                 if (testStep.elements[selector]) {
-                  assert.equal(text, testStep.elements[selector]);
-                } else {
-                  assert.exists(text);
+                  assert.equal(text, testStep.elements[selector], selector + ' text');
                 }
               }
-            );
+            )
+            .catch((e) => { console.log(e.message); });
           }
         );
+        if (testStep.elementsNotExist) {
+          testStep.elementsNotExist.forEach(
+            (selector) => {
+              promise = promise.then(() => {
+                  try {
+                    return driver.findElement(By.xpath(selector));
+                  }
+                  catch (error) {
+                    return selector + error.toString();
+                  }
+                }
+              )
+              .then(() => {
+                  console.log(selector, 'found ERROR');
+                }
+              )
+              .catch(() => {});
+            }
+          );
+        }
       }
     );
 

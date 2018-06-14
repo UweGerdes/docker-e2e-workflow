@@ -26,35 +26,33 @@ testCases.push(
           '//*[@id="headlineButtons"]/*[@class="button datasetName"]': 'testdata',
         },
         elementsNotExist: [
-          '//a[@class="editButton"]',
+          '//a[@id="editButton"]',
         ],
       },
       {
         name: 'vcard 0',
-        click: 'a[href="/vcards/0/"]',
         title: 'Webserver - vcard',
+        click: 'a[href="/vcards/0/"]',
         alerts: [],
-        waitForSelector: '//*[@id="content"]',
         elements: {
           '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
+          '//a[@id="editButton"]': '',
         },
       },
       {
         name: 'vcard 1',
-        click: 'a[href="/vcards/1/"]',
         title: 'Webserver - vcard',
+        click: 'a[href="/vcards/1/"]',
         alerts: [],
-        waitForSelector: '//*[@id="content"]',
         elements: {
           '//*[@id="version"]//*[@class="itemvalue"]': '3.0',
         },
       },
       {
         name: 'search',
-        click: '#searchButton',
         title: 'Webserver - vcard',
+        click: '#searchButton',
         alerts: [],
-        waitUntilVisible: '//*[@id="searchButton"]',
         elements: {
           '//*[@class="searchHeadline"]': 'Suchen',
           '//form[@name="searchForm"]': '',
@@ -64,10 +62,9 @@ testCases.push(
       },
       {
         name: 'searchResult',
-        click: 'input[type="submit"]',
         title: 'Webserver - vcard',
+        click: 'input[type="submit"]',
         alerts: [],
-        waitForSelector: '//*[@class="result-list"]',
         elements: {
           '//*[@id="searchLayer"]/div/h2': 'Suchen',
           '//a[@class="button open"]': 'öffnen',
@@ -75,10 +72,9 @@ testCases.push(
       },
       {
         name: 'vcard 0',
-        click: '*[id="searchLayer"] a[href="/vcards/0/"]',
         title: 'Webserver - vcard',
+        click: '*[id="searchLayer"] a[href="/vcards/0/"]',
         alerts: [],
-        waitForSelector: '//*[@id="content"]',
         elements: {
           '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
         },
