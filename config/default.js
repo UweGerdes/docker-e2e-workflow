@@ -30,13 +30,33 @@ testCases.push(
         ],
       },
       {
-        name: 'search',
+        name: 'vcard 0',
+        click: 'a[href="/vcards/0/"]',
         title: 'Webserver - vcard',
+        alerts: [],
+        waitForSelector: '//*[@id="content"]',
+        elements: {
+          '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
+        },
+      },
+      {
+        name: 'vcard 1',
+        click: 'a[href="/vcards/1/"]',
+        title: 'Webserver - vcard',
+        alerts: [],
+        waitForSelector: '//*[@id="content"]',
+        elements: {
+          '//*[@id="version"]//*[@class="itemvalue"]': '3.0',
+        },
+      },
+      {
+        name: 'search',
         click: '#searchButton',
+        title: 'Webserver - vcard',
         alerts: [],
         waitUntilVisible: '//*[@id="searchButton"]',
         elements: {
-          '//*[@id="searchLayer"]/div/h2': 'Suchen',
+          '//*[@class="searchHeadline"]': 'Suchen',
           '//form[@name="searchForm"]': '',
           '//form[@name="searchForm"]//*[@id="search_version"]': '',
           '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
@@ -44,28 +64,25 @@ testCases.push(
       },
       {
         name: 'searchResult',
-        title: 'Webserver - vcard',
         click: 'input[type="submit"]',
+        title: 'Webserver - vcard',
         alerts: [],
         waitForSelector: '//*[@class="result-list"]',
         elements: {
           '//*[@id="searchLayer"]/div/h2': 'Suchen',
-          '//a[@class="button open"]': 'öffn',
+          '//a[@class="button open"]': 'öffnen',
         },
       },
-      /**/
       {
         name: 'vcard 0',
+        click: '*[id="searchLayer"] a[href="/vcards/0/"]',
         title: 'Webserver - vcard',
-        click: 'a[href="/vcards/0/"]',
         alerts: [],
         waitForSelector: '//*[@id="content"]',
         elements: {
-          '//*[@id="searchLayer"]/div/h2': 'Suchen',
-          '//*[@id="version"]': '2.1',
+          '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
         },
       },
-      /**/
     ]
   }
 );

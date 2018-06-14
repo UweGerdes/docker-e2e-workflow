@@ -1,7 +1,7 @@
 /*
  * Testing http workflows
  *
- * execute: casperjs [--engine=slimerjs] test index.js --cfg=config/default.js
+ * execute: node index.js --cfg=config/default.js
  *
  * The config file contains test cases and exports a test suite stucture.
  *
@@ -19,7 +19,7 @@ const firefox = require('selenium-webdriver/firefox');
 let viewportSize = { width: 1024, height: 768 };
 
 const chai = require('chai'),
-  //assert = chai.assert,
+  assert = chai.assert,
   //expect = chai.expect,
   chaiAsPromised = require('chai-as-promised'),
   fs = require('fs'),
@@ -86,12 +86,49 @@ if (testData) {
       promise = promise.then(
         (title) => {
           console.log('title', title);
+          assert.equal(title, testCase.title);
         }
       );
     }
+    testCase.steps.forEach(
+      (testStep) => {
+        promise = promise.then(() => console.log('Test-Step:', testStep.name));
+        if (testStep.title) {
+          promise = promise.then(() => driver.getTitle());
+          promise = promise.then(
+            (title) => {
+              assert.equal(title, testStep.title);
+            }
+          );
+        }
+        if (testStep.click) {
+          promise = promise.then(() => driver.findElement(By.css(testStep.click)).click());
+        }
+        Object.keys(testStep.elements).forEach(
+          (selector) => {
+            promise = promise.then(() => {
+                return driver.findElement(By.xpath(selector)).getText();
+              }
+            );
+            promise = promise.then(
+              (text) => {
+                console.log(selector, text);
+                if (testStep.elements[selector]) {
+                  assert.equal(text, testStep.elements[selector]);
+                } else {
+                  assert.exists(text);
+                }
+              }
+            );
+          }
+        );
+      }
+    );
+
     promise = promise.then(() => {
         return driver.findElement(By.id('headline')).getText();
-      });
+      }
+    );
     promise = promise.then(function (headline) {
         console.log('headline', headline);
         return driver.findElement(By.id('headline')).takeScreenshot(true);
@@ -101,7 +138,7 @@ if (testData) {
       });
     promise.then(
         () => driver.quit(),
-        e => driver.quit().then(() => { throw e; })
+        e => driver.quit().then(() => { console.log(e.message); })
       );
 
     /*
