@@ -101,8 +101,48 @@ if (testData) {
             }
           );
         }
+        if (testStep.input) {
+          Object.keys(testStep.input).forEach(
+            (selector) => {
+              // text / textarea
+              if (typeof testStep.input[selector] === 'string') {
+                promise = promise.then(() => {
+                    return driver.findElement(By.xpath(selector))
+                      .sendKeys(testStep.input[selector]);
+                  }
+                )
+                .then(() => {
+                    return driver.findElement(By.xpath(selector)).getAttribute('value');
+                  }
+                )
+                .catch((e) => { console.log(e.message); });
+              } else
+              // checkbox: true/false, radio: true
+              if (testStep.input[selector] === true || testStep.input[selector] === false) {
+                promise = promise.then(() => {
+                    return driver.findElement(By.xpath(selector)).isSelected();
+                  }
+                )
+                .then(
+                  (selected) => {
+                    if (selected !== testStep.input[selector]) {
+                      return driver.findElement(By.xpath(selector)).click();
+                    }
+                  }
+                )
+                .catch((e) => { console.log(e.message); });
+              } else {
+                console.log('input unprocessed', selector, testStep.input[selector]);
+              }
+            }
+          );
+        }
         if (testStep.click) {
-          promise = promise.then(() => driver.findElement(By.css(testStep.click)).click());
+          promise = promise.then(
+            () => {
+              return driver.findElement(By.css(testStep.click)).click();
+            }
+          );
         }
         Object.keys(testStep.elements).forEach(
           (selector) => {

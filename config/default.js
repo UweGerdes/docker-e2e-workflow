@@ -49,7 +49,7 @@ testCases.push(
         },
       },
       {
-        name: 'search',
+        name: 'search layer',
         title: 'Webserver - vcard',
         click: '#searchButton',
         alerts: [],
@@ -61,23 +61,55 @@ testCases.push(
         }
       },
       {
-        name: 'searchResult',
+        name: 'search result, no input',
         title: 'Webserver - vcard',
         click: 'input[type="submit"]',
         alerts: [],
         elements: {
           '//*[@id="searchLayer"]/div/h2': 'Suchen',
+          '//*[@id="searchLayer"]//a[@href="/vcards/0/"]': '',
           '//a[@class="button open"]': 'öffnen',
         },
       },
       {
-        name: 'vcard 0',
+        name: 'search result: click vcard 0',
         title: 'Webserver - vcard',
         click: '*[id="searchLayer"] a[href="/vcards/0/"]',
         alerts: [],
         elements: {
           '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
         },
+      },
+      {
+        name: 'search layer open again',
+        title: 'Webserver - vcard',
+        click: '#searchButton',
+        alerts: [],
+        elements: {
+          '//*[@class="searchHeadline"]': 'Suchen',
+          '//form[@name="searchForm"]': '',
+          '//form[@name="searchForm"]//*[@id="search_version"]': '',
+          '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
+        }
+      },
+      {
+        name: 'search result for "version" / "3"',
+        title: 'Webserver - vcard',
+        input: {
+          '//input[@name="searchFields"][@value="version"]': true,
+          '//input[@name="searchString"]': '3',
+        },
+        click: 'input[type="submit"]',
+        alerts: [],
+        elements: {
+          '//*[@id="searchLayer"]/div/h2': 'Suchen',
+          '//a[@class="button open"]': 'öffnen',
+          '//a[@class="button merge"]': 'merge',
+          '//a[@href="/vcards/merge/0/1/"]': 'merge',
+        },
+        elementsNotExist: [
+          '//*[@id="searchLayer"]//a[@href="/vcards/0/"]',
+        ],
       },
     ]
   }
