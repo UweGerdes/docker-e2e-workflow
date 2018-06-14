@@ -7,20 +7,17 @@
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
-
 'use strict';
-
-//const { Builder, By, Key, until } = require('selenium-webdriver');
-const { By } = require('selenium-webdriver');
-const webdriver = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
-const firefox = require('selenium-webdriver/firefox');
 
 let viewportSize = { width: 1024, height: 768 };
 
-const chai = require('chai'),
+//const { Builder, By, Key, until } = require('selenium-webdriver');
+const { By } = require('selenium-webdriver'),
+  webdriver = require('selenium-webdriver'),
+  chrome = require('selenium-webdriver/chrome'),
+  firefox = require('selenium-webdriver/firefox'),
+  chai = require('chai'),
   assert = chai.assert,
-  //expect = chai.expect,
   chaiAsPromised = require('chai-as-promised'),
   fs = require('fs'),
   makeDir = require('make-dir'),
@@ -47,15 +44,11 @@ if (argv.cfg) {
   console.log('Executing default: "' + path.join(__dirname, 'config', 'default.js') + '"');
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
-//console.log('testData', testData);
-
 if (testData) {
   makeDir(testData.dumpDir);
-
   if (testData.viewportSize) {
     viewportSize = testData.viewportSize;
   }
-
   let driver = new webdriver.Builder()
     .forBrowser('firefox')
     .usingServer('http://vcards-hub:4444/wd/hub')
@@ -70,17 +63,10 @@ if (testData) {
         .windowSize(viewportSize)
     )
     .build();
-
-  // TODO: 404, 500, console.log, error
-
-  // TODO: let browserAlerts = []; collect alerts
-
   testData.testCases.forEach(function (testCase) {
     console.log('Test: ' + testData.name + ', Testcase: ' + testCase.name +
       ', URI: ' + testCase.uri);
-
     let promise = driver.get(testCase.uri);
-
     if (testCase.title) {
       promise = promise.then(() => driver.getTitle());
       promise = promise.then(
@@ -209,7 +195,6 @@ if (testData) {
         );
       }
     );
-
     promise.then(
       () => driver.quit(),
       e => driver.quit().then(() => { console.log(e.message); })
