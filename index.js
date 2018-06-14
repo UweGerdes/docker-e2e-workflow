@@ -94,8 +94,10 @@ if (testData) {
       (testStep) => {
         promise = promise.then(() => console.log('Test-Step:', testStep.name));
         if (testStep.title) {
-          promise = promise.then(() => driver.getTitle());
           promise = promise.then(
+            () => driver.getTitle()
+          )
+          .then(
             (title) => {
               assert.equal(title, testStep.title);
             }
@@ -180,70 +182,37 @@ if (testData) {
             }
           );
         }
+        promise = promise.then(
+          () => {
+            return driver.takeScreenshot();
+          }
+        )
+        .then(
+          (screenshot) => {
+            return new Promise(
+              (resolve, reject) => {
+                fs.writeFile(
+                  path.join(testData.dumpDir, testStep.name + '.png'),
+                  new Buffer(screenshot, 'base64'),
+                  (error) => {
+                    if (error) {
+                      console.log(path.join(testData.dumpDir, 'page.png'), 'save error:', error);
+                      reject('file not saved');
+                    } else {
+                      resolve(path.join(testData.dumpDir, 'page.png'), 'saved');
+                    }
+                  }
+                );
+              }
+            );
+          }
+        );
       }
     );
 
-    promise = promise.then(() => {
-        return driver.findElement(By.id('headline')).getText();
-      }
-    );
-    promise = promise.then(function (headline) {
-        console.log('headline', headline);
-        return driver.findElement(By.id('headline')).takeScreenshot(true);
-      });
-    promise = promise.then(function (screenshot) {
-        console.log('screenshot.length', screenshot.length);
-      });
     promise.then(
-        () => driver.quit(),
-        e => driver.quit().then(() => { console.log(e.message); })
-      );
-
-    /*
-
-    if (testCase.title) {
-      promise.then(_ => driver.getTitle())
-      .then((title) => {
-        return assert.eventually.equal(title.getText(), 'Webserver - vcards');
-      })
-      .then((screenshot) => {
-        return driver.findElement(By.className('headline')).takeScreenshot(true);
-      })
-      .then((screenshot) => {
-          console.log('screenshot.length', screenshot.length);
-        })
-      .then(
-        _ => driver.quit(),
-        e => driver.quit().then(() => { throw e; })
-      );
-    }
-    */
+      () => driver.quit(),
+      e => driver.quit().then(() => { console.log(e.message); })
+    );
   });
-  /*
-  casper.test.begin('Test: ' + testData.name, function suite(test) {
-    casper.start();
-
-
-      casper.thenOpen(testCase.uri, function () {
-        this.echo('Test: ' + testData.name + ', Testcase: ' + testCase.name +
-          ', URI: ' + testCase.uri, 'INFO');
-        fs.write(testData.dumpDir + testCase.name + '.html', casper.getHTML(), 0);
-      });
-      testCase.steps.forEach(function (testStep) {
-        nextStep(test, testCase, testStep, testData, logLabel);
-        testsExecuted++;
-      });
-    });
-
-    casper.run(function () {
-      if (testsSuccessful == testsExecuted) {
-        this.echo('SUCCESSFUL: ' + testsSuccessful + ' teststeps', 'INFO').exit(0);
-      } else {
-        this.echo('FAIL ' + testsSuccessful + ' successful and ' +
-          (testsExecuted - testsSuccessful) + ' failed teststeps.', 'ERROR').exit(1);
-      }
-      test.done();
-    });
-  });
-  */
 }

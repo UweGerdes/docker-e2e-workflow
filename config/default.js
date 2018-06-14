@@ -93,7 +93,7 @@ testCases.push(
         }
       },
       {
-        name: 'search result for "version" / "3"',
+        name: 'search result for version=3',
         title: 'Webserver - vcard',
         input: {
           '//input[@name="searchFields"][@value="version"]': true,
@@ -124,7 +124,7 @@ testCases.push(
         }
       },
       {
-        name: 'search result for "name" / "XXX" empty',
+        name: 'search result for name=XXX empty',
         title: 'Webserver - vcard',
         input: {
           '//input[@name="searchFields"][@value="n"]': true,
@@ -149,6 +149,6 @@ testCases.push(
 module.exports = {
   name: 'default',
   dumpDir: './results/default/',
-  viewportSize: { width: 850, height: 700 },
+  viewportSize: { width: 1500, height: 1024 },
   testCases: testCases
 };
