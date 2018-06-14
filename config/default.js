@@ -111,6 +111,37 @@ testCases.push(
           '//*[@id="searchLayer"]//a[@href="/vcards/0/"]',
         ],
       },
+      {
+        name: 'search again',
+        title: 'Webserver - vcard',
+        click: '#searchAgain',
+        alerts: [],
+        elements: {
+          '//*[@class="searchHeadline"]': 'Suchen',
+          '//form[@name="searchForm"]': '',
+          '//form[@name="searchForm"]//*[@id="search_version"]': '',
+          '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
+        }
+      },
+      {
+        name: 'search result for "name" / "XXX" empty',
+        title: 'Webserver - vcard',
+        input: {
+          '//input[@name="searchFields"][@value="n"]': true,
+          '//input[@name="searchString"]': 'XXX',
+        },
+        click: 'input[type="submit"]',
+        alerts: [],
+        elements: {
+          '//*[@id="searchLayer"]/div/h2': 'Suchen',
+        },
+        elementsNotExist: [
+          '//a[@class="button open"]',
+          '//a[@class="button merge"]',
+          '//*[@id="searchLayer"]//a[@href="/vcards/0/"]',
+          '//*[@id="searchResult"]//ul//li',
+        ],
+      },
     ]
   }
 );
