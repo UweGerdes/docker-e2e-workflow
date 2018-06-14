@@ -33,7 +33,6 @@ testCases.push(
         name: 'vcard 0',
         title: 'Webserver - vcard',
         click: 'a[href="/vcards/0/"]',
-        alerts: [],
         elements: {
           '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
           '//a[@id="editButton"]': '',
@@ -43,7 +42,6 @@ testCases.push(
         name: 'vcard 1',
         title: 'Webserver - vcard',
         click: 'a[href="/vcards/1/"]',
-        alerts: [],
         elements: {
           '//*[@id="version"]//*[@class="itemvalue"]': '3.0',
         },
@@ -52,7 +50,6 @@ testCases.push(
         name: 'search layer',
         title: 'Webserver - vcard',
         click: '#searchButton',
-        alerts: [],
         elements: {
           '//*[@class="searchHeadline"]': 'Suchen',
           '//form[@name="searchForm"]': '',
@@ -64,7 +61,6 @@ testCases.push(
         name: 'search result, no input',
         title: 'Webserver - vcard',
         click: 'input[type="submit"]',
-        alerts: [],
         elements: {
           '//*[@id="searchLayer"]/div/h2': 'Suchen',
           '//*[@id="searchLayer"]//a[@href="/vcards/0/"]': '',
@@ -75,7 +71,6 @@ testCases.push(
         name: 'search result: click vcard 0',
         title: 'Webserver - vcard',
         click: '*[id="searchLayer"] a[href="/vcards/0/"]',
-        alerts: [],
         elements: {
           '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
         },
@@ -84,7 +79,6 @@ testCases.push(
         name: 'search layer open again',
         title: 'Webserver - vcard',
         click: '#searchButton',
-        alerts: [],
         elements: {
           '//*[@class="searchHeadline"]': 'Suchen',
           '//form[@name="searchForm"]': '',
@@ -100,7 +94,6 @@ testCases.push(
           '//input[@name="searchString"]': '3',
         },
         click: 'input[type="submit"]',
-        alerts: [],
         elements: {
           '//*[@id="searchLayer"]/div/h2': 'Suchen',
           '//a[@class="button open"]': 'öffnen',
@@ -115,7 +108,6 @@ testCases.push(
         name: 'search again',
         title: 'Webserver - vcard',
         click: '#searchAgain',
-        alerts: [],
         elements: {
           '//*[@class="searchHeadline"]': 'Suchen',
           '//form[@name="searchForm"]': '',
@@ -131,7 +123,6 @@ testCases.push(
           '//input[@name="searchString"]': 'XXX',
         },
         click: 'input[type="submit"]',
-        alerts: [],
         elements: {
           '//*[@id="searchLayer"]/div/h2': 'Suchen',
         },
