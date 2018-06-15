@@ -4,8 +4,6 @@
 
 gulp:
   watch:
-    js:
-      - 'modules/*/js/*.js'
     jsdoc:
       - '*.js'
       - 'gulp/**/*.js'
@@ -28,7 +26,6 @@ gulp:
     less:
       - 'src/less/app.less'
       - 'src/less/**/*.less'
-      - 'modules/**/*.less'
     puglint:
       - '**/*.pug'
     server-restart:
@@ -48,11 +45,10 @@ gulp:
         - '*.js'
         - 'gulp/**/*.js'
         - 'lib/**/*.js'
-        - 'modules/**/*.js'
         - 'src/**/*.js'
       dest: 'docs/jsdoc'
     js:
-      src: 'modules/*/js/*.js'
+      src: 'src/js/*.js'
       dest: 'htdocs/js'
       replace:
         '/js': ''
@@ -69,7 +65,7 @@ gulp:
 server:
   server: ./server.js
   docroot: ./htdocs
-  modules: ./modules
+  modules: .
   httpPort: 8080
   livereloadPort: 8081
   verbose: false

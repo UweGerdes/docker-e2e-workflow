@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Webapp - 404 - not found</title>
+    <meta name="description" content="Webapp for vCard editing">
+    <meta name="viewport" content="width=device-width">
+    <link href="/css/app.css" rel="stylesheet" />
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+</head>
+<body>
+    <h1>500 - server error</h1>
+    <pre><%= error %></pre>
+<% if (httpPort && livereloadPort) { %>
+    <script src="http://<%= hostname %>:<%= livereloadPort %>/livereload.js" language="JavaScript"></script>
+<% } %>
+</body>
+</html>

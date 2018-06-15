@@ -1,2 +1,5 @@
 # ignore generated files
+docs
+htdocs/css
+htdocs/js
 results

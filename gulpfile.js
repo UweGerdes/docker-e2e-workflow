@@ -5,9 +5,9 @@
  */
 'use strict';
 
-//require('./gulp/build');
+require('./gulp/build');
 require('./gulp/lint');
-//require('./gulp/server');
+require('./gulp/server');
 require('./gulp/tests');
 require('./gulp/watch');
 
@@ -25,9 +25,9 @@ const gulp = require('gulp'),
 gulp.task('default', (callback) => {
   sequence(
     'lint',
-//    'build',
+    'build',
     'watch',
-//    'server',
+    'server',
 //    'tests', // tests only triggered by watch
     callback);
 });
