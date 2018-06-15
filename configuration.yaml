@@ -1,0 +1,75 @@
+#
+#  Configuration for e2e.workflow
+#
+
+gulp:
+  watch:
+    js:
+      - 'modules/*/js/*.js'
+    jsdoc:
+      - '*.js'
+      - 'gulp/**/*.js'
+      - 'src/**/*.js'
+    jshint:
+      - '*.js'
+      - 'gulp/**/*.js'
+      - 'lib/**/*.js'
+      - 'src/**/*.js'
+    jsonlint:
+      - '**/*.json'
+      - '.jscsrc'
+      - '.jshintrc'
+      - '.lesshintrc'
+    lesshint:
+      - 'src/less/**/*.less'
+    yamllint:
+      - '**/*.yaml'
+      - '**/*.yml'
+    less:
+      - 'src/less/app.less'
+      - 'src/less/**/*.less'
+      - 'modules/**/*.less'
+    puglint:
+      - '**/*.pug'
+    server-restart:
+      - './server.js'
+    test-e2e-workflow-default:
+      - 'index.js'
+      - 'config/default.js'
+    livereload:
+      - 'htdocs/**/*.html'
+      - 'views/**/*.pug'
+      - 'htdocs/img/**/*.*'
+      - 'htdocs/css/app.css'
+      - 'htdocs/js/**/*.js'
+  build:
+    jsdoc:
+      src:
+        - '*.js'
+        - 'gulp/**/*.js'
+        - 'lib/**/*.js'
+        - 'modules/**/*.js'
+        - 'src/**/*.js'
+      dest: 'docs/jsdoc'
+    js:
+      src: 'modules/*/js/*.js'
+      dest: 'htdocs/js'
+      replace:
+        '/js': ''
+    less:
+      src: 'src/less/app.less'
+      dest: 'htdocs/css'
+  tests:
+    test-e2e-workflow-default:
+      - 'config/default.js'
+    e2eWorkflow:
+      - 'modules/vcards/tests/e2e-workflow/*.js'
+
+
+server:
+  server: ./server.js
+  docroot: ./htdocs
+  modules: ./modules
+  httpPort: 8080
+  livereloadPort: 8081
+  verbose: false

@@ -116,6 +116,8 @@ You will find a lot of files (the cache for the server app) in a subdirectory of
 
 ## Changelog
 
+0.2.1 refactor gulp tasks
+
 0.2.0 rebuild index.js with webdriver, chai
 
 0.1.1 refactoring

@@ -12,13 +12,9 @@ WORKDIR ${NODE_HOME}
 
 RUN apt-get update && \
 	apt-get dist-upgrade -y && \
-	apt-get install -y \
-				firefox \
-				xvfb && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 	npm install -g \
-				casperjs \
 				gulp \
 				nodemon && \
 	npm install && \

@@ -5,229 +5,29 @@
  */
 'use strict';
 
-const exec = require('child_process').exec,
-  del = require('del'),
-  fs = require('fs'),
-  glob = require('glob'),
-  gulp = require('gulp'),
-  changedInPlace = require('gulp-changed-in-place'),
-  jscs = require('gulp-jscs'),
-  jscsStylish = require('gulp-jscs-stylish'),
-  jshint = require('gulp-jshint'),
-  jsonlint = require('gulp-jsonlint'),
-  path = require('path'),
-  runSequence = require('run-sequence')
+//require('./gulp/build');
+require('./gulp/lint');
+//require('./gulp/server');
+require('./gulp/tests');
+require('./gulp/watch');
+
+const gulp = require('gulp'),
+  sequence = require('gulp-sequence')
   ;
 
-const baseDir = __dirname;
-
-let watchFilesFor = {},
-  verbose = false;
-
-watchFilesFor.jshint = [
-  path.join(baseDir, '*.js'),
-  path.join(baseDir, 'config', '*.js'),
-  path.join(baseDir, 'config', 'modules', '**', 'tests', 'e2e-workflow', '*.js')
-];
 /**
- * jshint: javascript files
- */
-gulp.task('jshint', () => {
-  return gulp.src(watchFilesFor.jshint)
-    .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
-    .pipe(jshint())
-    .pipe(jscs())
-    .pipe(jscsStylish.combineWithHintResults())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'))
-    ;
-});
-
-watchFilesFor.jsonlint = [
-  path.join(baseDir, '.jshintrc'),
-  path.join(baseDir, '.jscsrc'),
-  path.join(baseDir, '*.json')
-];
-/**
- * jsonlint: lint json files
- */
-gulp.task('jsonlint', () => {
-  return gulp.src(watchFilesFor.jsonlint)
-    .pipe(jsonlint())
-    .pipe(jsonlint.reporter())
-    ;
-});
-
-watchFilesFor['e2e-workflow-default'] = [
-  path.join(baseDir, 'index.js'),
-  path.join(baseDir, 'config', 'default.js'),
-];
-/**
- * e2e-workflow-default: test task
+ * #### default task
  *
- * @param {function} callback - gulp callback
- */
-gulp.task('e2e-workflow-default', (callback) => {
-  const resultsDir = path.join(baseDir, 'results', 'default');
-  del([
-      path.join(resultsDir, '*')
-    ], { force: true });
-  const loader = exec('node index.js --cfg=config/default.js', { cwd: baseDir });
-  loader.stdout.on('data', (data) => { // jscs:ignore jsDoc
-    console.log(data.toString().trim());
-  });
-  loader.stderr.on('data', (data) => { // jscs:ignore jsDoc
-    console.log('stderr: ' + data.toString().trim());
-  });
-  loader.on('error', (err) => { // jscs:ignore jsDoc
-    console.log('error: ' + err.toString().trim());
-  });
-  loader.on('close', (code) => { // jscs:ignore jsDoc
-    if (code > 0) {
-      console.log('e2e-workflow-default exit-code: ' + code);
-    }
-    callback();
-  });
-});
-
-watchFilesFor['test-modules-e2e-workflow'] = [
-  path.join(baseDir, 'config', 'modules', '**', 'tests', 'e2e-workflow', '*.js')
-];
-/**
- * #### testing
- *
- * @param {function} callback - gulp callback
- */
-gulp.task('test-modules-e2e-workflow', ['jshint'], (callback) => {
-  getRecentFile(watchFilesFor['test-modules-e2e-workflow'])
-  .then(getConfig)
-  .then(getRequest)
-  .then(() => { // jscs:ignore jsDoc
-    callback();
-  })
-  .catch((error) => { // jscs:ignore jsDoc
-    console.error('Failed!', error);
-    callback();
-  });
-});
-
-/**
- * get newest file from glob list
- *
- * @param {array} paths - list with glob paths
- */
-function getRecentFile(paths) {
-  let newest = null;
-  let bestTime = 0;
-  paths.forEach((path) => { // jscs:ignore jsDoc
-    const files = glob.sync(path);
-    for (let i = 0; i < files.length; i++) {
-      const fileTime = fs.statSync(files[i]).mtime.getTime();
-      if (fileTime > bestTime) {
-        newest = files[i];
-        bestTime = fileTime;
-      }
-    }
-  });
-  return new Promise((resolve) => { // jscs:ignore jsDoc
-    resolve(newest);
-  });
-}
-
-/**
- * get config for file
- *
- * @param {array} file - list with glob paths
- */
-function getConfig(file) {
-  return new Promise((resolve, reject) => { // jscs:ignore jsDoc
-    const regex = /^.*?(config\/modules\/.+?)\/(?:tests\/e2e-workflow|[^/]+)\/([^/]+)\..+$/;
-    const match = regex.exec(file);
-    const configFile = match[1] + '/tests/e2e-workflow/' + match[2] + '.js';
-    if (!fs.existsSync(configFile)) {
-      reject('no e2e-workflow configfile for ' + configFile);
-    }
-    try {
-      const config = require('./' + configFile);
-      resolve([configFile, config]);
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
-
-/**
- * get request for config
- *
- * @param {array} data - configFilename and test configuration
- */
-function getRequest(data) {
-  const configFile = data[0],
-    config = data[1];
-  return new Promise((resolve, reject) => { // jscs:ignore jsDoc
-    del([
-      path.join(baseDir, config.dumpDir, '*')
-    ], { force: true });
-    const loader = exec('casperjs test index.js --cfg=' + configFile,
-      { cwd: baseDir });
-    loader.stdout.on('data', (data) => { // jscs:ignore jsDoc
-      if (!data.match(/PASS/) || verbose) { console.log(data.trim()); }
-    });
-    loader.stderr.on('data', (data) => { // jscs:ignore jsDoc
-      console.log('stderr: ' + data.toString().trim());
-    });
-    loader.on('error', (err) => { // jscs:ignore jsDoc
-      console.log('error: ' + err.toString().trim());
-    });
-    loader.on('close', (code) => { // jscs:ignore jsDoc
-      if (code > 0) {
-        console.log('e2e-workflow-default exit-code: ' + code);
-        reject('e2e-workflow-default exit-code: ' + code + ', start verbose to see more');
-      }
-      resolve(data);
-    });
-  });
-}
-
-/**
- * build: run all build tasks
- *
- * @param {function} callback - gulp callback
- */
-gulp.task('build', (callback) => {
-  runSequence(
-    'jshint',
-    'jsonlint',
-    callback);
-});
-
-/**
- * watch: everything in watchFilesFor
- */
-gulp.task('watch', () => {
-  Object.keys(watchFilesFor).forEach((task) => { // jscs:ignore jsDoc
-    watchFilesFor[task].forEach((filename) => { // jscs:ignore jsDoc
-      glob(filename, (err, files) => { // jscs:ignore jsDoc
-        if (err) {
-          console.log(filename + ' error: ' + JSON.stringify(err, null, 4));
-        }
-        if (files.length === 0) {
-          console.log(filename + ' not found');
-        }
-      });
-    });
-    gulp.watch(watchFilesFor[task], [task]);
-  });
-});
-
-/**
- * default: run all build tasks and watch
+ * start build and watch, some needed for changedInPlace dryrun
  *
  * @param {function} callback - gulp callback
  */
 gulp.task('default', (callback) => {
-  runSequence(
-    'build',
+  sequence(
+    'lint',
+//    'build',
     'watch',
+//    'server',
+//    'tests', // tests only triggered by watch
     callback);
 });
