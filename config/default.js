@@ -7,7 +7,7 @@
 const domain = 'http://vcards-dev:8080';
 
 module.exports = {
-  name: 'default',
+  name: 'default e2e workflow test',
   dumpDir: './results/default/',
   viewportSize: { width: 1500, height: 1024 },
   testCases: [

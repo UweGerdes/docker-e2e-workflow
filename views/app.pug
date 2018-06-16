@@ -18,16 +18,15 @@ block content
                   else
                     a(href='/app/' + configFile + '?step=' + encodeURIComponent(label))= label
 
-      if queryStep
-        pre#queryStep.queryStep= JSON.stringify(config.testCases[0].steps[queryStep], null, 2)
-        img(src= '/' + config.dumpDir + queryStep + '.png')
-
-    div#results= results.status
+    if queryStep
+      pre#queryStep.queryStep= JSON.stringify(config.testCases[0].steps[queryStep], null, 2)
+      img.screenshot(src= '/' + config.dumpDir + queryStep + '.png')
 
     ul#configs.configs
       each files, label in configs
         if files
-          li.config= label
+          li.config
+            span.label= label
             ul.config-files
               each file in files
                 li.config-file

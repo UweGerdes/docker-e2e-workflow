@@ -18,8 +18,6 @@ gulp:
       - '.jscsrc'
       - '.jshintrc'
       - '.lesshintrc'
-    lesshint:
-      - 'src/less/**/*.less'
     yamllint:
       - '**/*.yaml'
       - '**/*.yml'

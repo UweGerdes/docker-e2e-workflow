@@ -5,3 +5,66 @@
  */
 
 @import './includes/layout';
+
+.app {
+  padding: 0 0 20px 0;
+  position: relative;
+
+  .config {
+    display: inline-block;
+    vertical-align: top;
+    width: 30%;
+
+    .testCases {
+      list-style: none;
+      padding: 0;
+
+      .testCase-name {
+        margin: 0 0 0.5em;
+      }
+
+      .testCase-steps {
+        list-style: none;
+        padding: 0;
+      }
+
+      .testCase-step {
+        list-style: none;
+        padding: 0 0 0.5em 1em;
+      }
+    }
+  }
+
+  .queryStep {
+    display: inline-block;
+    font-size: 0.8em;
+    margin: 0 0 0.5em;
+    width: 60%;
+  }
+
+  .screenshot {
+    border: 4px inset #aaaaaa;
+  }
+
+  .configs {
+    list-style: none;
+    padding: 0;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+
+    .config {
+      width: 100%;
+
+      .label {
+        font-size: 1.2em;
+      }
+
+      .config-files {
+        list-style: none;
+        padding: 5px 0 0 15px;
+      }
+    }
+
+  }
+}

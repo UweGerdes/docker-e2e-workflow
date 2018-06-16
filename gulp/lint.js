@@ -29,7 +29,7 @@ const tasks = {
     sequence(
       'jshint',
       'jsonlint',
-      'lesshint',
+      //'lesshint', // executed by less task
       'yamllint',
       'puglint',
       callback
@@ -77,10 +77,11 @@ const tasks = {
    * @namespace tasks
    */
   'lesshint': () => {
-    return gulp.src(config.gulp.watch.lesshint)
+    return gulp.src(config.gulp.watch.less)
       .pipe(lesshint())
-      .on('error', function () {})
+      //.on('error', function () {})
       .pipe(lesshint.reporter())
+      .pipe(lesshint.failOnError())
       ;
   },
   /**

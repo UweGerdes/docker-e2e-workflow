@@ -49,7 +49,7 @@ const tasks = {
    * @task less
    * @namespace tasks
    */
-  'less': () => {
+  'less': [['lesshint'], () => {
     return combiner.obj([
       gulp.src(config.gulp.build.less.src),
       less({
@@ -61,7 +61,7 @@ const tasks = {
     ])
     .on('error', () => { }) // jscs:ignore jsDoc
     ;
-  },
+  }],
   /**
    * #### Compile js files
    *
