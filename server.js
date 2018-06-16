@@ -9,6 +9,7 @@ const bodyParser = require('body-parser'),
   chalk = require('chalk'),
   dateFormat = require('dateformat'),
   express = require('express'),
+  glob = require('glob'),
   morgan = require('morgan'),
   path = require('path'),
   config = require('./lib/config'),
@@ -67,10 +68,31 @@ app.get('/', (req, res) => {
  * @param {Object} res - response
  */
 app.get('/app', (req, res) => {
-  res.render(viewPath('app'), {
+  res.render(viewPath('app.pug'), {
     hostname: req.hostname,
     livereloadPort: livereloadPort,
-    httpPort: httpPort
+    configs: getConfigs(),
+    config: {
+      name: 'Keine Config geladen',
+      configfile: 'none',
+    },
+    results: { status: 'not executed' }
+  });
+});
+
+/**
+ * Route for app config page
+ *
+ * @param {Object} req - request
+ * @param {Object} res - response
+ */
+app.get(/^\/app\/(.+)$/, (req, res) => {
+  res.render(viewPath('app.pug'), {
+    hostname: req.hostname,
+    livereloadPort: livereloadPort,
+    configs: getConfigs(),
+    config: getConfig(req.params[0]),
+    results: { status: 'not executed' }
   });
 });
 
@@ -81,7 +103,7 @@ app.get('/app', (req, res) => {
  * @param {Object} res - response
  */
 app.get('*', (req, res) => {
-  res.status(404).render(viewPath('404'), {
+  res.status(404).render(viewPath('404.ejs'), {
     hostname: req.hostname,
     livereloadPort: livereloadPort,
     httpPort: httpPort
@@ -105,7 +127,7 @@ app.use((err, req, res) => {
   console.error('SERVER ERROR:', err);
   if (res) {
     res.status(500)
-      .render(viewPath('500'), {
+      .render(viewPath('500.ejs'), {
         error: err,
         hostname: req.hostname,
         livereloadPort: livereloadPort,
@@ -122,6 +144,30 @@ app.use((err, req, res) => {
  * @param {String} page - page type
  * @param {String} type - file type (ejs, jade, pug, html)
  */
-function viewPath(page = '404', type = 'ejs') {
-  return modulesRoot + '/views/' + page + '.' + type;
+function viewPath(page = '404.ejs') {
+  return modulesRoot + '/views/' + page;
+}
+
+/**
+ * get configuration files and labels
+ */
+function getConfigs() {
+  let configs = {};
+  Object.entries(config.gulp.tests).forEach(
+    ([label, path]) => {
+      console.log(label, glob.sync(path));
+      configs[label] = glob.sync(path);
+    }
+  );
+  return configs;
+}
+
+/**
+ * get configuration file content
+ *
+ * @private
+ * @param {String} filename - config filename
+ */
+function getConfig(filename) {
+  return require('./' + filename);
 }

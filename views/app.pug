@@ -1,0 +1,17 @@
+extends page/index.pug
+
+block content
+  div#app.app
+
+    h1#headline.headline= config.name
+
+    pre.config= JSON.stringify(config, null, 2)
+
+    ul#configs.configs
+      each files, label in configs
+        if files
+          li.config= label
+            ul.config-files
+              each file in files
+                li.config-file
+                  a(href='/app/' + file)= file

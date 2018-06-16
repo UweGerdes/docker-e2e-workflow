@@ -55,7 +55,6 @@
     "gulp-yaml-validate": "^1.0.2",
     "jscs": "^3.0.7",
     "jscs-stylish": "^0.3.1",
-    "jshint": "^2.9.5",
     "less-plugin-glob": "^2.0.2",
     "stream-combiner2": "^1.1.1"
   },

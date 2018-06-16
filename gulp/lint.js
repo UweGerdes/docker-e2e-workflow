@@ -3,9 +3,7 @@
  */
 'use strict';
 
-const fs = require('fs'),
-  glob = require('glob'),
-  gulp = require('gulp'),
+const gulp = require('gulp'),
   changedInPlace = require('gulp-changed-in-place'),
   jscs = require('gulp-jscs'),
   jscsStylish = require('gulp-jscs-stylish'),
@@ -15,7 +13,6 @@ const fs = require('fs'),
   pugLinter = require('gulp-pug-linter'),
   sequence = require('gulp-sequence'),
   yamlValidate = require('gulp-yaml-validate'),
-  jshint = require('jshint').JSHINT,
   config = require('../lib/config'),
   loadTasks = require('./lib/load-tasks')
   ;
