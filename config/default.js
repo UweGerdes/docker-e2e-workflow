@@ -44,9 +44,7 @@ module.exports = {
             '//*[@id="version"]//*[@class="itemvalue"]': '3.0',
           },
         },
-        /*
-        {
-          name: 'search layer',
+        'search layer': {
           title: 'Webserver - vcard',
           click: '#searchButton',
           elements: {
@@ -56,8 +54,7 @@ module.exports = {
             '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
           }
         },
-        {
-          name: 'search result, no input',
+        'search result, no input': {
           title: 'Webserver - vcard',
           click: 'input[type="submit"]',
           elements: {
@@ -66,16 +63,14 @@ module.exports = {
             '//a[@class="button open"]': 'öffnen',
           },
         },
-        {
-          name: 'search result: click vcard 0',
+        'search result: click vcard 0': {
           title: 'Webserver - vcard',
           click: '*[id="searchLayer"] a[href="/vcards/0/"]',
           elements: {
             '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
           },
         },
-        {
-          name: 'search layer open again',
+        'search layer open again': {
           title: 'Webserver - vcard',
           click: '#searchButton',
           elements: {
@@ -85,8 +80,7 @@ module.exports = {
             '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
           }
         },
-        {
-          name: 'search result for version=3',
+        'search result for version=3': {
           title: 'Webserver - vcard',
           input: {
             '//input[@name="searchFields"][@value="version"]': true,
@@ -103,8 +97,7 @@ module.exports = {
             '//*[@id="searchLayer"]//a[@href="/vcards/0/"]',
           ],
         },
-        {
-          name: 'search again',
+        'search again': {
           title: 'Webserver - vcard',
           click: '#searchAgain',
           elements: {
@@ -114,8 +107,7 @@ module.exports = {
             '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
           }
         },
-        {
-          name: 'search result for name=XXX empty',
+        'search result for name=XXX empty': {
           title: 'Webserver - vcard',
           input: {
             '//input[@name="searchFields"][@value="n"]': true,
@@ -132,7 +124,6 @@ module.exports = {
             '//*[@id="searchResult"]//ul//li',
           ],
         },
-        */
       }
     }
   ]

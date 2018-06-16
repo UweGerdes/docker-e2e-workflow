@@ -167,7 +167,6 @@ function getConfigs() {
   let configs = {};
   Object.entries(config.gulp.tests).forEach(
     ([label, path]) => {
-      console.log(label, glob.sync(path));
       configs[label] = glob.sync(path);
     }
   );
@@ -181,5 +180,6 @@ function getConfigs() {
  * @param {String} filename - config filename
  */
 function getConfig(filename) {
+  delete require.cache[require.resolve('./' + filename)];
   return require('./' + filename);
 }

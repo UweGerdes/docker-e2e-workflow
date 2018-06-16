@@ -40,6 +40,7 @@ const tasks = {
   'server-restart': [['jshint'], (callback) => {
     sequence(
       'server-changed',
+      'livereload',
       callback
     );
   }],

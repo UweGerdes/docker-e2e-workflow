@@ -15,27 +15,28 @@ const exec = require('child_process').exec,
 
 const tasks = {
   /**
-   * ### test
-   *
-   * @task test
-   * @namespace tasks
-   * @param {function} callback - gulp callback
-   */
-  'tests': (callback) => {
-    sequence(
-      'test-e2e-workflow-default',
-      callback
-    );
-  },
-
-  /**
-   * ### e2e-workflow-default: test task
+   * ### test-e2e-workflow-default and livereload
    *
    * @task test-e2e-workflow-default
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
   'test-e2e-workflow-default': (callback) => {
+    sequence(
+      'test-e2e-workflow-default-exec',
+      'livereload',
+      callback
+    );
+  },
+
+  /**
+   * ### e2e-workflow-default-exec: test task
+   *
+   * @task test-e2e-workflow-default
+   * @namespace tasks
+   * @param {function} callback - gulp callback
+   */
+  'test-e2e-workflow-default-exec': (callback) => {
     const baseDir = path.join(__dirname, '..');
     const resultsDir = path.join(baseDir, 'results', 'default');
     del([
