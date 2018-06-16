@@ -50,7 +50,7 @@ if (testData) {
     viewportSize = testData.viewportSize;
   }
   let driver = new webdriver.Builder()
-    .forBrowser('firefox')
+    .forBrowser('chrome')
     .usingServer('http://vcards-hub:4444/wd/hub')
     .setChromeOptions(
       new chrome.Options()
@@ -63,6 +63,7 @@ if (testData) {
         .windowSize(viewportSize)
     )
     .build();
+  driver.manage().window().setRect(viewportSize);
   testData.testCases.forEach(function (testCase) {
     console.log('Test: ' + testData.name + ', Testcase: ' + testCase.name +
       ', URI: ' + testCase.uri);
