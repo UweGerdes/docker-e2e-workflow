@@ -90,6 +90,11 @@ if (testData) {
             (title) => {
               assert.equal(title, testStep.title);
             }
+          )
+          .catch(
+            (e) => {
+              log.error('title: ' + e.message);
+            }
           );
         }
         if (testStep.input) {
@@ -201,7 +206,7 @@ if (testData) {
     promise.then(
       () => {
         console.log('results in', log.filename());
-        console.log(log.results());
+        console.log(log.results().testCases.vcards);
       }
     )
     .then(
