@@ -76,9 +76,9 @@ if (testData) {
         }
       );
     }
-    testCase.steps.forEach(
-      (testStep) => {
-        promise = promise.then(() => console.log('Test-Step:', testStep.name));
+    Object.entries(testCase.steps).forEach(
+      ([label, testStep]) => {
+        promise = promise.then(() => console.log('Test-Step:', label));
         if (testStep.title) {
           promise = promise.then(
             () => driver.getTitle()
@@ -178,7 +178,7 @@ if (testData) {
             return new Promise(
               (resolve, reject) => {
                 fs.writeFile(
-                  path.join(testData.dumpDir, testStep.name + '.png'),
+                  path.join(testData.dumpDir, label + '.png'),
                   new Buffer(screenshot, 'base64'),
                   (error) => {
                     if (error) {

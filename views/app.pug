@@ -11,18 +11,15 @@ block content
           li.testCase
             h3.testCase-name= testCase.name
             ul.testCase-steps
-              each step in testCase.steps
+              each step, label in testCase.steps
                 li.testCase-step
-                  if queryStep == step.name
-                    strong= step.name
+                  if queryStep == label
+                    strong= label
                   else
-                    a(href='/app/' + configFile + '?step=' + encodeURIComponent(step.name))= step.name
+                    a(href='/app/' + configFile + '?step=' + encodeURIComponent(label))= label
 
       if queryStep
-        each testCase in config.testCases
-          each step in testCase.steps
-            if queryStep == step.name
-              pre#queryStep.queryStep= JSON.stringify(step, null, 2)
+        pre#queryStep.queryStep= JSON.stringify(config.testCases[0].steps[queryStep], null, 2)
         img(src= '/' + config.dumpDir + queryStep + '.png')
 
     div#results= results.status

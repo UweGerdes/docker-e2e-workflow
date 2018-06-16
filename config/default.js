@@ -15,9 +15,8 @@ module.exports = {
       name: 'vcards',
       uri: domain + '/vcards/',
       title: 'Webserver - vcard',
-      steps: [
-        {
-          name: 'start',
+      steps: {
+        'start': {
           title: 'Webserver - vcard',
           elements: {
             '//h1[@class="headline"]': 'vcard',
@@ -30,8 +29,7 @@ module.exports = {
             '//a[@id="editButton"]',
           ],
         },
-        {
-          name: 'vcard 0',
+        'vcard 0': {
           title: 'Webserver - vcard',
           click: 'a[href="/vcards/0/"]',
           elements: {
@@ -39,14 +37,14 @@ module.exports = {
             '//a[@id="editButton"]': '',
           },
         },
-        {
-          name: 'vcard 1',
+        'vcard 1': {
           title: 'Webserver - vcard',
           click: 'a[href="/vcards/1/"]',
           elements: {
             '//*[@id="version"]//*[@class="itemvalue"]': '3.0',
           },
         },
+        /*
         {
           name: 'search layer',
           title: 'Webserver - vcard',
@@ -134,7 +132,8 @@ module.exports = {
             '//*[@id="searchResult"]//ul//li',
           ],
         },
-      ]
+        */
+      }
     }
   ]
 };
