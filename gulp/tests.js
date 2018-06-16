@@ -21,13 +21,13 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'test-e2e-workflow-default': (callback) => {
+  'test-e2e-workflow-default': [['jshint'], (callback) => {
     sequence(
       'test-e2e-workflow-default-exec',
       'livereload',
       callback
     );
-  },
+  }],
 
   /**
    * ### e2e-workflow-default-exec: test task

@@ -22,18 +22,16 @@ const { By } = require('selenium-webdriver'),
   fs = require('fs'),
   makeDir = require('make-dir'),
   argv = require('minimist')(process.argv.slice(2)),
-  path = require('path');
+  path = require('path'),
+  log = require('./lib/log.js');
 
 chai.use(chaiAsPromised);
 
 let testData = null;
-//let testsSuccessful = 0;
-//let testsExecuted = 0;
-//let errorCount = 0;
 
 if (argv.cfg) {
   const filename = argv.cfg;
-  console.log('config filename:', filename);
+  log.setFilename(filename);
   if (fs.existsSync(path.join(__dirname, filename))) {
     console.log('Executing: "' + path.join(__dirname, filename) + '"');
     testData = require(path.join(__dirname, filename));
@@ -45,6 +43,7 @@ if (argv.cfg) {
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
 if (testData) {
+  log.setData(testData);
   makeDir(testData.dumpDir);
   if (testData.viewportSize) {
     viewportSize = testData.viewportSize;
@@ -65,8 +64,7 @@ if (testData) {
     .build();
   driver.manage().window().setRect(viewportSize);
   testData.testCases.forEach(function (testCase) {
-    console.log('Test: ' + testData.name + ', Testcase: ' + testCase.name +
-      ', URI: ' + testCase.uri);
+    log.testCase(testCase.name);
     let promise = driver.get(testCase.uri);
     if (testCase.title) {
       promise = promise.then(() => driver.getTitle());
@@ -79,7 +77,11 @@ if (testData) {
     }
     Object.entries(testCase.steps).forEach(
       ([label, testStep]) => {
-        promise = promise.then(() => console.log('Test-Step:', label));
+        promise = promise.then(
+          () => {
+            log.testStep(label);
+          }
+        );
         if (testStep.title) {
           promise = promise.then(
             () => driver.getTitle()
@@ -197,8 +199,15 @@ if (testData) {
       }
     );
     promise.then(
+      () => {
+        console.log('results in', log.filename());
+        console.log(log.results());
+      }
+    )
+    .then(
       () => driver.quit(),
       e => driver.quit().then(() => { console.log(e.message); })
     );
   });
 }
+

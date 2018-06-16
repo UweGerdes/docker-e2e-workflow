@@ -58,7 +58,7 @@ $ docker run -it \
 	bash
 ```
 
-Run `gulp` or `npm test` in the container.
+Run `gulp` or `npm run dev` in the container.
 
 To restart the container use:
 
@@ -115,6 +115,8 @@ $ docker run -it --rm \
 You will find a lot of files (the cache for the server app) in a subdirectory of `./results/`.
 
 ## Changelog
+
+0.2.2 collecting results
 
 0.2.1 refactor gulp tasks
 

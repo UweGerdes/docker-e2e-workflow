@@ -28,9 +28,12 @@ gulp:
       - '**/*.pug'
     server-restart:
       - './server.js'
+      - 'lib/config.js'
+      - 'lib/ipv4addresses.js'
     test-e2e-workflow-default:
       - 'index.js'
       - 'config/default.js'
+      - 'lib/log.js'
     livereload:
       - 'htdocs/**/*.html'
       - 'views/**/*.pug'
