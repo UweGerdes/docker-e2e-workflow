@@ -18,6 +18,13 @@ block content
                   else
                     a(href='/app/' + configFile + '?step=' + encodeURIComponent(step.name))= step.name
 
+      if queryStep
+        each testCase in config.testCases
+          each step in testCase.steps
+            if queryStep == step.name
+              pre#queryStep.queryStep= JSON.stringify(step, null, 2)
+        img(src= '/' + config.dumpDir + queryStep + '.png')
+
     div#results= results.status
 
     ul#configs.configs

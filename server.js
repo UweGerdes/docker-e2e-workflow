@@ -99,6 +99,16 @@ app.get(/^\/app\/(.+)$/, (req, res) => {
 });
 
 /**
+ * Route for results
+ *
+ * @param {Object} req - request
+ * @param {Object} res - response
+ */
+app.get(/^(\/results\/.+)$/, (req, res) => {
+  res.sendFile(path.join(__dirname, req.params[0]));
+});
+
+/**
  * Route for everything else
  *
  * @param {Object} req - request
