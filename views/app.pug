@@ -5,7 +5,20 @@ block content
 
     h1#headline.headline= config.name
 
-    pre.config= JSON.stringify(config, null, 2)
+    div#config.config
+      ul#testCases.testCases
+        each testCase in config.testCases
+          li.testCase
+            h3.testCase-name= testCase.name
+            ul.testCase-steps
+              each step in testCase.steps
+                li.testCase-step
+                  if queryStep == step.name
+                    strong= step.name
+                  else
+                    a(href='/app/' + configFile + '?step=' + encodeURIComponent(step.name))= step.name
+
+    div#results= results.status
 
     ul#configs.configs
       each files, label in configs

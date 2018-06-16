@@ -91,7 +91,9 @@ app.get(/^\/app\/(.+)$/, (req, res) => {
     hostname: req.hostname,
     livereloadPort: livereloadPort,
     configs: getConfigs(),
+    configFile: req.params[0],
     config: getConfig(req.params[0]),
+    queryStep: req.query.step,
     results: { status: 'not executed' }
   });
 });
