@@ -32,13 +32,13 @@ let testData = null;
 if (argv.cfg) {
   const filename = argv.cfg;
   if (fs.existsSync(path.join(__dirname, filename))) {
-    console.log('Executing: "' + path.join(__dirname, filename) + '"');
+    log.info('Executing: "' + path.join(__dirname, filename) + '"');
     testData = require(path.join(__dirname, filename));
   } else {
-    console.log('ERROR: file not found: "' + path.join(__dirname, filename) + '"');
+    log.info('ERROR: file not found: "' + path.join(__dirname, filename) + '"');
   }
 } else {
-  console.log('Executing default: "' + path.join(__dirname, 'config', 'default.js') + '"');
+  log.info('Executing default: "' + path.join(__dirname, 'config', 'default.js') + '"');
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
 if (testData) {
@@ -111,10 +111,6 @@ if (testData) {
                       .sendKeys(testStep.input[selector]);
                   }
                 )
-                .then(() => {
-                    return driver.findElement(By.xpath(selector)).getAttribute('value');
-                  }
-                )
                 .catch(() => { log.error('no input field for ' + selector); });
               } else
               // checkbox: true/false, radio: true
@@ -130,7 +126,7 @@ if (testData) {
                     }
                   }
                 )
-                .catch((e) => { console.log(e.message); });
+                .catch(() => { log.error('no input field for ' + selector); });
               } else {
                 console.log('input unprocessed', selector, testStep.input[selector]);
               }
@@ -218,13 +214,14 @@ if (testData) {
     );
     promise.then(
       () => {
-        console.log('results in', log.filename());
+        const results = log.results();
+        log.summary();
         return new Promise(
           (resolve, reject) => {
             const filename = path.join(testData.dumpDir, 'results.json');
             fs.writeFile(
               filename,
-              JSON.stringify(log.results(), null, 4),
+              JSON.stringify(results, null, 4),
               (error) => {
                 if (error) {
                   log.error(filename + ' save error: ' + error);
@@ -240,7 +237,7 @@ if (testData) {
     )
     .then(
       () => driver.quit(),
-      e => driver.quit().then(() => { console.log(e.message); })
+      e => driver.quit().then(() => { log.info(e.message); })
     );
   });
 }
