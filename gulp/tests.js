@@ -42,7 +42,8 @@ const tasks = {
     del([
         path.join(resultsDir, '*')
       ], { force: true });
-    const loader = exec('node index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'],
+    const loader = exec('export FORCE_COLOR=1; ' +
+      'node index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'],
       { cwd: baseDir });
     loader.stdout.on('data', (data) => { // jscs:ignore jsDoc
       console.log(data.toString().trim());

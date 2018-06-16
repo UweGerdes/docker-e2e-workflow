@@ -31,7 +31,6 @@ let testData = null;
 
 if (argv.cfg) {
   const filename = argv.cfg;
-  log.setFilename(filename);
   if (fs.existsSync(path.join(__dirname, filename))) {
     console.log('Executing: "' + path.join(__dirname, filename) + '"');
     testData = require(path.join(__dirname, filename));
@@ -43,8 +42,8 @@ if (argv.cfg) {
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
 if (testData) {
-  log.setData(testData);
   makeDir(testData.dumpDir);
+  log.setFilename(path.join(testData.dumpDir, 'results.json'));
   if (testData.viewportSize) {
     viewportSize = testData.viewportSize;
   }
@@ -70,8 +69,13 @@ if (testData) {
       promise = promise.then(() => driver.getTitle());
       promise = promise.then(
         (title) => {
-          console.log('title', title);
+          log.info('testCase title: ' + title);
           assert.equal(title, testCase.title);
+        }
+      )
+      .catch(
+        (e) => {
+          console.log('error testCase title: ' + e.message);
         }
       );
     }
@@ -79,7 +83,7 @@ if (testData) {
       ([label, testStep]) => {
         promise = promise.then(
           () => {
-            log.testStep(label);
+            log.testStep(label, testStep);
           }
         );
         if (testStep.title) {
@@ -111,7 +115,7 @@ if (testData) {
                     return driver.findElement(By.xpath(selector)).getAttribute('value');
                   }
                 )
-                .catch((e) => { console.log(e.message); });
+                .catch(() => { log.error('no input field for ' + selector); });
               } else
               // checkbox: true/false, radio: true
               if (testStep.input[selector] === true || testStep.input[selector] === false) {
@@ -142,18 +146,25 @@ if (testData) {
         }
         Object.keys(testStep.elements).forEach(
           (selector) => {
+            let err = false;
             promise = promise.then(() => {
                 return driver.findElement(By.xpath(selector)).getText();
               }
             )
-            .then(
+            .catch(
+              () => {
+                log.error('element not found: "' + selector + '"');
+                err = true;
+              }
+            );
+            promise = promise.then(
               (text) => {
-                if (testStep.elements[selector]) {
-                  assert.equal(text, testStep.elements[selector], selector + ' text');
+                if (!err && testStep.elements[selector]) {
+                  assert.equal(text, testStep.elements[selector], '"' + selector + '" text');
                 }
               }
             )
-            .catch((e) => { console.log(e.message); });
+            .catch((e) => { log.error(e.message); });
           }
         );
         if (testStep.elementsNotExist) {
@@ -169,7 +180,7 @@ if (testData) {
                 }
               )
               .then(() => {
-                  console.log(selector, 'found ERROR');
+                  log.error('element found: "' + selector + '"');
                 }
               )
               .catch(() => {});
@@ -185,15 +196,17 @@ if (testData) {
           (screenshot) => {
             return new Promise(
               (resolve, reject) => {
+                const filename = path.join(testData.dumpDir, label + '.png');
                 fs.writeFile(
-                  path.join(testData.dumpDir, label + '.png'),
+                  filename,
                   new Buffer(screenshot, 'base64'),
                   (error) => {
                     if (error) {
-                      console.log(path.join(testData.dumpDir, 'page.png'), 'save error:', error);
+                      log.error(filename + ' save error: ' + error);
                       reject('file not saved');
                     } else {
-                      resolve(path.join(testData.dumpDir, 'page.png'), 'saved');
+                      log.screenshot(filename);
+                      resolve(filename + 'saved');
                     }
                   }
                 );
@@ -206,7 +219,23 @@ if (testData) {
     promise.then(
       () => {
         console.log('results in', log.filename());
-        console.log(log.results().testCases.vcards);
+        return new Promise(
+          (resolve, reject) => {
+            const filename = path.join(testData.dumpDir, 'results.json');
+            fs.writeFile(
+              filename,
+              JSON.stringify(log.results(), null, 4),
+              (error) => {
+                if (error) {
+                  log.error(filename + ' save error: ' + error);
+                  reject('file not saved');
+                } else {
+                  resolve(filename + 'saved');
+                }
+              }
+            );
+          }
+        );
       }
     )
     .then(
