@@ -9,6 +9,7 @@ const bodyParser = require('body-parser'),
   chalk = require('chalk'),
   dateFormat = require('dateformat'),
   express = require('express'),
+  fs = require('fs'),
   glob = require('glob'),
   morgan = require('morgan'),
   path = require('path'),
@@ -87,14 +88,15 @@ app.get('/app', (req, res) => {
  * @param {Object} res - response
  */
 app.get(/^\/app\/(.+)$/, (req, res) => {
+  const config = requireFile(req.params[0]);
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
     livereloadPort: livereloadPort,
     configs: getConfigs(),
     configFile: req.params[0],
-    config: getConfig(req.params[0]),
+    config: config,
     queryStep: req.query.step,
-    results: { status: 'not executed' }
+    results: requireFile(path.join(config.dumpDir, 'results.json'))
   });
 });
 
@@ -174,12 +176,16 @@ function getConfigs() {
 }
 
 /**
- * get configuration file content
+ * get js file content
  *
  * @private
  * @param {String} filename - config filename
  */
-function getConfig(filename) {
+function requireFile(filename) {
   delete require.cache[require.resolve('./' + filename)];
-  return require('./' + filename);
+  if (fs.existsSync('./' + filename)) {
+    return require('./' + filename);
+  } else {
+    console.log('require ./' + filename + ' not found');
+  }
 }
