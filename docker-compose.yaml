@@ -45,7 +45,7 @@ services:
       - vcards
     volumes:
       - .:/home/node/app
-      - ../docker-vcard/projekt/modules:/home/node/app/config/modules
+      - ../docker-vcards/modules:/home/node/app/config/modules
 #    command: gulp --silent
     command: npm run dev
 
