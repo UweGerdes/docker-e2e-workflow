@@ -33,11 +33,11 @@ services:
       - HUB_HOST=hub
       - HUB_PORT=4444
 
-  e2e-workflow-vcards:
+  e2e-workflow:
     build:
       context: .
-    container_name: e2e-workflow-vcards
-    hostname: e2e-workflow-vcards
+    container_name: e2e-workflow
+    hostname: e2e-workflow
     image: uwegerdes/e2e-workflow
     depends_on:
       - hub
@@ -52,4 +52,4 @@ services:
 networks:
   vcards:
     external:
-      name: projekt_vcards-bridge
+      name: vcards-bridge
