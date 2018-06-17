@@ -24,13 +24,13 @@ For the development time a gulpfile.js is included to generate css from less and
 $ docker-compose up
 ```
 
+Open the server address listed in the output. Read content.
+
 You might want to use some of these commands:
 
 ```bash
 $ docker-compose exec e2e-workflow-vcards bash
 ```
-
-Open the server address listed in the output. Read content.
 
 ## Changelog
 
