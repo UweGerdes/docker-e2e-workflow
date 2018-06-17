@@ -1,6 +1,8 @@
 # Docker for e2e-workflow
 
-Regression testing for frontend developement
+Regression testing for frontend developement.
+
+At the moment the configuration.yaml and docker-compose.yaml are wired for use with my docker-vcards project.
 
 ## Config File
 
