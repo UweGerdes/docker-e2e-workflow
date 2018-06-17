@@ -1,5 +1,5 @@
 /**
- * Testdata for acteam Neukunden-Anmeldung und Datenbearbeitung
+ * Testdata for vcards
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */

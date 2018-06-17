@@ -34,6 +34,8 @@ gulp:
       - 'index.js'
       - 'config/default.js'
       - 'lib/log.js'
+    test-e2e-workflow-modules:
+      - 'config/modules/vcards/tests/e2e-workflow/vcards.js'
     livereload:
       - 'htdocs/**/*.html'
       - 'views/**/*.pug'
@@ -58,7 +60,7 @@ gulp:
       dest: 'htdocs/css'
   tests:
     test-e2e-workflow-default: 'config/default.js'
-    e2eWorkflow: 'modules/vcards/tests/e2e-workflow/*.js'
+    test-e2e-workflow-modules: 'config/modules/vcards/tests/e2e-workflow/vcards.js'
 
 
 server:

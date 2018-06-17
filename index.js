@@ -19,6 +19,7 @@ const { By } = require('selenium-webdriver'),
   chai = require('chai'),
   assert = chai.assert,
   chaiAsPromised = require('chai-as-promised'),
+  del = require('del'),
   fs = require('fs'),
   makeDir = require('make-dir'),
   argv = require('minimist')(process.argv.slice(2)),
@@ -42,7 +43,10 @@ if (argv.cfg) {
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
 if (testData) {
-  makeDir(testData.dumpDir);
+  let promise = del([
+      path.join(testData.dumpDir, '*')
+    ], { force: true })
+    .then(() => makeDir(testData.dumpDir));
   log.setFilename(path.join(testData.dumpDir, 'results.json'));
   if (testData.viewportSize) {
     viewportSize = testData.viewportSize;
@@ -64,7 +68,7 @@ if (testData) {
   driver.manage().window().setRect(viewportSize);
   testData.testCases.forEach(function (testCase) {
     log.testCase(testCase.name);
-    let promise = driver.get(testCase.uri);
+    promise.then(() => driver.get(testCase.uri));
     if (testCase.title) {
       promise = promise.then(() => driver.getTitle());
       promise = promise.then(
