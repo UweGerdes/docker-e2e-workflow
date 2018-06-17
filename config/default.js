@@ -23,7 +23,6 @@ module.exports = {
             '//*[@id="list"]/li[1]/a': 'Uwe Gerdes',
             '//*[@id="list"]/li[2]/a': 'Uwe Gerdes',
             '//*[@id="searchButton"]': 'suchen',
-            '//*[@id="headlineButtons"]/*[@class="button datasetName"]': 'testdata',
           },
           elementsNotExist: [
             '//a[@id="editButton"]',

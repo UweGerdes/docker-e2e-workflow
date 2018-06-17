@@ -69,7 +69,7 @@ if (testData) {
   Object.entries(testData.testCases).forEach(
     ([name, testCase]) => {
       log.testCase(name);
-      promise.then(() => driver.get(testCase.uri));
+      promise = promise.then(() => driver.get(testCase.uri));
       if (testCase.title) {
         promise = promise.then(() => driver.getTitle());
         promise = promise.then(

@@ -14,7 +14,7 @@ gulp:
       - 'lib/**/*.js'
       - 'src/**/*.js'
     jsonlint:
-      - '**/*.json'
+      - '*.json'
       - '.jscsrc'
       - '.jshintrc'
       - '.lesshintrc'
@@ -35,7 +35,7 @@ gulp:
       - 'config/default.js'
       - 'lib/log.js'
     test-e2e-workflow-modules:
-      - 'config/modules/vcards/tests/e2e-workflow/vcards.js'
+      - 'config/modules/vcards/tests/e2e-workflow/*.js'
     livereload:
       - 'htdocs/**/*.html'
       - 'views/**/*.pug'
@@ -60,7 +60,7 @@ gulp:
       dest: 'htdocs/css'
   tests:
     test-e2e-workflow-default: 'config/default.js'
-    test-e2e-workflow-modules: 'config/modules/vcards/tests/e2e-workflow/vcards.js'
+    test-e2e-workflow-modules: 'config/modules/vcards/tests/e2e-workflow/*.js'
 
 
 server:
