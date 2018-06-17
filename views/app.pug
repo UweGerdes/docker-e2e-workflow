@@ -36,4 +36,7 @@ block content
             ul.config-files
               each file in files
                 li.config-file
-                  a(href='/app/' + file)= file
+                  if configFile == file
+                    strong= file
+                  else
+                    a(href='/app/' + file)= file
