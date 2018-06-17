@@ -116,6 +116,8 @@ You will find a lot of files (the cache for the server app) in a subdirectory of
 
 ## Changelog
 
+0.2.3 run modules tests
+
 0.2.2 collecting results
 
 0.2.1 refactor gulp tasks
