@@ -58,15 +58,29 @@ const tasks = {
       callback();
     });
   },
-
   /**
-   * ### e2e-workflow-modules test task
+   * ### test-e2e-workflow-modules and livereload
    *
    * @task test-e2e-workflow-modules
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'test-e2e-workflow-modules': () => {
+  'test-e2e-workflow-modules': [['jshint'], (callback) => {
+    sequence(
+      'test-e2e-workflow-modules-exec',
+      'livereload',
+      callback
+    );
+  }],
+
+  /**
+   * ### test-e2e-workflow-modules test task
+   *
+   * @task test-e2e-workflow-modules-exec
+   * @namespace tasks
+   * @param {function} callback - gulp callback
+   */
+  'test-e2e-workflow-modules-exec': () => {
     getFilenames(config.gulp.tests['test-e2e-workflow-modules'])
     .then((filenames) => {
       return Promise.all(

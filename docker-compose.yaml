@@ -1,0 +1,55 @@
+# To execute this docker-compose yml file use docker-compose -f <file_name> up
+# Add the "-d" flag at the end for deattached execution
+version: "3"
+
+services:
+
+  hub:
+    image: selenium/hub:3.12.0-boron
+    container_name: hub
+    hostname: hub
+    networks:
+      - vcards
+
+  chrome:
+    image: selenium/node-chrome:3.12.0-boron
+    container_name: chrome
+    depends_on:
+      - hub
+    networks:
+      - vcards
+    environment:
+      - HUB_HOST=hub
+      - HUB_PORT=4444
+
+  firefox:
+    image: selenium/node-firefox:3.12.0-boron
+    container_name: firefox
+    depends_on:
+      - hub
+    networks:
+      - vcards
+    environment:
+      - HUB_HOST=hub
+      - HUB_PORT=4444
+
+  e2e-workflow-vcards:
+    build:
+      context: .
+    container_name: e2e-workflow-vcards
+    hostname: e2e-workflow-vcards
+    image: uwegerdes/e2e-workflow
+    depends_on:
+      - hub
+    networks:
+      - vcards
+    volumes:
+      - .:/home/node/app
+      - ../docker-vcard/projekt/modules:/home/node/app/config/modules
+#    command: gulp --silent
+    command: npm run dev
+
+networks:
+  vcards:
+    external:
+      name: projekt_vcards-bridge

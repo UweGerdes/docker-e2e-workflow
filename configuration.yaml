@@ -42,6 +42,7 @@ gulp:
       - 'htdocs/img/**/*.*'
       - 'htdocs/css/app.css'
       - 'htdocs/js/**/*.js'
+      - 'results/modules/**/*.json'
   build:
     jsdoc:
       src:
