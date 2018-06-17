@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/UweGerdes/docker-e2e-workflow.svg?branch=master)](https://travis-ci.org/UweGerdes/docker-e2e-workflow)
-
 # Docker for e2e-workflow
 
 Regression testing for frontend developement
