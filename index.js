@@ -66,183 +66,185 @@ if (testData) {
     )
     .build();
   driver.manage().window().setRect(viewportSize);
-  testData.testCases.forEach(function (testCase) {
-    log.testCase(testCase.name);
-    promise.then(() => driver.get(testCase.uri));
-    if (testCase.title) {
-      promise = promise.then(() => driver.getTitle());
-      promise = promise.then(
-        (title) => {
-          log.info('testCase title: ' + title);
-          assert.equal(title, testCase.title);
-        }
-      )
-      .catch(
-        (e) => {
-          console.log('error testCase title: ' + e.message);
-        }
-      );
-    }
-    Object.entries(testCase.steps).forEach(
-      ([label, testStep]) => {
+  Object.entries(testData.testCases).forEach(
+    ([name, testCase]) => {
+      log.testCase(name);
+      promise.then(() => driver.get(testCase.uri));
+      if (testCase.title) {
+        promise = promise.then(() => driver.getTitle());
         promise = promise.then(
-          () => {
-            log.testStep(label, testStep);
+          (title) => {
+            log.info('testCase title: ' + title);
+            assert.equal(title, testCase.title);
+          }
+        )
+        .catch(
+          (e) => {
+            console.log('error testCase title: ' + e.message);
           }
         );
-        if (testStep.title) {
-          promise = promise.then(
-            () => driver.getTitle()
-          )
-          .then(
-            (title) => {
-              assert.equal(title, testStep.title);
-            }
-          )
-          .catch(
-            (e) => {
-              log.error('title: ' + e.message);
-            }
-          );
-        }
-        if (testStep.input) {
-          Object.keys(testStep.input).forEach(
-            (selector) => {
-              // text / textarea
-              if (typeof testStep.input[selector] === 'string') {
-                promise = promise.then(() => {
-                    return driver.findElement(By.xpath(selector))
-                      .sendKeys(testStep.input[selector]);
-                  }
-                )
-                .catch(() => { log.error('no input field for ' + selector); });
-              } else
-              // checkbox: true/false, radio: true
-              if (testStep.input[selector] === true || testStep.input[selector] === false) {
-                promise = promise.then(() => {
-                    return driver.findElement(By.xpath(selector)).isSelected();
-                  }
-                )
-                .then(
-                  (selected) => {
-                    if (selected !== testStep.input[selector]) {
-                      return driver.findElement(By.xpath(selector)).click();
-                    }
-                  }
-                )
-                .catch(() => { log.error('no input field for ' + selector); });
-              } else {
-                console.log('input unprocessed', selector, testStep.input[selector]);
-              }
-            }
-          );
-        }
-        if (testStep.click) {
+      }
+      Object.entries(testCase.steps).forEach(
+        ([label, testStep]) => {
           promise = promise.then(
             () => {
-              return driver.findElement(By.css(testStep.click)).click();
+              log.testStep(label, testStep);
             }
           );
-        }
-        Object.keys(testStep.elements).forEach(
-          (selector) => {
-            let err = false;
-            promise = promise.then(() => {
-                return driver.findElement(By.xpath(selector)).getText();
+          if (testStep.title) {
+            promise = promise.then(
+              () => driver.getTitle()
+            )
+            .then(
+              (title) => {
+                assert.equal(title, testStep.title);
               }
             )
             .catch(
-              () => {
-                log.error('element not found: "' + selector + '"');
-                err = true;
+              (e) => {
+                log.error('title: ' + e.message);
               }
             );
-            promise = promise.then(
-              (text) => {
-                if (!err && testStep.elements[selector]) {
-                  assert.equal(text, testStep.elements[selector], '"' + selector + '" text');
+          }
+          if (testStep.input) {
+            Object.keys(testStep.input).forEach(
+              (selector) => {
+                // text / textarea
+                if (typeof testStep.input[selector] === 'string') {
+                  promise = promise.then(() => {
+                      return driver.findElement(By.xpath(selector))
+                        .sendKeys(testStep.input[selector]);
+                    }
+                  )
+                  .catch(() => { log.error('no input field for ' + selector); });
+                } else
+                // checkbox: true/false, radio: true
+                if (testStep.input[selector] === true || testStep.input[selector] === false) {
+                  promise = promise.then(() => {
+                      return driver.findElement(By.xpath(selector)).isSelected();
+                    }
+                  )
+                  .then(
+                    (selected) => {
+                      if (selected !== testStep.input[selector]) {
+                        return driver.findElement(By.xpath(selector)).click();
+                      }
+                    }
+                  )
+                  .catch(() => { log.error('no input field for ' + selector); });
+                } else {
+                  console.log('input unprocessed', selector, testStep.input[selector]);
                 }
               }
-            )
-            .catch((e) => { log.error(e.message); });
+            );
           }
-        );
-        if (testStep.elementsNotExist) {
-          testStep.elementsNotExist.forEach(
+          if (testStep.click) {
+            promise = promise.then(
+              () => {
+                return driver.findElement(By.css(testStep.click)).click();
+              }
+            );
+          }
+          Object.keys(testStep.elements).forEach(
             (selector) => {
+              let err = false;
               promise = promise.then(() => {
-                  try {
-                    return driver.findElement(By.xpath(selector));
-                  }
-                  catch (error) {
-                    return selector + error.toString();
+                  return driver.findElement(By.xpath(selector)).getText();
+                }
+              )
+              .catch(
+                () => {
+                  log.error('element not found: "' + selector + '"');
+                  err = true;
+                }
+              );
+              promise = promise.then(
+                (text) => {
+                  if (!err && testStep.elements[selector]) {
+                    assert.equal(text, testStep.elements[selector], '"' + selector + '" text');
                   }
                 }
               )
-              .then(() => {
-                  log.error('element found: "' + selector + '"');
+              .catch((e) => { log.error(e.message); });
+            }
+          );
+          if (testStep.elementsNotExist) {
+            testStep.elementsNotExist.forEach(
+              (selector) => {
+                promise = promise.then(() => {
+                    try {
+                      return driver.findElement(By.xpath(selector));
+                    }
+                    catch (error) {
+                      return selector + error.toString();
+                    }
+                  }
+                )
+                .then(() => {
+                    log.error('element found: "' + selector + '"');
+                  }
+                )
+                .catch(() => {});
+              }
+            );
+          }
+          promise = promise.then(
+            () => {
+              return driver.takeScreenshot();
+            }
+          )
+          .then(
+            (screenshot) => {
+              return new Promise(
+                (resolve, reject) => {
+                  const filename = path.join(testData.dumpDir, label + '.png');
+                  fs.writeFile(
+                    filename,
+                    new Buffer(screenshot, 'base64'),
+                    (error) => {
+                      if (error) {
+                        log.error(filename + ' save error: ' + error);
+                        reject('file not saved');
+                      } else {
+                        log.screenshot(filename);
+                        resolve(filename + 'saved');
+                      }
+                    }
+                  );
                 }
-              )
-              .catch(() => {});
+              );
             }
           );
         }
-        promise = promise.then(
-          () => {
-            return driver.takeScreenshot();
-          }
-        )
-        .then(
-          (screenshot) => {
-            return new Promise(
-              (resolve, reject) => {
-                const filename = path.join(testData.dumpDir, label + '.png');
-                fs.writeFile(
-                  filename,
-                  new Buffer(screenshot, 'base64'),
-                  (error) => {
-                    if (error) {
-                      log.error(filename + ' save error: ' + error);
-                      reject('file not saved');
-                    } else {
-                      log.screenshot(filename);
-                      resolve(filename + 'saved');
-                    }
+      );
+      promise.then(
+        () => {
+          const results = log.results();
+          log.summary();
+          return new Promise(
+            (resolve, reject) => {
+              const filename = path.join(testData.dumpDir, 'results.json');
+              fs.writeFile(
+                filename,
+                JSON.stringify(results, null, 4),
+                (error) => {
+                  if (error) {
+                    log.error(filename + ' save error: ' + error);
+                    reject('file not saved');
+                  } else {
+                    resolve(filename + 'saved');
                   }
-                );
-              }
-            );
-          }
-        );
-      }
-    );
-    promise.then(
-      () => {
-        const results = log.results();
-        log.summary();
-        return new Promise(
-          (resolve, reject) => {
-            const filename = path.join(testData.dumpDir, 'results.json');
-            fs.writeFile(
-              filename,
-              JSON.stringify(results, null, 4),
-              (error) => {
-                if (error) {
-                  log.error(filename + ' save error: ' + error);
-                  reject('file not saved');
-                } else {
-                  resolve(filename + 'saved');
                 }
-              }
-            );
-          }
-        );
-      }
-    )
-    .then(
-      () => driver.quit(),
-      e => driver.quit().then(() => { log.info(e.message); })
-    );
-  });
+              );
+            }
+          );
+        }
+      )
+      .then(
+        () => driver.quit(),
+        e => driver.quit().then(() => { log.info(e.message); })
+      );
+    }
+  );
 }
 
