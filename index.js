@@ -121,6 +121,10 @@ if (testData) {
                 if (typeof testStep.input[selector] === 'string') {
                   promise = promise.then(() => {
                       return driver.findElement(by(selector))
+                        .clear();
+                    }
+                  ).then(() => {
+                      return driver.findElement(by(selector))
                         .sendKeys(testStep.input[selector]);
                     }
                   )
