@@ -30,6 +30,14 @@ chai.use(chaiAsPromised);
 
 let testData = null;
 
+function by(selector) {
+  if (selector.match(/^\/\/.+/)) {
+    return By.xpath(selector);
+  } else {
+    return By.css(selector);
+  }
+}
+
 if (argv.cfg) {
   const filename = argv.cfg;
   if (fs.existsSync(path.join(__dirname, filename))) {
@@ -112,7 +120,7 @@ if (testData) {
                 // text / textarea
                 if (typeof testStep.input[selector] === 'string') {
                   promise = promise.then(() => {
-                      return driver.findElement(By.xpath(selector))
+                      return driver.findElement(by(selector))
                         .sendKeys(testStep.input[selector]);
                     }
                   )
@@ -121,13 +129,13 @@ if (testData) {
                 // checkbox: true/false, radio: true
                 if (testStep.input[selector] === true || testStep.input[selector] === false) {
                   promise = promise.then(() => {
-                      return driver.findElement(By.xpath(selector)).isSelected();
+                      return driver.findElement(by(selector)).isSelected();
                     }
                   )
                   .then(
                     (selected) => {
                       if (selected !== testStep.input[selector]) {
-                        return driver.findElement(By.xpath(selector)).click();
+                        return driver.findElement(by(selector)).click();
                       }
                     }
                   )
@@ -141,7 +149,7 @@ if (testData) {
           if (testStep.click) {
             promise = promise.then(
               () => {
-                return driver.findElement(By.css(testStep.click)).click();
+                return driver.findElement(by(testStep.click)).click();
               }
             );
           }
@@ -149,7 +157,7 @@ if (testData) {
             (selector) => {
               let err = false;
               promise = promise.then(() => {
-                  return driver.findElement(By.xpath(selector)).getText();
+                  return driver.findElement(by(selector)).getText();
                 }
               )
               .catch(
@@ -173,7 +181,7 @@ if (testData) {
               (selector) => {
                 promise = promise.then(() => {
                     try {
-                      return driver.findElement(By.xpath(selector));
+                      return driver.findElement(by(selector));
                     }
                     catch (error) {
                       return selector + error.toString();
