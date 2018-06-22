@@ -203,23 +203,8 @@ if (testData) {
           )
           .then(
             (screenshot) => {
-              return new Promise(
-                (resolve, reject) => {
-                  const filename = path.join(testData.dumpDir, label + '.png');
-                  fs.writeFile(
-                    filename,
-                    new Buffer(screenshot, 'base64'),
-                    (error) => {
-                      if (error) {
-                        log.error(filename + ' save error: ' + error);
-                        reject('file not saved');
-                      } else {
-                        log.screenshot(filename);
-                        resolve(filename + 'saved');
-                      }
-                    }
-                  );
-                }
+              return saveFile(path.join(testData.dumpDir, label + '.png'),
+                new Buffer(screenshot, 'base64')
               );
             }
           );
@@ -229,22 +214,8 @@ if (testData) {
         () => {
           const results = log.results();
           log.summary();
-          return new Promise(
-            (resolve, reject) => {
-              const filename = path.join(testData.dumpDir, 'results.json');
-              fs.writeFile(
-                filename,
-                JSON.stringify(results, null, 4),
-                (error) => {
-                  if (error) {
-                    log.error(filename + ' save error: ' + error);
-                    reject('file not saved');
-                  } else {
-                    resolve(filename + 'saved');
-                  }
-                }
-              );
-            }
+          return saveFile(path.join(testData.dumpDir, 'results.json'),
+            JSON.stringify(results, null, 4)
           );
         }
       )
@@ -256,3 +227,21 @@ if (testData) {
   );
 }
 
+function saveFile(file, content) {
+  return new Promise(
+    (resolve, reject) => {
+      fs.writeFile(
+        file,
+        content,
+        (error) => {
+          if (error) {
+            log.error(file + ' save error: ' + error);
+            reject('file not saved');
+          } else {
+            resolve(file + 'saved');
+          }
+        }
+      );
+    }
+  );
+}
