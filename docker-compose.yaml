@@ -36,9 +36,12 @@ services:
   e2e-workflow:
     build:
       context: .
+    image: uwegerdes/e2e-workflow
     container_name: e2e-workflow
     hostname: e2e-workflow
-    image: uwegerdes/e2e-workflow
+    ports:
+      - 51380:8080
+      - 51381:8081
     depends_on:
       - hub
     networks:

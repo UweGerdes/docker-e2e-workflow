@@ -11,7 +11,7 @@
 </head>
 <body>
     <h1>404 - not found</h1>
-<% if (httpPort && livereloadPort) { %>
+<% if (hostname && livereloadPort) { %>
     <script src="http://<%= hostname %>:<%= livereloadPort %>/livereload.js" language="JavaScript"></script>
 <% } %>
 </body>

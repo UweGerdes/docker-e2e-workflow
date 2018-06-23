@@ -20,7 +20,6 @@ const bodyParser = require('body-parser'),
   ;
 
 const httpPort = config.server.httpPort,
-  livereloadPort = config.server.livereloadPort,
   docRoot = config.server.docroot,
   modulesRoot = config.server.modules,
   verbose = config.server.verbose
@@ -71,7 +70,7 @@ app.get('/', (req, res) => {
 app.get('/app', (req, res) => {
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
-    livereloadPort: livereloadPort,
+    livereloadPort: getLivereloadPort(req),
     configs: getConfigs(),
     config: {
       name: 'Keine Config geladen',
@@ -91,7 +90,7 @@ app.get(/^\/app\/(.+)$/, (req, res) => {
   const config = requireFile(req.params[0]);
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
-    livereloadPort: livereloadPort,
+    livereloadPort: getLivereloadPort(req),
     configs: getConfigs(),
     configFile: req.params[0],
     config: config,
@@ -120,8 +119,7 @@ app.get(/^(\/results\/.+)$/, (req, res) => {
 app.get('*', (req, res) => {
   res.status(404).render(viewPath('404.ejs'), {
     hostname: req.hostname,
-    livereloadPort: livereloadPort,
-    httpPort: httpPort
+    livereloadPort: getLivereloadPort(req)
   });
 });
 
@@ -145,12 +143,26 @@ app.use((err, req, res) => {
       .render(viewPath('500.ejs'), {
         error: err,
         hostname: req.hostname,
-        livereloadPort: livereloadPort,
-        httpPort: httpPort
+        livereloadPort: getLivereloadPort(req)
       }
     );
   }
 });
+
+/**
+ * Get port number for livereload
+ *
+ * @private
+ * @param {Object} req - request
+ */
+function getLivereloadPort(req) {
+  let livereloadPort = config.server.livereloadPort;
+  const host = req.get('Host');
+  if (host.indexOf(':') > 0) {
+    livereloadPort = parseInt(host.split(':')[1]) + 1;
+  }
+  return livereloadPort;
+}
 
 /**
  * Get the path for file to render

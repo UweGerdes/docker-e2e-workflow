@@ -5,7 +5,9 @@
 gulp:
   watch:
     jsdoc:
-      - '*.js'
+      - 'index.js'
+      - 'gulpfile.js'
+      - 'server.js'
       - 'gulp/**/*.js'
       - 'src/**/*.js'
     jshint:
@@ -46,7 +48,9 @@ gulp:
   build:
     jsdoc:
       src:
-        - '*.js'
+        - 'index.js'
+        - 'gulpfile.js'
+        - 'server.js'
         - 'gulp/**/*.js'
         - 'lib/**/*.js'
         - 'src/**/*.js'

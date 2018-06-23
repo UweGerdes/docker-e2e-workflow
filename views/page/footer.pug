@@ -1,5 +1,5 @@
 //- footer.pug
 block footer
-  if livereloadPort
+  if hostname && livereloadPort
     script(src='http://' + hostname + ':' + livereloadPort + '/livereload.js')
 
