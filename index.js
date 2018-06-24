@@ -78,41 +78,14 @@ if (testData) {
     ([name, testCase]) => {
       log.testCase(name);
       promise = promise.then(() => driver.get(testCase.uri));
-      if (testCase.title) {
-        promise = promise.then(() => driver.getTitle());
-        promise = promise.then(
-          (title) => {
-            log.info('testCase title: ' + title);
-            assert.equal(title, testCase.title);
-          }
-        )
-        .catch(
-          (e) => {
-            console.log('error testCase title: ' + e.message);
-          }
-        );
-      }
       Object.entries(testCase.steps).forEach(
         ([label, testStep]) => {
-          promise = promise.then(
-            () => {
-              log.testStep(label, testStep);
-            }
-          );
+          promise = promise.then(() => log.testStep(label, testStep));
           if (testStep.title) {
-            promise = promise.then(
-              () => driver.getTitle()
-            )
-            .then(
-              (title) => {
-                assert.equal(title, testStep.title);
-              }
-            )
-            .catch(
-              (e) => {
-                log.error('title: ' + e.message);
-              }
-            );
+            promise = promise
+            .then(() => driver.getTitle())
+            .then((title) => assert.equal(title, testStep.title))
+            .catch((e) => log.error('title: ' + e.message));
           }
           if (testStep.input) {
             Object.keys(testStep.input).forEach(
