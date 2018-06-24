@@ -143,39 +143,29 @@ if (testData) {
             );
           }
           if (testStep.click) {
-            promise = promise.then(
-              () => {
-                return driver.findElement(by(testStep.click)).click();
-              }
-            );
+            promise = promise.then(() => driver.findElement(by(testStep.click)).click());
           }
           Object.keys(testStep.elements).forEach(
             (selector) => {
-              let err = false;
-              promise = promise.then(() => {
-                  return driver.findElement(by(selector)).getText();
-                }
-              )
-              .catch(
-                () => {
-                  log.error('element not found: "' + selector + '"');
-                  err = true;
-                }
-              );
-              promise = promise.then(
+              promise = promise
+              .then(() => driver.findElement(by(selector)).getText())
+              .catch(() => log.error('element not found: "' + selector + '"'))
+              .then(
                 (text) => {
-                  if (!err && testStep.elements[selector]) {
+                  if (text && testStep.elements[selector]) {
                     assert.equal(text, testStep.elements[selector], '"' + selector + '" text');
                   }
                 }
               )
-              .catch((e) => { log.error(e.message); });
+              .catch((e) => log.error(e.message));
             }
           );
           if (testStep.elementsNotExist) {
             testStep.elementsNotExist.forEach(
               (selector) => {
-                promise = promise.then(() => {
+                promise = promise
+                .then(
+                  () => {
                     try {
                       return driver.findElement(by(selector));
                     }
@@ -184,25 +174,18 @@ if (testData) {
                     }
                   }
                 )
-                .then(() => {
-                    log.error('element found: "' + selector + '"');
-                  }
-                )
+                .then(() => log.error('element found: "' + selector + '"'))
                 .catch(() => {});
               }
             );
           }
-          promise = promise.then(
-            () => {
-              return driver.takeScreenshot();
-            }
-          )
+          promise = promise
+          .then(() => driver.takeScreenshot())
           .then(
-            (screenshot) => {
-              return saveFile(path.join(testData.dumpDir, label + '.png'),
+            (screenshot) => saveFile(
+                path.join(testData.dumpDir, label + '.png'),
                 new Buffer(screenshot, 'base64')
-              );
-            }
+              )
           );
         }
       );
