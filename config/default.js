@@ -13,8 +13,7 @@ module.exports = {
   testCases: {
     'vcards': {
       name: 'vcards',
-      uri: domain + '/vcards/',
-      title: 'Webserver - vcard',
+      uri: domain + '/vcards/dataset/testdata',
       steps: {
         'start': {
           title: 'Webserver - vcard',
