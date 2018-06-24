@@ -21,6 +21,7 @@ services:
     environment:
       - HUB_HOST=hub
       - HUB_PORT=4444
+      - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
 
   firefox:
     image: selenium/node-firefox:3.12.0-boron
@@ -32,6 +33,7 @@ services:
     environment:
       - HUB_HOST=hub
       - HUB_PORT=4444
+      - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
 
   e2e-workflow:
     build:
