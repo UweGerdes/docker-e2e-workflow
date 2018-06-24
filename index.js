@@ -82,7 +82,7 @@ if (testData) {
                   .then(() => driver.findElement(by(selector)).sendKeys(testStep.input[selector]))
                   .catch((e) => { log.error('no input field for ' + selector + e.toString()); });
                 } else
-                // checkbox: true/false, radio: true
+                // checkbox: true/false, radio: true, select: true
                 if (testStep.input[selector] === true || testStep.input[selector] === false) {
                   promise = promise
                   .then(() => driver.findElement(by(selector)).isSelected())
