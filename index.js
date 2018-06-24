@@ -51,28 +51,13 @@ if (argv.cfg) {
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
 if (testData) {
-  let promise = del([
-      path.join(testData.dumpDir, '*')
-    ], { force: true })
+  let promise = del([path.join(testData.dumpDir, '*')], { force: true })
     .then(() => makeDir(testData.dumpDir));
   log.setFilename(path.join(testData.dumpDir, 'results.json'));
   if (testData.viewportSize) {
     viewportSize = testData.viewportSize;
   }
-  let driver = new webdriver.Builder()
-    .forBrowser('chrome')
-    .usingServer('http://hub:4444/wd/hub')
-    .setChromeOptions(
-      new chrome.Options()
-        .headless()
-        .windowSize(viewportSize)
-    )
-    .setFirefoxOptions(
-      new firefox.Options()
-        .headless()
-        .windowSize(viewportSize)
-    )
-    .build();
+  let driver = buildDriver(viewportSize);
   driver.manage().window().setRect(viewportSize);
   Object.entries(testData.testCases).forEach(
     ([name, testCase]) => {
@@ -177,6 +162,23 @@ if (testData) {
       );
     }
   );
+}
+
+function buildDriver(viewportSize) {
+  return new webdriver.Builder()
+    .forBrowser('chrome')
+    .usingServer('http://hub:4444/wd/hub')
+    .setChromeOptions(
+      new chrome.Options()
+        .headless()
+        .windowSize(viewportSize)
+    )
+    .setFirefoxOptions(
+      new firefox.Options()
+        .headless()
+        .windowSize(viewportSize)
+    )
+    .build();
 }
 
 function saveFile(file, content) {
