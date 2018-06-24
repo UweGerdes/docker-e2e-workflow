@@ -119,23 +119,15 @@ if (testData) {
               (selector) => {
                 // text / textarea
                 if (typeof testStep.input[selector] === 'string') {
-                  promise = promise.then(() => {
-                      return driver.findElement(by(selector))
-                        .clear();
-                    }
-                  ).then(() => {
-                      return driver.findElement(by(selector))
-                        .sendKeys(testStep.input[selector]);
-                    }
-                  )
-                  .catch(() => { log.error('no input field for ' + selector); });
+                  promise = promise
+                  .then(() => driver.findElement(by(selector)).clear())
+                  .then(() => driver.findElement(by(selector)).sendKeys(testStep.input[selector]))
+                  .catch((e) => { log.error('no input field for ' + selector + e.toString()); });
                 } else
                 // checkbox: true/false, radio: true
                 if (testStep.input[selector] === true || testStep.input[selector] === false) {
-                  promise = promise.then(() => {
-                      return driver.findElement(by(selector)).isSelected();
-                    }
-                  )
+                  promise = promise
+                  .then(() => driver.findElement(by(selector)).isSelected())
                   .then(
                     (selected) => {
                       if (selected !== testStep.input[selector]) {
