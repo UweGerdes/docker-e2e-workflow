@@ -80,7 +80,7 @@ if (testData) {
                   promise = promise
                   .then(() => driver.findElement(by(selector)).clear())
                   .then(() => driver.findElement(by(selector)).sendKeys(testStep.input[selector]))
-                  .catch((e) => { log.error('no input field for ' + selector + e.toString()); });
+                  .catch((e) => log.error('no input field for ' + selector + e.toString()));
                 } else
                 // checkbox: true/false, radio: true, select: true
                 if (testStep.input[selector] === true || testStep.input[selector] === false) {
@@ -93,7 +93,7 @@ if (testData) {
                       }
                     }
                   )
-                  .catch(() => { log.error('no input field for ' + selector); });
+                  .catch(() => log.error('no input field for ' + selector));
                 } else {
                   console.log('input unprocessed', selector, testStep.input[selector]);
                 }
@@ -101,7 +101,9 @@ if (testData) {
             );
           }
           if (testStep.click) {
-            promise = promise.then(() => driver.findElement(by(testStep.click)).click());
+            promise = promise
+            .then(() => driver.findElement(by(testStep.click)).click())
+            .catch(() => log.error('no element to click: ' + testStep.click));
           }
           Object.keys(testStep.elements).forEach(
             (selector) => {
@@ -158,7 +160,7 @@ if (testData) {
       )
       .then(
         () => driver.quit(),
-        e => driver.quit().then(() => { log.info(e.message); })
+        e => driver.quit().then(() => log.info(e.message))
       );
     }
   );
