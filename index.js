@@ -51,8 +51,7 @@ if (argv.cfg) {
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
 if (testData) {
-  let promise = del([path.join(testData.dumpDir, '*')], { force: true })
-    .then(() => makeDir(testData.dumpDir));
+  let promise = del([path.join(testData.dumpDir, '*')], { force: true });
   log.setFilename(path.join(testData.dumpDir, 'results.json'));
   if (testData.viewportSize) {
     viewportSize = testData.viewportSize;
@@ -62,7 +61,8 @@ if (testData) {
   Object.entries(testData.testCases).forEach(
     ([name, testCase]) => {
       log.testCase(name);
-      promise = promise.then(() => driver.get(testCase.uri));
+      promise = promise.then(() => makeDir(path.join(testData.dumpDir, name)))
+      .then(() => driver.get(testCase.uri));
       Object.entries(testCase.steps).forEach(
         ([label, testStep]) => {
           promise = promise.then(() => log.testStep(label, testStep));
@@ -143,7 +143,7 @@ if (testData) {
           .then(() => driver.takeScreenshot())
           .then(
             (screenshot) => saveFile(
-                path.join(testData.dumpDir, label + '.png'),
+                path.join(testData.dumpDir, name, label + '.png'),
                 new Buffer(screenshot, 'base64')
               )
           );
