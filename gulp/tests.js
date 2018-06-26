@@ -6,6 +6,7 @@
 'use strict';
 
 const exec = require('child_process').exec,
+  fs = require('fs'),
   glob = require('glob'),
   sequence = require('gulp-sequence'),
   path = require('path'),
@@ -82,6 +83,7 @@ const tasks = {
    */
   'test-e2e-workflow-modules-exec': () => {
     getFilenames(config.gulp.tests['test-e2e-workflow-modules'])
+    .then(getRecentFile)
     .then((filenames) => {
       return Promise.all(
         filenames.map(runModule)
@@ -108,6 +110,39 @@ const getFilenames = (path) => {
   });
 };
 
+/**
+ * get newest file from glob list - synchronous
+ *
+ * @param {array} files - list with glob paths
+ */
+function getRecentFile(files) {
+  let newest = null;
+  let bestTime = 0;
+  for (let i = 0; i < files.length; i++) {
+    const fileTime = fs.statSync(files[i]).mtime.getTime();
+    if (fileTime > bestTime) {
+      newest = files[i];
+      bestTime = fileTime;
+    }
+  }
+  const now = new Date();
+  console.log('bestTime', (now.getTime() - bestTime));
+  if (now.getTime() - bestTime < 1000) {
+    return new Promise((resolve) => { // jscs:ignore jsDoc
+      resolve([newest]);
+    });
+  } else {
+    return new Promise((resolve) => { // jscs:ignore jsDoc
+      resolve(files);
+    });
+  }
+}
+
+/**
+ * start module test
+ *
+ * @param {array} files - list with glob paths
+ */
 const runModule = (filename) => {
   return new Promise((resolve, reject) => {
     const loader = exec('export FORCE_COLOR=1; ' +
