@@ -135,10 +135,11 @@ app.listen(httpPort);
  * @param {Object} err - error
  * @param {Object} req - request
  * @param {Object} res - response
+ * @param {Object} next - needed for complete signature
  */
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.error('SERVER ERROR:', err);
-  if (res) {
+  if (err) {
     res.status(500)
       .render(viewPath('500.ejs'), {
         error: err,
@@ -146,6 +147,8 @@ app.use((err, req, res) => {
         livereloadPort: getLivereloadPort(req)
       }
     );
+  } else {
+    next();
   }
 });
 
