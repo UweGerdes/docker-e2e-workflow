@@ -11,8 +11,8 @@ module.exports = {
   dumpDir: './results/default/',
   viewportSize: { width: 1500, height: 1024 },
   testCases: {
-    'vcards': {
-      name: 'vcards',
+    'default': {
+      name: 'default',
       uri: domain + '/vcards/dataset/testdata',
       steps: {
         'start': {
