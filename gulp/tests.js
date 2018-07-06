@@ -14,6 +14,9 @@ const exec = require('child_process').exec,
   loadTasks = require('./lib/load-tasks')
   ;
 
+// execute only one test file if one has changed in recentTime, otherwise all
+const recentTime = 60 * 60;
+
 const baseDir = path.join(__dirname, '..');
 
 const tasks = {
@@ -127,7 +130,7 @@ function getRecentFile(files) {
   }
   const now = new Date();
   console.log('bestTime', (now.getTime() - bestTime));
-  if (now.getTime() - bestTime < 1000) {
+  if (now.getTime() - bestTime < recentTime * 1000) {
     return new Promise((resolve) => { // jscs:ignore jsDoc
       resolve([newest]);
     });
