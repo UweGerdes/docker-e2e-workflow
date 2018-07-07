@@ -27,7 +27,7 @@ gulp:
       - 'src/less/app.less'
       - 'src/less/**/*.less'
     puglint:
-      - '**/*.pug'
+      - 'views/**/*.pug'
     server-restart:
       - './server.js'
       - 'lib/config.js'
@@ -37,8 +37,7 @@ gulp:
       - 'config/default.js'
       - 'lib/log.js'
     test-e2e-workflow-modules:
-      - 'config/modules/vcards/views/**/*.pug'
-      - 'config/modules/vcards/tests/e2e-workflow/*.js'
+      - 'config/modules/vcards/**/*'
     livereload:
       - 'htdocs/**/*.html'
       - 'views/**/*.pug'
