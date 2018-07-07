@@ -51,7 +51,8 @@ if (argv.cfg) {
   testData = require(path.join(__dirname, 'config', 'default.js'));
 }
 if (testData) {
-  let promise = del([path.join(testData.dumpDir, '*')], { force: true });
+  let promise = del([path.join(testData.dumpDir, '*')], { force: true })
+    .then(() => makeDir(path.join(testData.dumpDir)));
   log.setFilename(path.join(testData.dumpDir, 'results.json'));
   if (testData.viewportSize) {
     viewportSize = testData.viewportSize;
