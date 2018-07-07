@@ -88,6 +88,14 @@ app.get('/app', (req, res) => {
  */
 app.get(/^\/app\/(.+)$/, (req, res) => {
   const config = requireFile(req.params[0]);
+  let results;
+  try {
+    results = requireFile(path.join(config.dumpDir, 'results.json'));
+  } catch (e) {
+    if (false) {
+      log.info(e);
+    }
+  }
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
     livereloadPort: getLivereloadPort(req),
@@ -96,7 +104,7 @@ app.get(/^\/app\/(.+)$/, (req, res) => {
     config: config,
     queryCase: req.query.case,
     queryStep: req.query.step,
-    results: requireFile(path.join(config.dumpDir, 'results.json'))
+    results: results
   });
 });
 
@@ -202,6 +210,6 @@ function requireFile(filename) {
   if (fs.existsSync('./' + filename)) {
     return require('./' + filename);
   } else {
-    console.log('require ./' + filename + ' not found');
+    log.info('server require ./' + filename + ' not found');
   }
 }
