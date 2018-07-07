@@ -72,7 +72,6 @@ const tasks = {
   'test-e2e-workflow-modules': [['jshint'], (callback) => {
     sequence(
       'test-e2e-workflow-modules-exec',
-      'livereload',
       callback
     );
   }],
@@ -84,14 +83,15 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'test-e2e-workflow-modules-exec': () => {
+  'test-e2e-workflow-modules-exec': (callback) => {
     getFilenames(config.gulp.tests['test-e2e-workflow-modules'])
     .then(getRecentFile)
     .then((filenames) => {
       return Promise.all(
         filenames.map(runModule)
       );
-    });
+    })
+    .then(() => { callback();});
   }
 };
 
