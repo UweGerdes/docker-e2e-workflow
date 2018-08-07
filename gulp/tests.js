@@ -15,7 +15,7 @@ const exec = require('child_process').exec,
   ;
 
 // execute only one test file if one has changed in recentTime, otherwise all
-const recentTime = 60 * 60;
+const recentTime = 60; // * 60;
 
 const baseDir = path.join(__dirname, '..');
 
