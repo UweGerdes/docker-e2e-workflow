@@ -4,7 +4,7 @@
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
 
-const domain = 'http://vcards-dev:8080';
+const domain = 'http://vcards-e2e:8080';
 
 module.exports = {
   name: 'default e2e workflow test',
@@ -46,7 +46,7 @@ module.exports = {
           title: 'Webserver - vcard',
           click: '#searchButton',
           elements: {
-            '//*[@class="searchHeadline"]': 'Suchen',
+            '//*[@class="search-headline"]': 'Suchen',
             '//form[@name="searchForm"]': '',
             '//form[@name="searchForm"]//*[@id="search_version"]': '',
             '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
@@ -72,7 +72,7 @@ module.exports = {
           title: 'Webserver - vcard',
           click: '#searchButton',
           elements: {
-            '//*[@class="searchHeadline"]': 'Suchen',
+            '//*[@class="search-headline"]': 'Suchen',
             '//form[@name="searchForm"]': '',
             '//form[@name="searchForm"]//*[@id="search_version"]': '',
             '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
@@ -88,7 +88,7 @@ module.exports = {
           elements: {
             '//*[@id="searchLayer"]/div/h2': 'Suchen',
             '//a[@class="button open"]': 'öffnen',
-            '//a[@class="button merge"]': 'merge',
+            '//a[@class="button merge-button"]': 'merge',
             '//a[@href="/vcards/merge/0/1/"]': 'merge',
           },
           elementsNotExist: [
@@ -99,7 +99,7 @@ module.exports = {
           title: 'Webserver - vcard',
           click: '#searchAgain',
           elements: {
-            '//*[@class="searchHeadline"]': 'Suchen',
+            '//*[@class="search-headline"]': 'Suchen',
             '//form[@name="searchForm"]': '',
             '//form[@name="searchForm"]//*[@id="search_version"]': '',
             '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
