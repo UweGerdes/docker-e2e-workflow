@@ -1,27 +1,40 @@
 extends page/index.pug
 
 block content
-  div#app.app
+  #app.app
 
-    h1#headline.headline= config.name
+    #header.header
+      h1#headline.headline= config.name
+
+      ul#configs.configs
+        each files, label in configs
+          if files
+            li.config
+              span.label= label
+              ul.config-files
+                each file in files
+                  li.config-file
+                    if configFile == file
+                      strong= file
+                    else
+                      a(href='/app/' + file)= file
 
     div#config.config
       if results && results.testCases
         ul#testCases.testCases
-          each testCase, name in results.testCases
+          each testCase, testCaseName in results.testCases
             li.testCase
-              h3.testCase-name= name
               ul.testCase-steps
                 each step, label in testCase
                   li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
                     if queryStep == label
                       strong= label
                     else
-                      a(href='/app/' + configFile + '?case=' + encodeURIComponent(name) + '&step=' + encodeURIComponent(label))= label
+                      a(href='/app/' + configFile + '?case=' + encodeURIComponent(testCaseName) + '&step=' + encodeURIComponent(label))= label
                     if step.errors
                       each error in step.errors
                         .error.small=error
-      else if results.status == 'not executed'
+      else if results && results.status == 'not executed'
         h4 -
       else
         h4 keine Ergebisse
@@ -29,16 +42,3 @@ block content
     if results && queryCase && queryStep && results.testCases[queryCase]
       pre#queryStep.queryStep= JSON.stringify(results.testCases[queryCase][queryStep], null, 2)
       img.screenshot(src= '/' + config.dumpDir + queryCase + '/' + queryStep + '.png')
-
-    ul#configs.configs
-      each files, label in configs
-        if files
-          li.config
-            span.label= label
-            ul.config-files
-              each file in files
-                li.config-file
-                  if configFile == file
-                    strong= file
-                  else
-                    a(href='/app/' + file)= file
