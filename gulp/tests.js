@@ -44,7 +44,7 @@ const tasks = {
    */
   'test-e2e-workflow-default-exec': (callback) => {
     const loader = exec('export FORCE_COLOR=1; ' +
-      'node index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'],
+      'node index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'].default,
       { cwd: baseDir });
     loader.stdout.on('data', (data) => {
       console.log(data.toString().trim());
@@ -84,7 +84,8 @@ const tasks = {
    * @param {function} callback - gulp callback
    */
   'test-e2e-workflow-modules-exec': (callback) => {
-    getFilenames(config.gulp.tests['test-e2e-workflow-modules'])
+    Promise.all(Object.values(config.gulp.tests['test-e2e-workflow-modules']).map(getFilenames))
+    .then((filenames) => [].concat(...filenames)) // jscs:ignore jsDoc
     .then(getRecentFile)
     .then((filenames) => {
       return Promise.all(

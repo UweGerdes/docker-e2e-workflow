@@ -191,7 +191,7 @@ function viewPath(page = '404.ejs') {
  */
 function getConfigs() {
   let configs = {};
-  Object.entries(config.gulp.tests).forEach(
+  Object.entries(config.gulp.tests['test-e2e-workflow-modules']).forEach(
     ([label, path]) => {
       configs[label] = glob.sync(path);
     }

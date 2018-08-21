@@ -65,8 +65,11 @@ gulp:
       src: 'src/less/app.less'
       dest: 'htdocs/css'
   tests:
-    test-e2e-workflow-default: 'config/default.js'
-    test-e2e-workflow-modules: 'config/modules/vcards/tests/e2e-workflow/*.js'
+    test-e2e-workflow-default:
+      default: 'config/default.js'
+    test-e2e-workflow-modules:
+      default: 'config/default.js'
+      vcards: 'config/modules/vcards/tests/e2e-workflow/*.js'
 
 server:
   server: ./server.js
