@@ -6,7 +6,7 @@ block content
     h1#headline.headline= config.name
 
     div#config.config
-      if results
+      if results && results.testCases
         ul#testCases.testCases
           each testCase, name in results.testCases
             li.testCase
@@ -21,6 +21,8 @@ block content
                     if step.errors
                       each error in step.errors
                         .error.small=error
+      else if results.status == 'not executed'
+        h4 -
       else
         h4 keine Ergebisse
 
