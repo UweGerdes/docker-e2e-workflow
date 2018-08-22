@@ -4,131 +4,52 @@
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
 
-const domain = 'http://vcards-e2e:8080';
+const domain = 'http://e2e-workflow:8080';
 
 module.exports = {
   name: 'default test e2e workflow',
   dumpDir: './results/default/',
   viewportSize: { width: 1500, height: 1024 },
   testCases: {
-    'vcards': {
-      name: 'pages',
-      uri: domain + '/vcards/dataset/testdata',
+    'homepage': {
+      name: 'open page',
+      uri: domain,
       steps: {
-        'start': {
-          title: 'Webserver - vcard',
+        'home': {
+          title: 'Webapp',
           elements: {
-            '//h1[@class="headline"]': 'vcard',
-            '//*[@id="list"]/li[1]/a': 'Uwe Gerdes',
-            '//*[@id="list"]/li[2]/a': 'Uwe Gerdes',
-            '//*[@id="searchButton"]': 'suchen',
+            '//h1': 'E2E-Workflow Tests',
+            '//a[@href="/app"]': 'Hier starten',
           },
           elementsNotExist: [
-            '//a[@id="editButton"]',
-          ],
-        },
-        'vcard 0': {
-          title: 'Webserver - vcard',
-          click: 'a[href="/vcards/0/"]',
-          elements: {
-            '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
-            '//a[@id="editButton"]': '',
-          },
-        },
-        'vcard 1': {
-          title: 'Webserver - vcard',
-          click: 'a[href="/vcards/1/"]',
-          elements: {
-            '//*[@id="version"]//*[@class="itemvalue"]': '3.0',
-          },
-        },
-      },
-    },
-    'search': {
-      name: 'search',
-      uri: domain + '/vcards/dataset/testdata',
-      steps: {
-        'search layer': {
-          title: 'Webserver - vcard',
-          click: '#searchButton',
-          elements: {
-            '//*[@class="search-headline"]': 'Suchen',
-            '//form[@name="searchForm"]': '',
-            '//form[@name="searchForm"]//*[@id="search_version"]': '',
-            '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
-          }
-        },
-        'search result, no input': {
-          title: 'Webserver - vcard',
-          click: 'input[type="submit"]',
-          elements: {
-            '//*[@id="searchLayer"]/div/h2': 'Suchen',
-            '//*[@id="searchLayer"]//a[@href="/vcards/0/"]': '',
-            '//a[@class="button open"]': 'öffnen',
-          },
-        },
-        'search result: click vcard 0': {
-          title: 'Webserver - vcard',
-          click: '*[id="searchLayer"] a[href="/vcards/0/"]',
-          elements: {
-            '//*[@id="version"]//*[@class="itemvalue"]': '2.1',
-          },
-        },
-        'search layer open again': {
-          title: 'Webserver - vcard',
-          click: '#searchButton',
-          elements: {
-            '//*[@class="search-headline"]': 'Suchen',
-            '//form[@name="searchForm"]': '',
-            '//form[@name="searchForm"]//*[@id="search_version"]': '',
-            '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
-          }
-        },
-        'search result for version=3': {
-          title: 'Webserver - vcard',
-          input: {
-            '//input[@name="searchFields"][@value="version"]': true,
-            '//input[@name="searchString"]': '3',
-          },
-          click: 'input[type="submit"]',
-          elements: {
-            '//*[@id="searchLayer"]/div/h2': 'Suchen',
-            '//a[@class="button open"]': 'öffnen',
-            '//a[@class="button merge-button"]': 'merge',
-            '//a[@href="/vcards/merge/0/1/"]': 'merge',
-          },
-          elementsNotExist: [
-            '//*[@id="searchLayer"]//a[@href="/vcards/0/"]',
-          ],
-        },
-        'search again': {
-          title: 'Webserver - vcard',
-          click: '#searchAgain',
-          elements: {
-            '//*[@class="search-headline"]': 'Suchen',
-            '//form[@name="searchForm"]': '',
-            '//form[@name="searchForm"]//*[@id="search_version"]': '',
-            '//form[@name="searchForm"]//*[@for="search_version"]': 'Version',
-          }
-        },
-        'search result for name=XXX empty': {
-          title: 'Webserver - vcard',
-          input: {
-            '//input[@name="searchFields"][@value="n"]': true,
-            '//input[@name="searchString"]': 'XXX',
-          },
-          click: 'input[type="submit"]',
-          elements: {
-            '//*[@id="searchLayer"]/div/h2': 'Suchen',
-          },
-          elementsNotExist: [
-            '//a[@class="button open"]',
-            '//a[@class="button merge"]',
-            '//*[@id="searchLayer"]//a[@href="/vcards/0/"]',
-            '//*[@id="searchResult"]//ul//li',
+            '//a[@href="/app/config/default.js"]',
           ],
         },
       }
-    }
+    },
+    'open app': {
+      name: 'open app',
+      uri: domain,
+      steps: {
+        'home2': {
+          title: 'Webapp',
+          elements: {
+            '//h1': 'E2E-Workflow Tests',
+            '//a[@href="/app"]': 'Hier starten',
+          },
+        },
+        'start': {
+          title: 'Webapp',
+          click: 'a[href="/app"]',
+          elements: {
+            '//h1': 'Keine Config geladen: undefined',
+            '//a[@href="/app/config/default.js"]': 'config/default.js',
+          },
+          elementsNotExist: [
+            '//a[@href="/app"]',
+          ],
+        },
+      }
+    },
   }
 };
