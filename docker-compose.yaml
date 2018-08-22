@@ -9,7 +9,7 @@ services:
     container_name: hub
     hostname: hub
     networks:
-      - vcards
+      - net
 
   chrome:
     image: selenium/node-chrome:3.12.0-boron
@@ -17,7 +17,7 @@ services:
     depends_on:
       - hub
     networks:
-      - vcards
+      - net
     environment:
       - HUB_HOST=hub
       - HUB_PORT=4444
@@ -29,7 +29,7 @@ services:
     depends_on:
       - hub
     networks:
-      - vcards
+      - net
     environment:
       - HUB_HOST=hub
       - HUB_PORT=4444
@@ -47,14 +47,15 @@ services:
     depends_on:
       - hub
     networks:
-      - vcards
+      - net
     volumes:
       - .:/home/node/app
-      - ../docker-vcards/modules:/home/node/app/config/modules
+#      - ../docker-vcards/modules:/home/node/app/config/modules
 #    command: gulp --silent
     command: npm run dev
 
 networks:
-  vcards:
-    external:
-      name: vcards-bridge
+  net:
+    driver: bridge
+#    external:
+#      name: vcards-bridge
