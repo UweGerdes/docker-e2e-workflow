@@ -41,5 +41,5 @@ block content
         h4 keine Ergebisse
 
     if results && queryCase && queryStep && results.testCases[queryCase]
-      pre#queryStep.queryStep= JSON.stringify(results.testCases[queryCase][queryStep], null, 2)
+      pre#queryStep.queryStep= JSON.stringify(results.testCases[queryCase][queryStep].config, null, 2)
       img.screenshot(src= '/' + config.dumpDir + queryCase + '/' + queryStep + '.png')
