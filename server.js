@@ -102,8 +102,8 @@ app.get(/^\/app\/(.+)$/, (req, res) => {
     configs: getConfigs(),
     configFile: req.params[0],
     config: config,
-    queryCase: req.query.case,
-    queryStep: req.query.step,
+    queryCase: req.query.case || '',
+    queryStep: req.query.step || '',
     results: results
   });
 });

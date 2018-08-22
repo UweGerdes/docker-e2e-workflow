@@ -61,8 +61,8 @@ if (testData) {
   driver.manage().window().setRect(viewportSize);
   Object.entries(testData.testCases).forEach(
     ([name, testCase]) => {
-      log.testCase(name);
-      promise = promise.then(() => makeDir(path.join(testData.dumpDir, name)))
+      promise = promise.then(() => log.testCase(name))
+      .then(() => makeDir(path.join(testData.dumpDir, name)))
       .then(() => driver.get(testCase.uri));
       Object.entries(testCase.steps).forEach(
         ([label, testStep]) => {
@@ -150,20 +150,12 @@ if (testData) {
           );
         }
       );
-      promise.then(
-        () => {
-          const results = log.results();
-          log.summary();
-          return saveFile(path.join(testData.dumpDir, 'results.json'),
-            JSON.stringify(results, null, 4)
-          );
-        }
-      )
-      .then(
-        () => driver.quit(),
-        e => driver.quit().then(() => log.info(e.message))
-      );
     }
+  );
+  promise.then(saveResults)
+  .then(
+    () => driver.quit(),
+    e => driver.quit().then(() => log.info(e.message))
   );
 }
 
@@ -200,5 +192,13 @@ function saveFile(file, content) {
         }
       );
     }
+  );
+}
+
+function saveResults() {
+  const results = log.results();
+  log.summary();
+  return saveFile(path.join(testData.dumpDir, 'results.json'),
+    JSON.stringify(results, null, 4)
   );
 }

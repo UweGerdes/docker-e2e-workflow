@@ -4,7 +4,7 @@ block content
   #app.app
 
     #header.header
-      h1#headline.headline= config.name
+      h1#headline.headline= config.name + ': ' + queryCase
 
       ul#configs.configs
         each files, label in configs
@@ -23,6 +23,7 @@ block content
       if results && results.testCases
         ul#testCases.testCases
           each testCase, testCaseName in results.testCases
+            h3.testCaseName= testCaseName
             li.testCase
               ul.testCase-steps
                 each step, label in testCase
