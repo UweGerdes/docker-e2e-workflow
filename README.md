@@ -34,6 +34,8 @@ $ docker-compose exec e2e-workflow-vcards bash
 
 ## Changelog
 
+0.3.0 use async/await for test execution in index.js
+
 0.2.3 run modules tests
 
 0.2.2 collecting results
