@@ -162,7 +162,7 @@ if (testData) {
 function buildDriver(viewportSize) {
   return new webdriver.Builder()
     .forBrowser('chrome')
-    .usingServer('http://hub:4444/wd/hub')
+    .usingServer('http://e2e-hub:4444/wd/hub')
     .setChromeOptions(
       new chrome.Options()
         .headless()

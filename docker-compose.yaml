@@ -4,34 +4,28 @@ version: "3"
 
 services:
 
-  hub:
+  e2e-hub:
     image: selenium/hub:3.12.0-boron
-    container_name: hub
-    hostname: hub
-    networks:
-      - net
+    container_name: e2e-hub
+    hostname: e2e-hub
 
-  chrome:
+  e2e-chrome:
     image: selenium/node-chrome:3.12.0-boron
-    container_name: chrome
+    container_name: e2e-chrome
     depends_on:
-      - hub
-    networks:
-      - net
+      - e2e-hub
     environment:
-      - HUB_HOST=hub
+      - HUB_HOST=e2e-hub
       - HUB_PORT=4444
       - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
 
-  firefox:
+  e2e-firefox:
     image: selenium/node-firefox:3.12.0-boron
-    container_name: firefox
+    container_name: e2e-firefox
     depends_on:
-      - hub
-    networks:
-      - net
+      - e2e-hub
     environment:
-      - HUB_HOST=hub
+      - HUB_HOST=e2e-hub
       - HUB_PORT=4444
       - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
 
@@ -45,17 +39,9 @@ services:
       - 51380:8080
       - 51381:8081
     depends_on:
-      - hub
-    networks:
-      - net
+      - e2e-hub
     volumes:
       - .:/home/node/app
 #      - ../docker-vcards/modules:/home/node/app/config/modules
 #    command: gulp --silent
     command: npm run dev
-
-networks:
-  net:
-    driver: bridge
-#    external:
-#      name: vcards-bridge
