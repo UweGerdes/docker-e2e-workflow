@@ -44,7 +44,7 @@ const tasks = {
    */
   'test-e2e-workflow-default-exec': (callback) => {
     const loader = exec('export FORCE_COLOR=1; ' +
-      'node index_async.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'].default,
+      'node index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'].default,
       { cwd: baseDir });
     loader.stdout.on('data', (data) => {
       console.log(data.toString().trim());

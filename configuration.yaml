@@ -73,7 +73,7 @@ gulp:
       default: 'config/default.js'
     test-e2e-workflow-modules:
       default: 'config/default.js'
-      vcards: 'config/modules/vcards/tests/e2e-workflow/*.js'
+      modules: 'config/modules/**/tests/e2e-workflow/*.js'
 
 server:
   server: ./server.js

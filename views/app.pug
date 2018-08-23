@@ -8,7 +8,7 @@ block content
 
       ul#configs.configs
         each files, label in configs
-          if files
+          if files.length > 0
             li.config
               span.label= label
               ul.config-files
