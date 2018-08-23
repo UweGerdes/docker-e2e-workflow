@@ -23,10 +23,10 @@ block content
       if results && results.testCases
         ul#testCases.testCases
           each testCase, testCaseName in results.testCases
-            h3.testCaseName= testCaseName
+            h3.testCase-name= testCaseName
             li.testCase
               ul.testCase-steps
-                each step, label in testCase
+                each step, label in testCase.steps
                   li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
                     if queryStep == label
                       strong= label
@@ -41,5 +41,9 @@ block content
         h4 keine Ergebisse
 
     if results && queryCase && queryStep && results.testCases[queryCase]
-      pre#queryStep.queryStep= JSON.stringify(results.testCases[queryCase][queryStep].config, null, 2)
-      img.screenshot(src= '/' + config.dumpDir + queryCase + '/' + queryStep + '.png')
+      pre#queryStep.queryStep= JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
+      #image-container.image-container
+        img.screenshot(src= '/' + resultsPath + '/' + queryCase + '/' + queryStep + '.png')
+        - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
+        if clickRect
+          .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')

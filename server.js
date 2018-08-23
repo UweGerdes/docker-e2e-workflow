@@ -89,8 +89,11 @@ app.get('/app', (req, res) => {
 app.get(/^\/app\/(.+)$/, (req, res) => {
   const config = requireFile(req.params[0]);
   let results;
+  const resultsFilename = req.params[0] || path.join('config', 'default.js');
+  const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''));
   try {
-    results = requireFile(path.join(config.dumpDir, 'results.json'));
+    console.log(path.join('results', resultsFilename.replace(/\.js/, ''), 'results.json'));
+    results = requireFile(path.join(resultsPath, 'results.json'));
   } catch (e) {
     if (false) {
       log.info(e);
@@ -104,7 +107,8 @@ app.get(/^\/app\/(.+)$/, (req, res) => {
     config: config,
     queryCase: req.query.case || '',
     queryStep: req.query.step || '',
-    results: results
+    results: results,
+    resultsPath: resultsPath
   });
 });
 

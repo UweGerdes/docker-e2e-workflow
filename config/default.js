@@ -37,10 +37,10 @@ module.exports = {
             '//h1': 'E2E-Workflow Tests',
             '//a[@href="/app"]': 'Hier starten',
           },
+          click: 'a[href="/app"]',
         },
         'start': {
-          title: 'Webapp',
-          click: 'a[href="/app"]',
+          title: 'Webserver -',
           elements: {
             '//h1': 'Keine Config geladen: undefined',
             '//a[@href="/app/config/default.js"]': 'config/default.js',
