@@ -17,6 +17,7 @@ services:
     environment:
       - HUB_HOST=e2e-hub
       - HUB_PORT=4444
+      - E2E_HOST=e2e-workflow
       - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
 
   e2e-firefox:
@@ -27,6 +28,7 @@ services:
     environment:
       - HUB_HOST=e2e-hub
       - HUB_PORT=4444
+      - E2E_HOST=e2e-workflow
       - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
 
   e2e-workflow:
@@ -40,6 +42,9 @@ services:
       - 51381:8081
     depends_on:
       - e2e-hub
+    environment:
+      - HUB_HOST=e2e-hub
+      - HUB_PORT=4444
     volumes:
       - .:/home/node/app
 #      - ../docker-vcards/modules:/home/node/app/config/modules

@@ -4,7 +4,7 @@
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
 
-const domain = 'http://e2e-workflow:8080';
+const domain = 'http://' + process.env.HOSTNAME + ':8080';
 
 module.exports = {
   name: 'default test e2e workflow',

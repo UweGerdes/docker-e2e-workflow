@@ -161,7 +161,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
 function buildDriver (viewportSize) {
   return new Builder()
     .forBrowser('chrome')
-    .usingServer('http://e2e-hub:4444/wd/hub')
+    .usingServer('http://' + process.env.HUB_HOST + ':' + process.env.HUB_PORT + '/wd/hub')
     .setChromeOptions(
       new chrome.Options()
         .headless()
