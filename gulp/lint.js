@@ -4,6 +4,7 @@
 'use strict';
 
 const gulp = require('gulp'),
+  cache = require('gulp-cached'),
   changedInPlace = require('gulp-changed-in-place'),
   jscs = require('gulp-jscs'),
   jscsStylish = require('gulp-jscs-stylish'),
@@ -12,6 +13,7 @@ const gulp = require('gulp'),
   lesshint = require('gulp-lesshint'),
   pugLinter = require('gulp-pug-linter'),
   sequence = require('gulp-sequence'),
+  standard = require('gulp-standard'),
   yamlValidate = require('gulp-yaml-validate'),
   config = require('../lib/config'),
   loadTasks = require('./lib/load-tasks')
@@ -54,6 +56,22 @@ const tasks = {
 //      .pipe(gulpJshint.reporter('jshint-stylish'))
       ;
   },
+  /**
+   * #### Lint js files
+   *
+   * apply jsstandard to js files
+   *
+   * @task jsstandard
+   * @namespace tasks
+   */
+  'jsstandard': () => gulp.src(config.gulp.watch.jsstandard)
+    .pipe(cache('jsstandard'))
+    // .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
+    .pipe(standard())
+    .pipe(standard.reporter('default', {
+      breakOnError: true,
+      quiet: true
+    })),
   /**
    * #### Lint json files
    *

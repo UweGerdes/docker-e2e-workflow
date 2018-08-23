@@ -11,7 +11,9 @@ gulp:
       - 'gulp/**/*.js'
       - 'src/**/*.js'
     jshint:
-      - '*.js'
+      - 'index.js'
+      - 'gulpfile.js'
+      - 'server.js'
       - 'gulp/**/*.js'
       - 'lib/**/*.js'
       - 'src/**/*.js'
@@ -21,6 +23,8 @@ gulp:
       - '.jscsrc'
       - '.jshintrc'
       - '.lesshintrc'
+    jsstandard:
+      - 'index_async.js'
     yamllint:
       - '**/*.yaml'
       - '**/*.yml'
@@ -34,7 +38,7 @@ gulp:
       - 'lib/config.js'
       - 'lib/ipv4addresses.js'
     test-e2e-workflow-default:
-      - 'index.js'
+      - 'index_async.js'
       - 'config/default.js'
       - 'lib/log.js'
     test-e2e-workflow-modules:
