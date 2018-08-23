@@ -87,7 +87,7 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'jsdoc': [['jshint'], (callback) => {
+  'jsdoc': [['jsstandard'], (callback) => {
     const jsdocConfig = {
       'tags': {
         'allowUnknownTags': true

@@ -10,20 +10,16 @@ gulp:
       - 'server.js'
       - 'gulp/**/*.js'
       - 'src/**/*.js'
-    jshint:
-      - 'server.js'
-      - 'lib/**/*.js'
-      - 'src/**/*.js'
-      - 'config/modules/**/tests/e2e-workflow/*.js'
     jsonlint:
       - '*.json'
-      - '.jscsrc'
-      - '.jshintrc'
       - '.lesshintrc'
     jsstandard:
+      - 'config/**/*.js'
       - 'gulpfile.js'
       - 'gulp/**/*.js'
       - 'index.js'
+      - 'lib/**/*.js'
+      - 'server.js'
     yamllint:
       - '**/*.yaml'
       - '**/*.yml'

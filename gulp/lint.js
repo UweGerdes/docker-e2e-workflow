@@ -5,10 +5,6 @@
 
 const gulp = require('gulp')
 const cache = require('gulp-cached')
-const changedInPlace = require('gulp-changed-in-place')
-const jscs = require('gulp-jscs')
-const jscsStylish = require('gulp-jscs-stylish')
-const gulpJshint = require('gulp-jshint')
 const jsonlint = require('gulp-jsonlint')
 const lesshint = require('gulp-lesshint')
 const pugLinter = require('gulp-pug-linter')
@@ -28,31 +24,13 @@ const tasks = {
    */
   'lint': (callback) => {
     sequence(
-      'jshint',
+      'jsstandard',
       'jsonlint',
       // 'lesshint', // executed by less task
       'yamllint',
       'puglint',
       callback
     )
-  },
-  /**
-   * #### Lint js files
-   *
-   * apply jshint and jscs to js files
-   *
-   * @task jshint
-   * @namespace tasks
-   */
-  'jshint': () => {
-    return gulp.src(config.gulp.watch.jshint)
-      .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
-      .pipe(gulpJshint())
-      .pipe(jscs())
-      .pipe(jscsStylish.combineWithHintResults())
-      .pipe(gulpJshint.reporter('default'))
-      .pipe(gulpJshint.reporter('fail'))
-      // .pipe(gulpJshint.reporter('jshint-stylish'))
   },
   /**
    * #### Lint js files

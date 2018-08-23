@@ -4,7 +4,7 @@
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
 
-const domain = 'http://' + process.env.HOSTNAME + ':8080';
+const domain = 'http://' + process.env.HOSTNAME + ':8080'
 
 module.exports = {
   name: 'default test e2e workflow',
@@ -19,12 +19,12 @@ module.exports = {
           title: 'Webapp',
           elements: {
             '//h1': 'E2E-Workflow Tests',
-            '//a[@href="/app"]': 'Hier starten',
+            '//a[@href="/app"]': 'Hier starten'
           },
           elementsNotExist: [
-            '//a[@href="/app/config/default.js"]',
-          ],
-        },
+            '//a[@href="/app/config/default.js"]'
+          ]
+        }
       }
     },
     'open app': {
@@ -35,21 +35,21 @@ module.exports = {
           title: 'Webapp',
           elements: {
             '//h1': 'E2E-Workflow Tests',
-            '//a[@href="/app"]': 'Hier starten',
+            '//a[@href="/app"]': 'Hier starten'
           },
-          click: 'a[href="/app"]',
+          click: 'a[href="/app"]'
         },
         'start': {
           title: 'Webserver -',
           elements: {
             '//h1': 'Keine Config geladen: undefined',
-            '//a[@href="/app/config/default.js"]': 'config/default.js',
+            '//a[@href="/app/config/default.js"]': 'config/default.js'
           },
           elementsNotExist: [
-            '//a[@href="/app"]',
-          ],
-        },
+            '//a[@href="/app"]'
+          ]
+        }
       }
-    },
+    }
   }
-};
+}
