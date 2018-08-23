@@ -3,17 +3,16 @@
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
-'use strict';
+'use strict'
 
-require('./gulp/build');
-require('./gulp/lint');
-require('./gulp/server');
-require('./gulp/tests');
-require('./gulp/watch');
+require('./gulp/build')
+require('./gulp/lint')
+require('./gulp/server')
+require('./gulp/tests')
+require('./gulp/watch')
 
-const gulp = require('gulp'),
-  sequence = require('gulp-sequence')
-  ;
+const gulp = require('gulp')
+const sequence = require('gulp-sequence')
 
 /**
  * #### default task
@@ -28,6 +27,6 @@ gulp.task('default', (callback) => {
     'build',
     'watch',
     'server',
-//    'tests', // tests only triggered by watch
-    callback);
-});
+    // 'tests', // tests only triggered by watch
+    callback)
+})

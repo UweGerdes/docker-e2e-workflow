@@ -3,17 +3,16 @@
  *
  * @module gulp/server
  */
-'use strict';
+'use strict'
 
-const gulp = require('gulp'),
-  server = require('gulp-develop-server'),
-  livereload = require('gulp-livereload'),
-  sequence = require('gulp-sequence'),
-  config = require('../lib/config'),
-  ipv4addresses = require('../lib/ipv4addresses.js'),
-  loadTasks = require('./lib/load-tasks'),
-  log = require('../lib/log')
-  ;
+const gulp = require('gulp')
+const server = require('gulp-develop-server')
+const livereload = require('gulp-livereload')
+const sequence = require('gulp-sequence')
+const config = require('../lib/config')
+const ipv4addresses = require('../lib/ipv4addresses.js')
+const loadTasks = require('./lib/load-tasks')
+const log = require('../lib/log')
 
 const tasks = {
   /**
@@ -25,10 +24,10 @@ const tasks = {
    */
   'server': (callback) => {
     sequence(
-    'livereload-start',
-    'server-start',
+      'livereload-start',
+      'server-start',
       callback
-    );
+    )
   },
   /**
    * ### server restart, triggered by watch
@@ -42,7 +41,7 @@ const tasks = {
       'server-changed',
       'livereload',
       callback
-    );
+    )
   }],
   /**
    * ### server livereload task
@@ -51,10 +50,9 @@ const tasks = {
    * @namespace tasks
    */
   'livereload': () => {
-    log.info('livereload triggered');
+    log.info('livereload triggered')
     return gulp.src(config.gulp.watch.livereload[0])
       .pipe(livereload())
-      ;
   },
   /**
    * ### server start task
@@ -65,11 +63,10 @@ const tasks = {
    */
   'server-start': (callback) => {
     server.listen({
-        path: config.server.server,
-        env: { VERBOSE: true, FORCE_COLOR: 1 }
-      },
-      callback
-    );
+      path: config.server.server,
+      env: { VERBOSE: true, FORCE_COLOR: 1 }
+    },
+    callback)
   },
   /**
    * ### server restart task
@@ -81,10 +78,10 @@ const tasks = {
   'server-changed': (callback) => {
     server.changed((error) => { // jscs:ignore jsDoc
       if (!error) {
-        livereload.changed({ path: '/', quiet: false });
+        livereload.changed({ path: '/', quiet: false })
       }
-      callback();
-    });
+      callback()
+    })
   },
   /**
    * ### server livereload start task
@@ -93,10 +90,10 @@ const tasks = {
    * @namespace tasks
    */
   'livereload-start': () => {
-    livereload.listen({ port: config.server.livereloadPort, delay: 2000, quiet: true });
+    livereload.listen({ port: config.server.livereloadPort, delay: 2000, quiet: true })
     log.info('livereload listening on http://' +
-      ipv4addresses.get()[0] + ':' + config.server.livereloadPort);
+      ipv4addresses.get()[0] + ':' + config.server.livereloadPort)
   }
-};
+}
 
-loadTasks.importTasks(tasks);
+loadTasks.importTasks(tasks)

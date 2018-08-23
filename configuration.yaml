@@ -11,9 +11,7 @@ gulp:
       - 'gulp/**/*.js'
       - 'src/**/*.js'
     jshint:
-      - 'gulpfile.js'
       - 'server.js'
-      - 'gulp/**/*.js'
       - 'lib/**/*.js'
       - 'src/**/*.js'
       - 'config/modules/**/tests/e2e-workflow/*.js'
@@ -23,6 +21,8 @@ gulp:
       - '.jshintrc'
       - '.lesshintrc'
     jsstandard:
+      - 'gulpfile.js'
+      - 'gulp/**/*.js'
       - 'index.js'
     yamllint:
       - '**/*.yaml'

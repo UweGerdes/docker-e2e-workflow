@@ -1,20 +1,19 @@
 /**
  * @module gulp/build
  */
-'use strict';
+'use strict'
 
-const gulp = require('gulp'),
-  autoprefixer = require('gulp-autoprefixer'),
-  jsdoc = require('gulp-jsdoc3'),
-  less = require('gulp-less'),
-  notify = require('gulp-notify'),
-  rename = require('gulp-rename'),
-  sequence = require('gulp-sequence'),
-  lessPluginGlob = require('less-plugin-glob'),
-  combiner = require('stream-combiner2'),
-  config = require('../lib/config'),
-  loadTasks = require('./lib/load-tasks')
-  ;
+const gulp = require('gulp')
+const autoprefixer = require('gulp-autoprefixer')
+const jsdoc = require('gulp-jsdoc3')
+const less = require('gulp-less')
+const notify = require('gulp-notify')
+const rename = require('gulp-rename')
+const sequence = require('gulp-sequence')
+const lessPluginGlob = require('less-plugin-glob')
+const combiner = require('stream-combiner2')
+const config = require('../lib/config')
+const loadTasks = require('./lib/load-tasks')
 
 /**
  * log only to console, not GUI
@@ -23,8 +22,8 @@ const gulp = require('gulp'),
  * @param {function} callback - gulp callback
  */
 const log = notify.withReporter((options, callback) => {
-  callback();
-});
+  callback()
+})
 
 const tasks = {
   /**
@@ -39,7 +38,7 @@ const tasks = {
       'less',
       'jsdoc',
       callback
-    );
+    )
   },
   /**
    * #### Compile less files
@@ -59,8 +58,7 @@ const tasks = {
       gulp.dest(config.gulp.build.less.dest),
       log({ message: 'written: <%= file.path %>', title: 'Gulp less' })
     ])
-    .on('error', () => { }) // jscs:ignore jsDoc
-    ;
+      .on('error', () => { })
   }],
   /**
    * #### Compile js files
@@ -73,13 +71,12 @@ const tasks = {
   'js': () => {
     return gulp.src(config.gulp.build.js.src)
       .pipe(rename(function (path) {
-        Object.keys(config.gulp.build.js.replace).forEach((key) => { // jscs:ignore jsDoc
-          path.dirname = path.dirname.replace(key, config.gulp.build.js.replace[key]);
-        });
+        Object.keys(config.gulp.build.js.replace).forEach((key) => {
+          path.dirname = path.dirname.replace(key, config.gulp.build.js.replace[key])
+        })
       }))
       .pipe(gulp.dest(config.gulp.build.js.dest))
       .pipe(log({ message: 'written: <%= file.path %>', title: 'Gulp js' }))
-    ;
   },
   /**
    * #### Compile jsdoc
@@ -113,11 +110,10 @@ const tasks = {
         'linenums': true,
         'dateFormat': 'D.MM.YY, HH:mm:ss'
       }
-    };
+    }
     gulp.src(config.gulp.build.jsdoc.src, { read: false })
       .pipe(jsdoc(jsdocConfig, callback))
-      ;
   }]
-};
+}
 
-loadTasks.importTasks(tasks);
+loadTasks.importTasks(tasks)

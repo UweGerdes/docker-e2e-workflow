@@ -2,10 +2,10 @@
  * @module lib:helpers
  * @private
  */
-'use strict';
+'use strict'
 
-const gulp = require('gulp');
-let list = [];
+const gulp = require('gulp')
+let list = []
 
 module.exports = {
   /**
@@ -14,22 +14,20 @@ module.exports = {
    * @param {object} tasks - task list
    */
   importTasks: (tasks) => {
-      Object.keys(tasks)
+    Object.keys(tasks)
       .forEach((task) => { // jscs:ignore jsDoc
-        if (typeof tasks[task] == 'function') {
-          gulp.task(task, tasks[task]);
+        if (typeof tasks[task] === 'function') {
+          gulp.task(task, tasks[task])
         } else {
-          gulp.task(task, tasks[task][0], tasks[task][1]);
+          gulp.task(task, tasks[task][0], tasks[task][1])
         }
-        list.push(task);
-      });
-    },
+        list.push(task)
+      })
+  },
   /**
    * get the task list
    *
    * @param {object} tasks - task list
    */
-  tasks: () => {
-      return list;
-    }
-};
+  tasks: () => list
+}

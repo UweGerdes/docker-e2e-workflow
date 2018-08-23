@@ -3,21 +3,20 @@
  *
  * @module gulp/test
  */
-'use strict';
+'use strict'
 
-const exec = require('child_process').exec,
-  fs = require('fs'),
-  glob = require('glob'),
-  sequence = require('gulp-sequence'),
-  path = require('path'),
-  config = require('../lib/config'),
-  loadTasks = require('./lib/load-tasks')
-  ;
+const exec = require('child_process').exec
+const fs = require('fs')
+const glob = require('glob')
+const sequence = require('gulp-sequence')
+const path = require('path')
+const config = require('../lib/config')
+const loadTasks = require('./lib/load-tasks')
 
 // execute only one test file if one has changed in recentTime, otherwise all
-const recentTime = 60; // * 60;
+const recentTime = 60 // * 60
 
-const baseDir = path.join(__dirname, '..');
+const baseDir = path.join(__dirname, '..')
 
 const tasks = {
   /**
@@ -32,7 +31,7 @@ const tasks = {
       'test-e2e-workflow-default-exec',
       'livereload',
       callback
-    );
+    )
   }],
 
   /**
@@ -45,22 +44,22 @@ const tasks = {
   'test-e2e-workflow-default-exec': (callback) => {
     const loader = exec('export FORCE_COLOR=1; ' +
       'node index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'].default,
-      { cwd: baseDir });
+    { cwd: baseDir })
     loader.stdout.on('data', (data) => {
-      console.log(data.toString().trim());
-    });
+      console.log(data.toString().trim())
+    })
     loader.stderr.on('data', (data) => {
-      console.log('stderr: ' + data.toString().trim());
-    });
+      console.log('stderr: ' + data.toString().trim())
+    })
     loader.on('error', (err) => {
-      console.log('error: ' + err.toString().trim());
-    });
+      console.log('error: ' + err.toString().trim())
+    })
     loader.on('close', (code) => {
       if (code > 0) {
-        console.log('test-e2e-workflow-default exit-code: ' + code);
+        console.log('test-e2e-workflow-default exit-code: ' + code)
       }
-      callback();
-    });
+      callback()
+    })
   },
   /**
    * ### test-e2e-workflow-modules and livereload
@@ -73,7 +72,7 @@ const tasks = {
     sequence(
       'test-e2e-workflow-modules-exec',
       callback
-    );
+    )
   }],
 
   /**
@@ -85,16 +84,16 @@ const tasks = {
    */
   'test-e2e-workflow-modules-exec': (callback) => {
     Promise.all(Object.values(config.gulp.tests['test-e2e-workflow-modules']).map(getFilenames))
-    .then((filenames) => [].concat(...filenames)) // jscs:ignore jsDoc
-    .then(getRecentFile)
-    .then((filenames) => {
-      return Promise.all(
-        filenames.map(runModule)
-      );
-    })
-    .then(() => { callback();});
+      .then((filenames) => [].concat(...filenames))
+      .then(getRecentFile)
+      .then((filenames) => {
+        return Promise.all(
+          filenames.map(runModule)
+        )
+      })
+      .then(() => { callback() })
   }
-};
+}
 
 /**
  * get list of files for glob pattern
@@ -106,39 +105,39 @@ const getFilenames = (path) => {
   return new Promise((resolve, reject) => {
     glob(path, (error, filenames) => {
       if (error) {
-        reject(error);
+        reject(error)
       } else {
-        resolve(filenames);
+        resolve(filenames)
       }
-    });
-  });
-};
+    })
+  })
+}
 
 /**
  * get newest file from glob list - synchronous
  *
  * @param {array} files - list with glob paths
  */
-function getRecentFile(files) {
-  let newest = null;
-  let bestTime = 0;
+function getRecentFile (files) {
+  let newest = null
+  let bestTime = 0
   for (let i = 0; i < files.length; i++) {
-    const fileTime = fs.statSync(files[i]).mtime.getTime();
+    const fileTime = fs.statSync(files[i]).mtime.getTime()
     if (fileTime > bestTime) {
-      newest = files[i];
-      bestTime = fileTime;
+      newest = files[i]
+      bestTime = fileTime
     }
   }
-  const now = new Date();
-  console.log('bestTime', (now.getTime() - bestTime));
+  const now = new Date()
+  console.log('bestTime', (now.getTime() - bestTime))
   if (now.getTime() - bestTime < recentTime * 1000) {
-    return new Promise((resolve) => { // jscs:ignore jsDoc
-      resolve([newest]);
-    });
+    return new Promise((resolve) => {
+      resolve([newest])
+    })
   } else {
-    return new Promise((resolve) => { // jscs:ignore jsDoc
-      resolve(files);
-    });
+    return new Promise((resolve) => {
+      resolve(files)
+    })
   }
 }
 
@@ -151,24 +150,24 @@ const runModule = (filename) => {
   return new Promise((resolve, reject) => {
     const loader = exec('export FORCE_COLOR=1; ' +
       'node index.js --cfg=' + filename,
-      { cwd: baseDir });
+    { cwd: baseDir })
     loader.stdout.on('data', (data) => {
-      console.log(data.toString().trim());
-    });
+      console.log(data.toString().trim())
+    })
     loader.stderr.on('data', (data) => {
-      console.log('stderr: ' + data.toString().trim());
-    });
+      console.log('stderr: ' + data.toString().trim())
+    })
     loader.on('error', (err) => {
-      console.log('error: ' + err.toString().trim());
-    });
+      console.log('error: ' + err.toString().trim())
+    })
     loader.on('close', (code) => {
       if (code > 0) {
-        console.log('test-e2e-workflow-default exit-code: ' + code);
-        reject();
+        console.log('test-e2e-workflow-default exit-code: ' + code)
+        reject(new Error('test-e2e-workflow-default exit-code: ' + code))
       }
-      resolve();
-    });
-  });
-};
+      resolve()
+    })
+  })
+}
 
-loadTasks.importTasks(tasks);
+loadTasks.importTasks(tasks)

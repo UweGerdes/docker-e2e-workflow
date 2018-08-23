@@ -1,23 +1,22 @@
 /**
  * @module gulp/lint
  */
-'use strict';
+'use strict'
 
-const gulp = require('gulp'),
-  cache = require('gulp-cached'),
-  changedInPlace = require('gulp-changed-in-place'),
-  jscs = require('gulp-jscs'),
-  jscsStylish = require('gulp-jscs-stylish'),
-  gulpJshint = require('gulp-jshint'),
-  jsonlint = require('gulp-jsonlint'),
-  lesshint = require('gulp-lesshint'),
-  pugLinter = require('gulp-pug-linter'),
-  sequence = require('gulp-sequence'),
-  standard = require('gulp-standard'),
-  yamlValidate = require('gulp-yaml-validate'),
-  config = require('../lib/config'),
-  loadTasks = require('./lib/load-tasks')
-  ;
+const gulp = require('gulp')
+const cache = require('gulp-cached')
+const changedInPlace = require('gulp-changed-in-place')
+const jscs = require('gulp-jscs')
+const jscsStylish = require('gulp-jscs-stylish')
+const gulpJshint = require('gulp-jshint')
+const jsonlint = require('gulp-jsonlint')
+const lesshint = require('gulp-lesshint')
+const pugLinter = require('gulp-pug-linter')
+const sequence = require('gulp-sequence')
+const standard = require('gulp-standard')
+const yamlValidate = require('gulp-yaml-validate')
+const config = require('../lib/config')
+const loadTasks = require('./lib/load-tasks')
 
 const tasks = {
   /**
@@ -31,11 +30,11 @@ const tasks = {
     sequence(
       'jshint',
       'jsonlint',
-      //'lesshint', // executed by less task
+      // 'lesshint', // executed by less task
       'yamllint',
       'puglint',
       callback
-    );
+    )
   },
   /**
    * #### Lint js files
@@ -53,8 +52,7 @@ const tasks = {
       .pipe(jscsStylish.combineWithHintResults())
       .pipe(gulpJshint.reporter('default'))
       .pipe(gulpJshint.reporter('fail'))
-//      .pipe(gulpJshint.reporter('jshint-stylish'))
-      ;
+      // .pipe(gulpJshint.reporter('jshint-stylish'))
   },
   /**
    * #### Lint js files
@@ -84,7 +82,6 @@ const tasks = {
     return gulp.src(config.gulp.watch.jsonlint)
       .pipe(jsonlint())
       .pipe(jsonlint.reporter())
-      ;
   },
   /**
    * #### Lint less files
@@ -97,10 +94,9 @@ const tasks = {
   'lesshint': () => {
     return gulp.src(config.gulp.watch.less)
       .pipe(lesshint())
-      //.on('error', function () {})
+      // .on('error', function () {})
       .pipe(lesshint.reporter())
       .pipe(lesshint.failOnError())
-      ;
   },
   /**
    * #### Lint yaml files
@@ -113,10 +109,9 @@ const tasks = {
   'yamllint': () => {
     return gulp.src(config.gulp.watch.yamllint)
       .pipe(yamlValidate({ space: 2 }))
-      .on('error', (msg) => { // jscs:ignore jsDoc
-        console.log(msg);
+      .on('error', (msg) => {
+        console.log(msg)
       })
-      ;
   },
   /**
    * #### Lint pug files
@@ -130,8 +125,7 @@ const tasks = {
     return gulp.src(config.gulp.watch.puglint)
       .pipe(pugLinter())
       .pipe(pugLinter.reporter('fail'))
-      ;
-  },
-};
+  }
+}
 
-loadTasks.importTasks(tasks);
+loadTasks.importTasks(tasks)
