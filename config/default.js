@@ -42,7 +42,7 @@ module.exports = {
         'start': {
           title: 'Webserver -',
           elements: {
-            '//h1': 'Keine Config geladen: undefined',
+            '//h1': 'Keine Config geladen',
             '//a[@href="/app/config/default.js"]': 'config/default.js'
           },
           elementsNotExist: [

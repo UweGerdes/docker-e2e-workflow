@@ -54,7 +54,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
             try {
               assert.equal(title, testStep.title)
             } catch (error) {
-              error(testStep, 'title: ' + error.message)
+              err(testStep, 'title: ' + error.message)
             }
           }
           if (testStep.elements) {
@@ -63,7 +63,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
               try {
                 element = await driver.findElement(by(selector))
               } catch (error) {
-                error(testStep, 'element "' + selector + '" not found')
+                err(testStep, 'element "' + selector + '" not found')
               }
               if (element) {
                 try {
@@ -72,7 +72,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
                     assert.equal(text, testStep.elements[selector], '"' + selector + '" text')
                   }
                 } catch (error) {
-                  error(testStep, error.message)
+                  err(testStep, error.message)
                 }
               }
             }
@@ -81,7 +81,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
             for (const selector of testStep.elementsNotExist) {
               try {
                 await driver.findElement(by(selector))
-                error(testStep, 'element "' + selector + '" should not exist')
+                err(testStep, 'element "' + selector + '" should not exist')
               } catch (error) { }
             }
           }
@@ -91,7 +91,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
               try {
                 element = driver.findElement(by(selector))
               } catch (error) {
-                error(testStep, 'input field "' + selector + '" not found')
+                err(testStep, 'input field "' + selector + '" not found')
               }
               if (element) {
                 if (typeof testStep.input[selector] === 'string') {
@@ -105,7 +105,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
                     await driver.findElement(by(selector)).click()
                   }
                 } else {
-                  error(testStep, 'input unprocessed: ' + selector + ' ' + testStep.input[selector])
+                  err(testStep, 'input unprocessed: ' + selector + ' ' + testStep.input[selector])
                 }
               }
             }
@@ -121,7 +121,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
               testStep.clickRect = await element.getRect()
               await element.click()
             } catch (error) {
-              error(testStep, 'no element to click: ' + testStep.click)
+              err(testStep, 'no element to click: ' + testStep.click)
             }
           }
           if (testStep.errors.length === 0) {
@@ -180,7 +180,7 @@ function log (message) {
   console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' + message)
 }
 
-function error (testStep, message) {
+function err (testStep, message) {
   log(chalk.red(message))
   testStep.errors.push(message)
 }

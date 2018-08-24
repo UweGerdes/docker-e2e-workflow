@@ -68,7 +68,7 @@ const tasks = {
    * @task jsss
    * @namespace tasks
    */
-  'js': () => {
+  'js': [['jsstandard'], () => {
     return gulp.src(config.gulp.build.js.src)
       .pipe(rename(function (path) {
         Object.keys(config.gulp.build.js.replace).forEach((key) => {
@@ -77,7 +77,7 @@ const tasks = {
       }))
       .pipe(gulp.dest(config.gulp.build.js.dest))
       .pipe(log({ message: 'written: <%= file.path %>', title: 'Gulp js' }))
-  },
+  }],
   /**
    * #### Compile jsdoc
    *

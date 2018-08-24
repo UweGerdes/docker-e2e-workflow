@@ -4,6 +4,8 @@
 
 gulp:
   watch:
+    js:
+      - 'src/js/**/*.js'
     jsdoc:
       - 'index.js'
       - 'gulpfile.js'
@@ -30,6 +32,7 @@ gulp:
       - 'views/**/*.pug'
     server-restart:
       - './server.js'
+      - 'lib/ansiColors.js'
       - 'lib/config.js'
       - 'lib/ipv4addresses.js'
     test-e2e-workflow-default:

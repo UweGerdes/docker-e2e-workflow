@@ -6,11 +6,18 @@ block content
     #header.header
       h1#headline.headline
         if configFile
-          span.launch&attributes({ title: 'starten', 'data-open': '/run/' + configFile, 'data-open-target': '#output-content' })= config.name
+          span.launch&attributes({
+            title: 'starten',
+            'data-xhr': '/run/' + configFile,
+            'data-xhr-response': '#output-content',
+            'data-toggle': '#output'
+          })= config.name
           if queryCase
             span= ' - ' + queryCase
             if queryStep
               span= ': ' + queryStep
+        else
+          | Keine Config geladen
 
       ul#configs.configs
         each files, label in configs
@@ -54,5 +61,8 @@ block content
         if clickRect
           .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
 
-  #output.modalLayer&attributes({ 'data-toggle': '#output' })
-    #output-content.modalLayer-content HALLO
+  #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
+    #output-content.modalLayer-content
+
+append footer
+  script(src='/js/app.js')

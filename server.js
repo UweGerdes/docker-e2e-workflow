@@ -8,6 +8,7 @@
 const bodyParser = require('body-parser')
 const chalk = require('chalk')
 const dateFormat = require('dateformat')
+const exec = require('child_process').exec
 const express = require('express')
 const fs = require('fs')
 const glob = require('glob')
@@ -123,7 +124,7 @@ app.get(/^(\/results\/.+)$/, (req, res) => {
  * @param {Object} res - response
  */
 app.get(/^\/run\/(.+)$/, (req, res) => {
-  runConfig(req.params[0])
+  runConfig(res, req.params[0])
 })
 
 /**
@@ -210,10 +211,34 @@ function getConfigs () {
  * Execute the tests
  *
  * @private
+ * @param {Object} res - response
  * @param {String} configFile - filename
  */
-function runConfig (configFile) {
-  console.log(ansiColors.toHTML(configFile))
+function runConfig (res, configFile) {
+  console.log('run', configFile)
+  res.status(200)
+  const loader = exec('export FORCE_COLOR=1; node index.js --cfg=' + configFile)
+  loader.stdout.on('data', (data) => {
+    console.log(data.toString().trim())
+    res.write(ansiColors.toHTML(data.toString().trim().replace(/\n/, '<br />')) + '<br />')
+    res.flush()
+  })
+  loader.stderr.on('data', (data) => {
+    console.log('stderr: ' + data.toString().trim())
+    res.write(ansiColors.toHTML('stderr: ' + data.toString().trim().replace(/\n/, '<br />')) + '<br />')
+    res.flush()
+  })
+  loader.on('error', (err) => {
+    console.log('error: ' + err.toString().trim())
+    res.write(ansiColors.toHTML('err: ' + err.toString().trim().replace(/\n/, '<br />')) + '<br />')
+  })
+  loader.on('close', (code) => {
+    if (code > 0) {
+      console.log('e2e-workflow exit-code: ' + code)
+      res.write('e2e-workflow exit-code: ' + code)
+    }
+    res.end()
+  })
 }
 
 /**
