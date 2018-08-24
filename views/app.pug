@@ -4,7 +4,11 @@ block content
   #app.app
 
     #header.header
-      h1#headline.headline= config.name + ': ' + queryCase
+      h1#headline.headline
+        if configFile
+          span&attributes({'data-open-output': '/run/' + configFile})= config.name
+          if queryCase
+            span= ': ' + queryCase
 
       ul#configs.configs
         each files, label in configs
@@ -47,3 +51,5 @@ block content
         - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
         if clickRect
           .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
+
+  #output.layer
