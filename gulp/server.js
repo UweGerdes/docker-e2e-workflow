@@ -5,6 +5,8 @@
  */
 'use strict'
 
+const chalk = require('chalk')
+const dateFormat = require('dateformat')
 const gulp = require('gulp')
 const server = require('gulp-develop-server')
 const livereload = require('gulp-livereload')
@@ -12,7 +14,6 @@ const sequence = require('gulp-sequence')
 const config = require('../lib/config')
 const ipv4addresses = require('../lib/ipv4addresses.js')
 const loadTasks = require('./lib/load-tasks')
-const log = require('../lib/log')
 
 const tasks = {
   /**
@@ -50,7 +51,7 @@ const tasks = {
    * @namespace tasks
    */
   'livereload': () => {
-    log.info('livereload triggered')
+    console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' + 'livereload triggered')
     return gulp.src(config.gulp.watch.livereload[0])
       .pipe(livereload())
   },
@@ -91,7 +92,8 @@ const tasks = {
    */
   'livereload-start': () => {
     livereload.listen({ port: config.server.livereloadPort, delay: 2000, quiet: true })
-    log.info('livereload listening on http://' +
+    console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' +
+      'livereload listening on http://' +
       ipv4addresses.get()[0] + ':' + config.server.livereloadPort)
   }
 }

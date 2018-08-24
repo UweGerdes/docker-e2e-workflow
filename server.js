@@ -14,8 +14,8 @@ const glob = require('glob')
 const morgan = require('morgan')
 const path = require('path')
 const config = require('./lib/config')
+const ansiColors = require('./lib/ansiColors')
 const ipv4addresses = require('./lib/ipv4addresses')
-const log = require('./lib/log')
 const app = express()
 
 const httpPort = config.server.httpPort
@@ -117,6 +117,16 @@ app.get(/^(\/results\/.+)$/, (req, res) => {
 })
 
 /**
+ * Run test
+ *
+ * @param {Object} req - request
+ * @param {Object} res - response
+ */
+app.get(/^\/run\/(.+)$/, (req, res) => {
+  runConfig(req.params[0])
+})
+
+/**
  * Route for everything else
  *
  * @param {Object} req - request
@@ -130,7 +140,7 @@ app.get('*', (req, res) => {
 })
 
 // Fire it up!
-log.info('server listening on ' +
+console.log('[' + chalk.greenBright(dateFormat(new Date(), 'HH:MM:ss')) + '] ' + 'server listening on ' +
   chalk.greenBright('http://' + ipv4addresses.get()[0] + ':' + httpPort))
 
 app.listen(httpPort)
@@ -197,6 +207,16 @@ function getConfigs () {
 }
 
 /**
+ * Execute the tests
+ *
+ * @private
+ * @param {String} configFile - filename
+ */
+function runConfig (configFile) {
+  console.log(ansiColors.toHTML(configFile))
+}
+
+/**
  * get js file content
  *
  * @private
@@ -207,6 +227,7 @@ function requireFile (filename) {
   if (fs.existsSync('./' + filename)) {
     return require('./' + filename)
   } else {
-    log.info('server require ./' + filename + ' not found')
+    console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' +
+      chalk.red('server require ./' + filename + ' not found'))
   }
 }

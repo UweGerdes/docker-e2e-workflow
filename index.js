@@ -13,31 +13,24 @@ const firefox = require('selenium-webdriver/firefox')
 const chai = require('chai')
 const assert = chai.assert
 const chaiAsPromised = require('chai-as-promised')
+const chalk = require('chalk')
+const dateFormat = require('dateformat')
 const del = require('del')
 const fs = require('fs')
 const makeDir = require('make-dir')
 const argv = require('minimist')(process.argv.slice(2))
 const path = require('path')
-const log = require('./lib/log.js')
 
 chai.use(chaiAsPromised)
 
 let testData = null
 const filename = argv.cfg || path.join('config', 'default.js')
 
-function by (selector) {
-  if (selector.match(/^\/\/.+/)) {
-    return By.xpath(selector)
-  } else {
-    return By.css(selector)
-  }
-}
-
 if (fs.existsSync(path.join(__dirname, filename))) {
-  log.info('Executing: "' + path.join(__dirname, filename) + '"')
+  log('Executing: "' + path.join(__dirname, filename) + '"')
   testData = require(path.join(__dirname, filename))
 } else {
-  log.info('ERROR: file not found: "' + path.join(__dirname, filename) + '"')
+  throw (new Error('ERROR: file not found: "' + path.join(__dirname, filename) + '"'))
 }
 
 const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, ''));
@@ -54,15 +47,14 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
         await driver.get(testCase.uri)
         for (const [label, testStep] of Object.entries(testCase.steps)) {
           testData.summary.total++
-          console.log(testCaseName, '-', label)
+          log(testCaseName + ': ' + label)
           testStep.errors = []
           if (testStep.title) {
             const title = await driver.getTitle()
             try {
               assert.equal(title, testStep.title)
             } catch (error) {
-              console.log('title: ' + error.message)
-              testStep.errors.push('title: ' + error.message)
+              error(testStep, 'title: ' + error.message)
             }
           }
           if (testStep.elements) {
@@ -71,8 +63,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
               try {
                 element = await driver.findElement(by(selector))
               } catch (error) {
-                console.log('element "' + selector + '" not found')
-                testStep.errors.push('element "' + selector + '" not found')
+                error(testStep, 'element "' + selector + '" not found')
               }
               if (element) {
                 try {
@@ -81,8 +72,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
                     assert.equal(text, testStep.elements[selector], '"' + selector + '" text')
                   }
                 } catch (error) {
-                  console.log(error.message)
-                  testStep.errors.push(error.message)
+                  error(testStep, error.message)
                 }
               }
             }
@@ -91,8 +81,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
             for (const selector of testStep.elementsNotExist) {
               try {
                 await driver.findElement(by(selector))
-                console.log('element "' + selector + '" should not exist')
-                testStep.errors.push('element "' + selector + '" should not exist')
+                error(testStep, 'element "' + selector + '" should not exist')
               } catch (error) { }
             }
           }
@@ -102,8 +91,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
               try {
                 element = driver.findElement(by(selector))
               } catch (error) {
-                console.log('element "' + selector + '" not found')
-                testStep.errors.push('input field "' + selector + '" not found')
+                error(testStep, 'input field "' + selector + '" not found')
               }
               if (element) {
                 if (typeof testStep.input[selector] === 'string') {
@@ -117,7 +105,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
                     await driver.findElement(by(selector)).click()
                   }
                 } else {
-                  console.log('input unprocessed', selector, testStep.input[selector])
+                  error(testStep, 'input unprocessed: ' + selector + ' ' + testStep.input[selector])
                 }
               }
             }
@@ -133,8 +121,7 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
               testStep.clickRect = await element.getRect()
               await element.click()
             } catch (error) {
-              console.log('no element to click: ' + testStep.click)
-              testStep.errors.push('no element to click: ' + testStep.click)
+              error(testStep, 'no element to click: ' + testStep.click)
             }
           }
           if (testStep.errors.length === 0) {
@@ -145,16 +132,22 @@ const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, '')
           testData.summary.executed++
         }
       } catch (err) {
-        console.log(err)
+        log(chalk.red(err))
       }
     }
   } catch (err) {
-    console.log(err)
+    log(chalk.red(err))
   } finally {
     if (driver) {
       await driver.quit()
     }
     await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 4))
+    if (testData.summary.fail === 0) {
+      log(chalk.green.bold.inverse('Executed ' + testData.summary.executed + ' steps, no errors'))
+    } else {
+      log(chalk.red.bold.inverse('Executed ' + testData.summary.executed + ' steps, ' +
+        testData.summary.fail + ' failed'))
+    }
   }
 })()
 
@@ -175,6 +168,23 @@ function buildDriver (viewportSize) {
     .build()
 }
 
+function by (selector) {
+  if (selector.match(/^\/\/.+/)) {
+    return By.xpath(selector)
+  } else {
+    return By.css(selector)
+  }
+}
+
+function log (message) {
+  console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' + message)
+}
+
+function error (testStep, message) {
+  log(chalk.red(message))
+  testStep.errors.push(message)
+}
+
 function saveFile (file, content) {
   return new Promise(
     (resolve, reject) => {
@@ -183,10 +193,9 @@ function saveFile (file, content) {
         content,
         (error) => {
           if (error) {
-            console.log(file + ' save error: ' + error)
+            log(chalk.red(file + ' save error: ' + error))
             reject(new Error('file not saved'))
           } else {
-            console.log(file, 'saved')
             resolve(file + 'saved')
           }
         }
