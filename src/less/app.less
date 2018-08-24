@@ -86,6 +86,31 @@
     a:active {
       color: #cc0000;
     }
+  }
+}
 
+.launch {
+  cursor: pointer;
+
+  &::after {
+    content: ' \1F680';
+  }
+}
+
+.modalLayer {
+  background-color: rgba(128, 128, 128, 0.4);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+
+  &-content {
+    background-color: #ffffff;
+    border: 5px solid #999999;
+    margin: 5% auto 0;
+    min-height: 50%;
+    padding: 1em 1.5em;
+    width: 50%;
   }
 }

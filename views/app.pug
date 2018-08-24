@@ -6,9 +6,11 @@ block content
     #header.header
       h1#headline.headline
         if configFile
-          span&attributes({'data-open-output': '/run/' + configFile})= config.name
+          span.launch&attributes({ title: 'starten', 'data-open': '/run/' + configFile, 'data-open-target': '#output-content' })= config.name
           if queryCase
-            span= ': ' + queryCase
+            span= ' - ' + queryCase
+            if queryStep
+              span= ': ' + queryStep
 
       ul#configs.configs
         each files, label in configs
@@ -52,4 +54,5 @@ block content
         if clickRect
           .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
 
-  #output.layer
+  #output.modalLayer&attributes({ 'data-toggle': '#output' })
+    #output-content.modalLayer-content HALLO
