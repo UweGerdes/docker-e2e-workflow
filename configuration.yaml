@@ -16,7 +16,8 @@ gulp:
       - '*.json'
       - '.lesshintrc'
     jsstandard:
-      - 'config/**/*.js'
+      - 'config/*.js'
+      - 'config/modules/**/tests/e2e-workflow/*.js'
       - 'gulpfile.js'
       - 'gulp/**/*.js'
       - 'index.js'
@@ -39,7 +40,7 @@ gulp:
       - 'index.js'
       - 'config/default.js'
     test-e2e-workflow-modules:
-      - 'config/modules/vcards/**/*'
+      - 'config/modules/**/tests/e2e-workflow/*.js'
     livereload:
       - 'htdocs/**/*.html'
       - 'views/**/*.pug'

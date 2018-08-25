@@ -22,11 +22,18 @@ const sequence = require('gulp-sequence')
  * @param {function} callback - gulp callback
  */
 gulp.task('default', (callback) => {
-  sequence(
-    'lint',
-    'build',
-    'watch',
-    'server',
-    // 'tests', // tests only triggered by watch
-    callback)
+  if (process.env.NODE_ENV === 'development') {
+    sequence(
+      'lint',
+      'build',
+      'watch',
+      'server',
+      callback)
+  } else {
+    sequence(
+      'build',
+      'watch',
+      'server',
+      callback)
+  }
 })
