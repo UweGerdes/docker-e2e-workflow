@@ -6,15 +6,11 @@
 'use strict'
 
 const exec = require('child_process').exec
-const fs = require('fs')
-const glob = require('glob')
 const sequence = require('gulp-sequence')
 const path = require('path')
 const config = require('../lib/config')
 const loadTasks = require('./lib/load-tasks')
-
-// execute only one test file if one has changed in recentTime, otherwise all
-const recentTime = 60 // * 60
+const files = require('../lib/files')
 
 const baseDir = path.join(__dirname, '..')
 
@@ -83,61 +79,15 @@ const tasks = {
    * @param {function} callback - gulp callback
    */
   'test-e2e-workflow-modules-exec': (callback) => {
-    Promise.all(Object.values(config.gulp.tests['test-e2e-workflow-modules']).map(getFilenames))
+    Promise.all(Object.values(config.gulp.tests['test-e2e-workflow-modules']).map(files.getFilenames))
       .then((filenames) => [].concat(...filenames))
-      .then(getRecentFile)
+      .then(files.getRecentFiles)
       .then((filenames) => {
         return Promise.all(
           filenames.map(runModule)
         )
       })
       .then(() => { callback() })
-  }
-}
-
-/**
- * get list of files for glob pattern
- *
- * @private
- * @param {function} paths - patterns for paths
- */
-const getFilenames = (path) => {
-  return new Promise((resolve, reject) => {
-    glob(path, (error, filenames) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(filenames)
-      }
-    })
-  })
-}
-
-/**
- * get newest file from glob list - synchronous
- *
- * @param {array} files - list with glob paths
- */
-function getRecentFile (files) {
-  let newest = null
-  let bestTime = 0
-  for (let i = 0; i < files.length; i++) {
-    const fileTime = fs.statSync(files[i]).mtime.getTime()
-    if (fileTime > bestTime) {
-      newest = files[i]
-      bestTime = fileTime
-    }
-  }
-  const now = new Date()
-  console.log('bestTime', (now.getTime() - bestTime))
-  if (now.getTime() - bestTime < recentTime * 1000) {
-    return new Promise((resolve) => {
-      resolve([newest])
-    })
-  } else {
-    return new Promise((resolve) => {
-      resolve(files)
-    })
   }
 }
 
