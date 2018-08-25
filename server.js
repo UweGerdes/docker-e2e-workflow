@@ -10,13 +10,13 @@ const chalk = require('chalk')
 const dateFormat = require('dateformat')
 const exec = require('child_process').exec
 const express = require('express')
-const fs = require('fs')
 const glob = require('glob')
 const morgan = require('morgan')
 const path = require('path')
 const config = require('./lib/config')
 const ansiColors = require('./lib/ansiColors')
 const ipv4addresses = require('./lib/ipv4addresses')
+const files = require('./lib/files')
 const app = express()
 
 const httpPort = config.server.httpPort
@@ -86,13 +86,13 @@ app.get('/app', (req, res) => {
  * @param {Object} res - response
  */
 app.get(/^\/app\/(.+)$/, (req, res) => {
-  const config = requireFile(req.params[0])
+  const config = files.requireFile(req.params[0])
   let results
   const resultsFilename = req.params[0] || path.join('config', 'default.js')
   const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''))
   try {
     console.log(path.join('results', resultsFilename.replace(/\.js/, ''), 'results.json'))
-    results = requireFile(path.join(resultsPath, 'results.json'))
+    results = files.requireFile(path.join(resultsPath, 'results.json'))
   } catch (e) { }
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
@@ -200,13 +200,13 @@ function viewPath (page = '404.ejs') {
 function getConfigs () {
   let configs = {}
   if (process.env.NODE_ENV === 'development') {
-    Object.entries(config.gulp.tests['test-e2e-workflow-default']).forEach(
+    config.gulp.tests['test-e2e-workflow-default'].forEach(
       ([label, path]) => {
         configs[label] = glob.sync(path)
       }
     )
   }
-  Object.entries(config.gulp.tests['test-e2e-workflow-modules']).forEach(
+  config.gulp.tests['test-e2e-workflow-modules'].forEach(
     ([label, path]) => {
       configs[label] = glob.sync(path)
     }
@@ -246,20 +246,4 @@ function runConfig (res, configFile) {
     }
     res.end()
   })
-}
-
-/**
- * get js file content
- *
- * @private
- * @param {String} filename - config filename
- */
-function requireFile (filename) {
-  delete require.cache[require.resolve('./' + filename)]
-  if (fs.existsSync('./' + filename)) {
-    return require('./' + filename)
-  } else {
-    console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' +
-      chalk.red('server require ./' + filename + ' not found'))
-  }
 }

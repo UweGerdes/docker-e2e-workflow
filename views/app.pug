@@ -20,10 +20,9 @@ block content
           | Keine Config geladen
 
       ul#configs.configs
-        each files, label in configs
+        each files in configs
           if files.length > 0
             li.config
-              span.label= label
               ul.config-files
                 each file in files
                   li.config-file

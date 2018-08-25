@@ -72,9 +72,9 @@ gulp:
       dest: 'htdocs/css'
   tests:
     test-e2e-workflow-default:
-      default: 'config/default.js'
+      - 'config/default.js'
     test-e2e-workflow-modules:
-      modules: 'config/modules/**/tests/e2e-workflow/*.js'
+      - 'config/modules/**/tests/e2e-workflow/*.js'
 
 server:
   server: ./server.js
