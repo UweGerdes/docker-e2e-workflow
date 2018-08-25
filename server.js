@@ -199,6 +199,13 @@ function viewPath (page = '404.ejs') {
  */
 function getConfigs () {
   let configs = {}
+  if (process.env.NODE_ENV === 'development') {
+    Object.entries(config.gulp.tests['test-e2e-workflow-default']).forEach(
+      ([label, path]) => {
+        configs[label] = glob.sync(path)
+      }
+    )
+  }
   Object.entries(config.gulp.tests['test-e2e-workflow-modules']).forEach(
     ([label, path]) => {
       configs[label] = glob.sync(path)
