@@ -44,26 +44,13 @@ handler['data-xhr'] = {
     const response = document.querySelectorAll(element.dataset.xhrResponse)[0]
     console.log(response)
     const xhttp = new XMLHttpRequest()
+    let seenBytes = 0
     xhttp.onreadystatechange = function () {
-      let seenBytes = 0
       if (xhttp.readyState === 3) {
-        var newData = xhttp.response.substr(seenBytes)
-        console.log('newData: <<' + newData + '>>')
-        response.insertAdjacentHTML('beforeEnd', newData)
+        var newData = xhttp.responseText.substr(seenBytes)
         seenBytes = xhttp.responseText.length
+        response.insertAdjacentHTML('beforeEnd', newData)
       }
-      /* data-xhr-response
-      if (this.readyState === 4) {
-        if (this.status === 200) {
-          element.insertAdjacentHTML('beforeBegin', this.responseText)
-          const selects = element.previousSibling.querySelectorAll('select[data-select-xhr]')
-          if (selects.length) {
-            attachEventHandler(selects[selects.length - 1], 'change',
-              handler['data-select-xhr'].func)
-          }
-        }
-      }
-      */
     }
     xhttp.open('GET', element.getAttribute('data-xhr'), true)
     xhttp.send()
