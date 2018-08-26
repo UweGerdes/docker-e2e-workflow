@@ -10,7 +10,7 @@ const chalk = require('chalk')
 const dateFormat = require('dateformat')
 const exec = require('child_process').exec
 const express = require('express')
-const glob = require('glob')
+const fs = require('fs')
 const morgan = require('morgan')
 const path = require('path')
 const config = require('./lib/config')
@@ -66,11 +66,11 @@ app.get('/', (req, res) => {
  * @param {Object} req - request
  * @param {Object} res - response
  */
-app.get('/app', (req, res) => {
+app.get('/app', async (req, res) => {
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
     livereloadPort: getLivereloadPort(req),
-    configs: getConfigs(),
+    configs: await getConfigs(),
     config: {
       name: 'Keine Config geladen',
       configfile: 'none'
@@ -85,19 +85,18 @@ app.get('/app', (req, res) => {
  * @param {Object} req - request
  * @param {Object} res - response
  */
-app.get(/^\/app\/(.+)$/, (req, res) => {
+app.get(/^\/app\/(.+)$/, async (req, res) => {
   const config = files.requireFile(req.params[0])
   let results
   const resultsFilename = req.params[0] || path.join('config', 'default.js')
   const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''))
   try {
-    console.log(path.join('results', resultsFilename.replace(/\.js/, ''), 'results.json'))
     results = files.requireFile(path.join(resultsPath, 'results.json'))
   } catch (e) { }
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
     livereloadPort: getLivereloadPort(req),
-    configs: getConfigs(),
+    configs: await getConfigs(),
     configFile: req.params[0],
     config: config,
     queryCase: req.query.case || '',
@@ -197,20 +196,29 @@ function viewPath (page = '404.ejs') {
 /**
  * get configuration files and labels
  */
-function getConfigs () {
+async function getConfigs () {
+  let paths = []
   let configs = {}
   if (process.env.NODE_ENV === 'development') {
-    config.gulp.tests['test-e2e-workflow-default'].forEach(
-      ([label, path]) => {
-        configs[label] = glob.sync(path)
-      }
-    )
+    paths = config.gulp.tests['test-e2e-workflow-default']
   }
-  config.gulp.tests['test-e2e-workflow-modules'].forEach(
-    ([label, path]) => {
-      configs[label] = glob.sync(path)
+  paths = paths.concat(config.gulp.tests['test-e2e-workflow-modules'])
+  for (const filepath of paths) {
+    for (const filename of await files.getFilenames(filepath)) {
+      let config = { }
+      let resultFile = path.join('.', 'results', filename.replace(/\.js$/, ''), 'results.json')
+      if (fs.existsSync(resultFile)) {
+        config = await files.requireFile(resultFile)
+      } else {
+        config = await files.requireFile(filename)
+      }
+      config.filename = filename
+      if (configs[config.name]) {
+        throw new Error('duplicate test name')
+      }
+      configs[config.name] = config
     }
-  )
+  }
   return configs
 }
 

@@ -7,8 +7,8 @@
 const domain = 'http://' + process.env.HOSTNAME + ':8080'
 
 module.exports = {
+  group: 'Default Test',
   name: 'default test e2e workflow',
-  dumpDir: './results/default/',
   viewportSize: { width: 1500, height: 1024 },
   testCases: {
     'homepage': {
@@ -43,7 +43,7 @@ module.exports = {
           title: 'Webserver -',
           elements: {
             '//h1': 'Keine Config geladen',
-            '//a[@href="/app/config/default.js"]': 'config/default.js'
+            '//a[@href="/app/config/default.js"]': 'default test e2e workflow'
           },
           elementsNotExist: [
             '//a[@href="/app"]'

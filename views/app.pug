@@ -20,16 +20,15 @@ block content
           | Keine Config geladen
 
       ul#configs.configs
-        each files in configs
-          if files.length > 0
-            li.config
-              ul.config-files
-                each file in files
-                  li.config-file
-                    if configFile == file
-                      strong= file
-                    else
-                      a(href='/app/' + file)= file
+        each config, label in configs
+          li.config
+            if configFile == config.filename
+              strong= label
+            else
+              a(href='/app/' + config.filename)= label
+            if config.summary && config.summary.fail > 0
+              = ': '
+              strong.error= config.summary.fail + ' Fehler'
 
     div#config.config
       if results && results.testCases

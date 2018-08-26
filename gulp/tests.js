@@ -67,6 +67,7 @@ const tasks = {
   'test-e2e-workflow-modules': [['jsstandard'], (callback) => {
     sequence(
       'test-e2e-workflow-modules-exec',
+      'livereload',
       callback
     )
   }],
