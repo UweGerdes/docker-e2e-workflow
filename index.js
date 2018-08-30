@@ -39,7 +39,7 @@ if (fs.existsSync(path.join(__dirname, filename))) {
     testData.summary = { executed: 0, success: 0, fail: 0, total: 0 }
     try {
       await del([resultPath], { force: true })
-      driver = await buildDriver(viewportSize)
+      driver = await buildDriver()
       for (const [testCaseName, testCase] of Object.entries(testData.testCases)) {
         try {
           await makeDir(path.join(resultPath, testCaseName))
@@ -153,21 +153,12 @@ if (fs.existsSync(path.join(__dirname, filename))) {
   }
 })()
 
-function buildDriver (viewportSize) {
-  console.log(viewportSize)
+function buildDriver () {
   return new Builder()
     .forBrowser('chrome')
     .usingServer('http://' + process.env.HUB_HOST + ':' + process.env.HUB_PORT + '/wd/hub')
-    .setChromeOptions(
-      new chrome.Options()
-        .windowSize(viewportSize)
-        .headless()
-    )
-    .setFirefoxOptions(
-      new firefox.Options()
-        .windowSize(viewportSize)
-        .headless()
-    )
+    .setChromeOptions(new chrome.Options().headless())
+    .setFirefoxOptions(new firefox.Options().headless())
     .build()
 }
 
