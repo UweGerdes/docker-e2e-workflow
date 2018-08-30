@@ -5,8 +5,6 @@
  */
 'use strict'
 
-let viewportSize = { width: 1024, height: 768 }
-
 const { Builder, By } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome')
 const firefox = require('selenium-webdriver/firefox')
@@ -33,137 +31,142 @@ if (fs.existsSync(path.join(__dirname, filename))) {
   throw (new Error('ERROR: file not found: "' + path.join(__dirname, filename) + '"'))
 }
 
-const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, ''));
-
 (async () => {
-  let driver
-  testData.summary = { executed: 0, success: 0, fail: 0, total: 0 }
-  try {
-    await del([resultPath], { force: true })
-    driver = await buildDriver(viewportSize)
-    for (const [testCaseName, testCase] of Object.entries(testData.testCases)) {
-      try {
-        await makeDir(path.join(resultPath, testCaseName))
-        await driver.get(testCase.uri)
-        for (const [label, testStep] of Object.entries(testCase.steps)) {
-          testData.summary.total++
-          log(testCaseName + ': ' + label)
-          testStep.errors = []
-          if (testStep.title) {
-            const title = await driver.getTitle()
-            try {
-              assert.equal(title, testStep.title)
-            } catch (error) {
-              err(testStep, 'title: ' + error.message)
-            }
-          }
-          if (testStep.elements) {
-            for (const selector of Object.keys(testStep.elements)) {
-              let element = null
+  for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
+    const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, ''), viewportName)
+    let driver
+    log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ')
+    testData.summary = { executed: 0, success: 0, fail: 0, total: 0 }
+    try {
+      await del([resultPath], { force: true })
+      driver = await buildDriver(viewportSize)
+      for (const [testCaseName, testCase] of Object.entries(testData.testCases)) {
+        try {
+          await makeDir(path.join(resultPath, testCaseName))
+          await driver.get(testCase.uri)
+          const vp = await driver.manage().window().setRect(viewportSize)
+          console.log(vp)
+          for (const [label, testStep] of Object.entries(testCase.steps)) {
+            testData.summary.total++
+            log(testCaseName + ': ' + label)
+            testStep.errors = []
+            if (testStep.title) {
+              const title = await driver.getTitle()
               try {
-                element = await driver.findElement(by(selector))
+                assert.equal(title, testStep.title)
               } catch (error) {
-                err(testStep, 'element "' + selector + '" not found')
+                err(testStep, 'title: ' + error.message)
               }
-              if (element) {
+            }
+            if (testStep.elements) {
+              for (const selector of Object.keys(testStep.elements)) {
+                let element = null
                 try {
-                  const text = await element.getText()
-                  if (testStep.elements[selector]) {
-                    assert.equal(text, testStep.elements[selector], '"' + selector + '" text')
-                  }
+                  element = await driver.findElement(by(selector))
                 } catch (error) {
-                  err(testStep, error.message)
+                  err(testStep, 'element "' + selector + '" not found')
                 }
-              }
-            }
-          }
-          if (testStep.elementsNotExist) {
-            for (const selector of testStep.elementsNotExist) {
-              try {
-                await driver.findElement(by(selector))
-                err(testStep, 'element "' + selector + '" should not exist')
-              } catch (error) { }
-            }
-          }
-          if (testStep.input) {
-            for (const selector of Object.keys(testStep.input)) {
-              let element = null
-              try {
-                element = driver.findElement(by(selector))
-              } catch (error) {
-                err(testStep, 'input field "' + selector + '" not found')
-              }
-              if (element) {
-                if (typeof testStep.input[selector] === 'string') {
-                  // text / textarea
-                  await element.clear()
-                  await driver.findElement(by(selector)).sendKeys(testStep.input[selector])
-                } else if (testStep.input[selector] === true || testStep.input[selector] === false) {
-                  // checkbox: true/false, radio: true, select+option: true
-                  const selected = await driver.findElement(by(selector)).isSelected()
-                  if (selected !== testStep.input[selector]) {
-                    await driver.findElement(by(selector)).click()
+                if (element) {
+                  try {
+                    const text = await element.getText()
+                    if (testStep.elements[selector]) {
+                      assert.equal(text, testStep.elements[selector], '"' + selector + '" text')
+                    }
+                  } catch (error) {
+                    err(testStep, error.message)
                   }
-                } else {
-                  err(testStep, 'input unprocessed: ' + selector + ' ' + testStep.input[selector])
                 }
               }
             }
-          }
-          const screenshot = await driver.takeScreenshot()
-          await saveFile(
-            path.join(resultPath, testCaseName, label + '.png'),
-            Buffer.from(screenshot, 'base64')
-          )
-          if (testStep.click) {
-            try {
-              const element = await driver.findElement(by(testStep.click))
-              testStep.clickRect = await element.getRect()
-              await element.click()
-            } catch (error) {
-              err(testStep, 'no element to click: ' + testStep.click)
+            if (testStep.elementsNotExist) {
+              for (const selector of testStep.elementsNotExist) {
+                try {
+                  await driver.findElement(by(selector))
+                  err(testStep, 'element "' + selector + '" should not exist')
+                } catch (error) { }
+              }
             }
+            if (testStep.input) {
+              for (const selector of Object.keys(testStep.input)) {
+                let element = null
+                try {
+                  element = driver.findElement(by(selector))
+                } catch (error) {
+                  err(testStep, 'input field "' + selector + '" not found')
+                }
+                if (element) {
+                  if (typeof testStep.input[selector] === 'string') {
+                    // text / textarea
+                    await element.clear()
+                    await driver.findElement(by(selector)).sendKeys(testStep.input[selector])
+                  } else if (testStep.input[selector] === true || testStep.input[selector] === false) {
+                    // checkbox: true/false, radio: true, select+option: true
+                    const selected = await driver.findElement(by(selector)).isSelected()
+                    if (selected !== testStep.input[selector]) {
+                      await driver.findElement(by(selector)).click()
+                    }
+                  } else {
+                    err(testStep, 'input unprocessed: ' + selector + ' ' + testStep.input[selector])
+                  }
+                }
+              }
+            }
+            const screenshot = await driver.takeScreenshot()
+            await saveFile(
+              path.join(resultPath, testCaseName, label + '.png'),
+              Buffer.from(screenshot, 'base64')
+            )
+            if (testStep.click) {
+              try {
+                const element = await driver.findElement(by(testStep.click))
+                testStep.clickRect = await element.getRect()
+                await element.click()
+              } catch (error) {
+                err(testStep, 'no element to click: ' + testStep.click)
+              }
+            }
+            if (testStep.errors.length === 0) {
+              testData.summary.success++
+            } else {
+              testData.summary.fail++
+            }
+            testData.summary.executed++
           }
-          if (testStep.errors.length === 0) {
-            testData.summary.success++
-          } else {
-            testData.summary.fail++
-          }
-          testData.summary.executed++
+        } catch (err) {
+          log(chalk.red(err))
         }
-      } catch (err) {
-        log(chalk.red(err))
       }
-    }
-  } catch (err) {
-    log(chalk.red(err))
-  } finally {
-    if (driver) {
-      await driver.quit()
-    }
-    await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 4))
-    if (testData.summary.fail === 0) {
-      log(chalk.green.bold.inverse('Executed ' + testData.summary.executed + ' steps, no errors'))
-    } else {
-      log(chalk.red.bold.inverse('Executed ' + testData.summary.executed + ' steps, ' +
-        testData.summary.fail + ' failed'))
+    } catch (err) {
+      log(chalk.red(err))
+    } finally {
+      if (driver) {
+        await driver.quit()
+      }
+      await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 4))
+      if (testData.summary.fail === 0) {
+        log(chalk.green.bold.inverse('Executed ' + testData.summary.executed + ' steps, no errors'))
+      } else {
+        log(chalk.red.bold.inverse('Executed ' + testData.summary.executed + ' steps, ' +
+          testData.summary.fail + ' failed'))
+      }
     }
   }
 })()
 
 function buildDriver (viewportSize) {
+  console.log(viewportSize)
   return new Builder()
     .forBrowser('chrome')
     .usingServer('http://' + process.env.HUB_HOST + ':' + process.env.HUB_PORT + '/wd/hub')
     .setChromeOptions(
       new chrome.Options()
-        .headless()
         .windowSize(viewportSize)
+        .headless()
     )
     .setFirefoxOptions(
       new firefox.Options()
-        .headless()
         .windowSize(viewportSize)
+        .headless()
     )
     .build()
 }

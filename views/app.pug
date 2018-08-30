@@ -30,31 +30,46 @@ block content
               = ': '
               strong.error= config.summary.fail + ' Fehler'
 
-    div#config.config
-      if results && results.testCases
-        ul#testCases.testCases
-          each testCase, testCaseName in results.testCases
-            h3.testCase-name= testCaseName
-            li.testCase
-              ul.testCase-steps
-                each step, label in testCase.steps
-                  li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
-                    if queryStep == label
-                      strong= label
-                    else
-                      a(href='/app/' + configFile + '?case=' + encodeURIComponent(testCaseName) + '&step=' + encodeURIComponent(label))= label
-                    if step.errors
-                      each error in step.errors
-                        .error.small=error
-      else if results && results.status == 'not executed'
-        h4 -
-      else
-        h4 keine Ergebisse
+    if config && config.viewports
+      ul#viewports.viewports
+        each viewportSize, viewportName in config.viewports
+          li.viewport
+            h2.viewportName
+              a(href='/app/'
+                + configFile
+                + '?viewport=' + encodeURIComponent(viewportName)
+              )= viewportName
+            if queryViewport == viewportName
+              .config
+                if results && results.testCases
+                  ul.testCases
+                    each testCase, testCaseName in results.testCases
+                      h3.testCase-name= testCaseName
+                      li.testCase
+                        ul.testCase-steps
+                          each step, label in testCase.steps
+                            li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
+                              if queryStep == label
+                                strong= label
+                              else
+                                a(href='/app/'
+                                  + configFile
+                                  + '?viewport=' + encodeURIComponent(viewportName)
+                                  + '&case=' + encodeURIComponent(testCaseName)
+                                  + '&step=' + encodeURIComponent(label)
+                                )= label
+                              if step.errors
+                                each error in step.errors
+                                  .error.small=error
+                else if results && results.status == 'not executed'
+                  h4 -
+                else
+                  h4 keine Ergebisse
 
     if results && queryCase && queryStep && results.testCases[queryCase]
       pre#queryStep.queryStep= JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
       #image-container.image-container
-        img.screenshot(src= '/' + resultsPath + '/' + queryCase + '/' + queryStep + '.png')
+        img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
         - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
         if clickRect
           .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')

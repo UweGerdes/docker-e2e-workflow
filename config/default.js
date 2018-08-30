@@ -9,7 +9,11 @@ const domain = 'http://' + process.env.HOSTNAME + ':8080'
 module.exports = {
   group: 'Default Test',
   name: 'default test e2e workflow',
-  viewportSize: { width: 1500, height: 1024 },
+  viewports: {
+    'Mobile': { width: 320, height: 568 },
+    'Tablet Portrait': { width: 768, height: 1024 },
+    'Desktop': { width: 1200, height: 900 }
+  },
   testCases: {
     'homepage': {
       name: 'open page',

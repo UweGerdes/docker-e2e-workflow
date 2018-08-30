@@ -91,7 +91,7 @@ app.get(/^\/app\/(.+)$/, async (req, res) => {
   const resultsFilename = req.params[0] || path.join('config', 'default.js')
   const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''))
   try {
-    results = files.requireFile(path.join(resultsPath, 'results.json'))
+    results = files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'))
   } catch (e) { }
   res.render(viewPath('app.pug'), {
     hostname: req.hostname,
@@ -99,6 +99,7 @@ app.get(/^\/app\/(.+)$/, async (req, res) => {
     configs: await getConfigs(),
     configFile: req.params[0],
     config: config,
+    queryViewport: req.query.viewport || '',
     queryCase: req.query.case || '',
     queryStep: req.query.step || '',
     results: results,
