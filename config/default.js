@@ -16,7 +16,6 @@ module.exports = {
   },
   testCases: {
     'homepage': {
-      name: 'open page',
       uri: domain,
       steps: {
         'home': {
@@ -32,7 +31,6 @@ module.exports = {
       }
     },
     'open app': {
-      name: 'open app',
       uri: domain,
       steps: {
         'home2': {

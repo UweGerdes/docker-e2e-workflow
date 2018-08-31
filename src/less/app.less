@@ -7,11 +7,12 @@
 @import './includes/layout';
 
 .app {
-  padding: 0 0 20px 0;
+  margin: 0 auto;
+  max-width: 1500px;
+  padding: 0 0 20px;
   position: relative;
 
   .viewports {
-    float: left;
     list-style: none;
     padding: 0 2em 0 0;
 
@@ -21,9 +22,7 @@
   }
 
   .config {
-    display: inline-block;
     vertical-align: top;
-    width: 25%;
 
     .testCases {
       list-style: none;
@@ -46,15 +45,14 @@
   }
 
   .queryStep {
-    display: inline-block;
     font-size: 0.8em;
     margin: 0 0 0.5em;
-    width: 50%;
   }
 
   .image-container {
-    border: 4px inset #aaaaaa;
     display: inline-block;
+    border: 4px inset #aaaaaa;
+    overflow: auto;
     position: relative;
 
     .clickRect {
@@ -66,10 +64,7 @@
   .configs {
     list-style: none;
     padding: 0;
-    position: absolute;
-    right: 20px;
-    top: 10px;
-    width: 30%;
+    margin-top: 30px;
 
     .config {
       width: 100%;
@@ -122,10 +117,42 @@
     margin: 5% auto 0;
     min-height: 50%;
     padding: 1em 1.5em;
-    width: 50%;
+    width: 90%;
+
+    @media all and (min-width: 768px) {
+      width: 50%;
+    }
   }
 
   &.hidden {
     display: none;
+  }
+}
+
+.flex {
+  &-row {
+    align-content: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  &-left,
+  &-center,
+  &-right {
+    flex: 1 100%;
+  }
+
+  @media all and (min-width: 600px) {
+    &-left {
+      flex: 2 0 auto;
+    }
+
+    &-center {
+      flex: 6 0 auto;
+    }
+
+    &-right {
+      flex: 1 0 auto;
+    }
   }
 }

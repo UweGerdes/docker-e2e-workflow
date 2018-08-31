@@ -44,8 +44,7 @@ if (fs.existsSync(path.join(__dirname, filename))) {
         try {
           await makeDir(path.join(resultPath, testCaseName))
           await driver.get(testCase.uri)
-          const vp = await driver.manage().window().setRect(viewportSize)
-          console.log(vp)
+          await driver.manage().window().setRect(viewportSize)
           for (const [label, testStep] of Object.entries(testCase.steps)) {
             testData.summary.total++
             log(testCaseName + ': ' + label)
