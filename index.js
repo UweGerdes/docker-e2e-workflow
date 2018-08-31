@@ -35,7 +35,7 @@ if (fs.existsSync(path.join(__dirname, filename))) {
   for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
     const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, ''), viewportName)
     let driver
-    log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ')
+    await log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ')
     testData.summary = { executed: 0, success: 0, fail: 0, total: 0 }
     try {
       await del([resultPath], { force: true })

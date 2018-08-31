@@ -79,16 +79,15 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'test-e2e-workflow-modules-exec': (callback) => {
-    Promise.all(config.gulp.tests['test-e2e-workflow-modules'].map(files.getFilenames))
-      .then((filenames) => [].concat(...filenames))
-      .then(files.getRecentFiles)
-      .then((filenames) => {
-        return Promise.all(
-          filenames.map(runModule)
-        )
-      })
-      .then(() => { callback() })
+  'test-e2e-workflow-modules-exec': async () => {
+    let filenames = []
+    for (const path of config.gulp.tests['test-e2e-workflow-modules']) {
+      filenames = filenames.concat(...await files.getFilenames(path))
+    }
+    filenames = await files.getRecentFiles(filenames)
+    for (const filename of filenames) {
+      await runModule(filename)
+    }
   }
 }
 
