@@ -32,14 +32,13 @@ if (fs.existsSync(path.join(__dirname, filename))) {
 }
 
 (async () => {
+  let driver = await buildDriver()
   for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
     const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, ''), viewportName)
-    let driver
     await log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ')
     testData.summary = { executed: 0, success: 0, fail: 0, total: 0 }
     try {
       await del([resultPath], { force: true })
-      driver = await buildDriver()
       for (const [testCaseName, testCase] of Object.entries(testData.testCases)) {
         try {
           await makeDir(path.join(resultPath, testCaseName))
@@ -138,9 +137,6 @@ if (fs.existsSync(path.join(__dirname, filename))) {
     } catch (err) {
       log(chalk.red(err))
     } finally {
-      if (driver) {
-        await driver.quit()
-      }
       await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 4))
       if (testData.summary.fail === 0) {
         log(chalk.green.bold.inverse('Executed ' + testData.summary.executed + ' steps, no errors'))
@@ -149,6 +145,9 @@ if (fs.existsSync(path.join(__dirname, filename))) {
           testData.summary.fail + ' failed'))
       }
     }
+  }
+  if (driver) {
+    await driver.quit()
   }
 })()
 
