@@ -74,7 +74,7 @@ block content
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
             if clickRect
-              .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
+              .clickRect(style='left: ' + clickRect.x + '; top: ' + (clickRect.y - clickRect.scrollTop) + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
 
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
     #output-content.modalLayer-content

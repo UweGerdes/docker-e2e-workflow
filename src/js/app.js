@@ -42,7 +42,7 @@ handler['data-xhr'] = {
   func: function (event) {
     const element = event.target
     const response = document.querySelectorAll(element.dataset.xhrResponse)[0]
-    console.log(response)
+    response.innerHTML = ''
     const xhttp = new XMLHttpRequest()
     let seenBytes = 0
     xhttp.onreadystatechange = function () {
@@ -50,6 +50,11 @@ handler['data-xhr'] = {
         var newData = xhttp.responseText.substr(seenBytes)
         seenBytes = xhttp.responseText.length
         response.insertAdjacentHTML('beforeEnd', newData)
+        response.scrollTop = response.scrollHeight - response.clientHeight
+      }
+      if (xhttp.readyState === 4) {
+        response.insertAdjacentHTML('beforeEnd', '<br /><a href="javascript:location.reload()" class="button">CLOSE</a>')
+        response.scrollTop = response.scrollHeight - response.clientHeight
       }
     }
     xhttp.open('GET', element.getAttribute('data-xhr'), true)

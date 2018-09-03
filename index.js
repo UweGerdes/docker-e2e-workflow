@@ -23,6 +23,7 @@ chai.use(chaiAsPromised)
 
 let testData = null
 const filename = argv.cfg || path.join('config', 'default.js')
+const driverBrowser = 'chrome'
 
 if (fs.existsSync(path.join(__dirname, filename))) {
   log('Executing: "' + path.join(__dirname, filename) + '"')
@@ -43,7 +44,11 @@ if (fs.existsSync(path.join(__dirname, filename))) {
         try {
           await makeDir(path.join(resultPath, testCaseName))
           await driver.get(testCase.uri)
-          await driver.manage().window().setRect(viewportSize)
+          let vpSize = viewportSize
+          if (driverBrowser === 'chrome') {
+            vpSize.height += 110
+          }
+          await driver.manage().window().setRect(vpSize)
           for (const [label, testStep] of Object.entries(testCase.steps)) {
             testData.summary.total++
             log(testCaseName + ': ' + label)
@@ -109,18 +114,29 @@ if (fs.existsSync(path.join(__dirname, filename))) {
                 }
               }
             }
+            let clickElement
+            if (testStep.click) {
+              try {
+                clickElement = await driver.findElement(by(testStep.click))
+                testStep.clickRect = await clickElement.getRect()
+                if (driverBrowser === 'chrome') {
+                  await driver.executeScript('arguments[0].scrollIntoView();', clickElement)
+                  testStep.clickRect.scrollTop = await driver.executeScript('return document.body.scrollTop;')
+                } else {
+                  testStep.clickRect.scrollTop = 0
+                }
+              } catch (error) {
+                err(testStep, 'no element to click: ' + testStep.click + ' ' + error)
+              }
+            }
             const screenshot = await driver.takeScreenshot()
             await saveFile(
               path.join(resultPath, testCaseName, label + '.png'),
               Buffer.from(screenshot, 'base64')
             )
             if (testStep.click) {
-              try {
-                const element = await driver.findElement(by(testStep.click))
-                testStep.clickRect = await element.getRect()
-                await element.click()
-              } catch (error) {
-                err(testStep, 'no element to click: ' + testStep.click)
+              if (clickElement) {
+                await clickElement.click()
               }
             }
             if (testStep.errors.length === 0) {
@@ -153,7 +169,7 @@ if (fs.existsSync(path.join(__dirname, filename))) {
 
 function buildDriver () {
   return new Builder()
-    .forBrowser('chrome')
+    .forBrowser(driverBrowser)
     .usingServer('http://' + process.env.HUB_HOST + ':' + process.env.HUB_PORT + '/wd/hub')
     .setChromeOptions(new chrome.Options().headless())
     .setFirefoxOptions(new firefox.Options().headless())
