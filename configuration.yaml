@@ -40,11 +40,11 @@ gulp:
       - 'index.js'
       - 'config/default.js'
     test-e2e-workflow-modules:
-      - 'config/modules/**/js/**/*.js'
-      - 'config/modules/**/less/**/*.less'
-      - 'config/modules/**/server/**/*.js'
+#      - 'config/modules/**/js/**/*.js'
+#      - 'config/modules/**/less/**/*.less'
+#      - 'config/modules/**/server/**/*.js'
       - 'config/modules/**/tests/e2e-workflow/*.js'
-      - 'config/modules/**/views/**/*.*'
+#      - 'config/modules/**/views/**/*.*'
     livereload:
       - 'htdocs/**/*.html'
       - 'views/**/*.pug'
