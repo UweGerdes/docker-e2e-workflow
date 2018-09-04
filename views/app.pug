@@ -69,7 +69,7 @@ block content
 
       .flex-center
         if results && queryCase && queryStep && results.testCases[queryCase]
-          pre#queryStep.queryStep= JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
+          pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
           #image-container.image-container(style= 'max-width: ' + (queryViewport.width+20) + 'px; height: ' + queryViewport.height + 'px;')
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect

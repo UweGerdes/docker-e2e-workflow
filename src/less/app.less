@@ -45,9 +45,15 @@
   }
 
   .queryStep {
-    display: none;
     font-size: 0.8em;
+    height: 1.3em;
     margin: 0 0 0.5em;
+    overflow: hidden;
+    width: min-content;
+
+    &:hover {
+      height: auto;
+    }
   }
 
   .image-container {
@@ -152,11 +158,11 @@
 
   @media all and (min-width: 600px) {
     &-left {
-      flex: 2 0 auto;
+      flex: 1 0 auto;
     }
 
     &-center {
-      flex: 6 0 auto;
+      flex: 10 0 auto;
     }
 
     &-right {
