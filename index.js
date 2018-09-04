@@ -120,6 +120,10 @@ if (fs.existsSync(path.join(__dirname, filename))) {
                 clickElement = await driver.findElement(by(testStep.click))
                 testStep.clickRect = await clickElement.getRect()
                 if (driverBrowser === 'chrome') {
+                  /*
+                  await driver.executeScript('window.scrollTo(0, arguments[0]);',
+                    Math.max(0, testStep.clickRect.y + testStep.clickRect.height - viewportSize.height + 10))
+                  */
                   await driver.executeScript('arguments[0].scrollIntoView();', clickElement)
                   testStep.clickRect.scrollTop = await driver.executeScript('return document.body.scrollTop;')
                 } else {
