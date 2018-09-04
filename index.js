@@ -23,7 +23,7 @@ chai.use(chaiAsPromised)
 
 let testData = null
 const filename = argv.cfg || path.join('config', 'default.js')
-const driverBrowser = 'chrome'
+const driverBrowser = 'firefox'
 
 if (fs.existsSync(path.join(__dirname, filename))) {
   log('Executing: "' + path.join(__dirname, filename) + '"')
@@ -33,21 +33,21 @@ if (fs.existsSync(path.join(__dirname, filename))) {
 }
 
 (async () => {
-  let driver = await buildDriver()
+  let driver = await buildDriver(driverBrowser)
   for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
     const resultPath = path.join(__dirname, 'results', filename.replace(/\.js$/, ''), viewportName)
     await log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ')
     testData.summary = { executed: 0, success: 0, fail: 0, total: 0 }
+    let vpSize = { ...viewportSize }
+    if (driverBrowser === 'chrome') {
+      vpSize.height += 110
+    }
     try {
       await del([resultPath], { force: true })
       for (const [testCaseName, testCase] of Object.entries(testData.testCases)) {
         try {
           await makeDir(path.join(resultPath, testCaseName))
           await driver.get(testCase.uri)
-          let vpSize = viewportSize
-          if (driverBrowser === 'chrome') {
-            vpSize.height += 110
-          }
           await driver.manage().window().setRect(vpSize)
           for (const [label, testStep] of Object.entries(testCase.steps)) {
             testData.summary.total++
@@ -118,16 +118,10 @@ if (fs.existsSync(path.join(__dirname, filename))) {
             if (testStep.click) {
               try {
                 clickElement = await driver.findElement(by(testStep.click))
+                await driver.executeScript('arguments[0].scrollIntoView();', clickElement)
                 testStep.clickRect = await clickElement.getRect()
                 if (driverBrowser === 'chrome') {
-                  /*
-                  await driver.executeScript('window.scrollTo(0, arguments[0]);',
-                    Math.max(0, testStep.clickRect.y + testStep.clickRect.height - viewportSize.height + 10))
-                  */
-                  await driver.executeScript('arguments[0].scrollIntoView();', clickElement)
                   testStep.clickRect.scrollTop = await driver.executeScript('return document.body.scrollTop;')
-                } else {
-                  testStep.clickRect.scrollTop = 0
                 }
               } catch (error) {
                 err(testStep, 'no element to click: ' + testStep.click + ' ' + error)
@@ -171,7 +165,7 @@ if (fs.existsSync(path.join(__dirname, filename))) {
   }
 })()
 
-function buildDriver () {
+function buildDriver (driverBrowser) {
   return new Builder()
     .forBrowser(driverBrowser)
     .usingServer('http://' + process.env.HUB_HOST + ':' + process.env.HUB_PORT + '/wd/hub')
