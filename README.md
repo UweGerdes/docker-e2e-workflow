@@ -34,6 +34,8 @@ $ docker-compose exec e2e-workflow-vcards bash
 
 ## Changelog
 
+0.3.2 async/await for test execution, multiple viewports, better layout
+
 0.3.1 run test from browser
 
 0.3.0 use async/await for test execution in index.js
