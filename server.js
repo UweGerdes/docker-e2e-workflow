@@ -68,6 +68,7 @@ app.get('/', (req, res) => {
  */
 app.get('/app', async (req, res) => {
   res.render(viewPath('app.pug'), {
+    title: 'E2E Workflow',
     hostname: req.hostname,
     livereloadPort: getLivereloadPort(req),
     configs: await getConfigs(),
@@ -94,6 +95,7 @@ app.get(/^\/app\/(.+)$/, async (req, res) => {
     results = files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'))
   } catch (e) { }
   res.render(viewPath('app.pug'), {
+    title: 'E2E Workflow',
     hostname: req.hostname,
     livereloadPort: getLivereloadPort(req),
     configs: await getConfigs(),

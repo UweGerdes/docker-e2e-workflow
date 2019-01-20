@@ -82,7 +82,7 @@ block content
                     + '&step=' + encodeURIComponent(queryStep)
                   )= viewportName
 
-          #image-container.image-container(style= 'max-width: ' + (results.viewports[queryViewport].width+20) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
+          #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width+2) + 'px; max-width: ' + (results.viewports[queryViewport].width+20) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
             if clickRect
