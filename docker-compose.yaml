@@ -1,35 +1,34 @@
-# To execute this docker-compose yml file use docker-compose -f <file_name> up
-# Add the "-d" flag at the end for deattached execution
 version: "3"
 
 services:
 
   e2e-hub:
-    image: selenium/hub:3.12.0-boron
-    container_name: e2e-hub
+    image: selenium/hub:3.141.59-europium
+    ports:
+      - 51344:4444
     hostname: e2e-hub
 
   e2e-chrome:
-    image: selenium/node-chrome:3.12.0-boron
-    container_name: e2e-chrome
+    image: selenium/node-chrome:3.141.59-europium
+    volumes:
+      - /dev/shm:/dev/shm
     depends_on:
       - e2e-hub
     environment:
-      - HUB_HOST=e2e-hub
-      - HUB_PORT=4444
-      - E2E_HOST=e2e-workflow
-      - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
+      HUB_HOST: e2e-hub
+      E2E_HOST: e2e-workflow
+      JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
   e2e-firefox:
-    image: selenium/node-firefox:3.12.0-boron
-    container_name: e2e-firefox
+    image: selenium/node-firefox:3.141.59-europium
+    volumes:
+      - /dev/shm:/dev/shm
     depends_on:
       - e2e-hub
     environment:
-      - HUB_HOST=e2e-hub
-      - HUB_PORT=4444
-      - E2E_HOST=e2e-workflow
-      - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
+      HUB_HOST: e2e-hub
+      E2E_HOST: e2e-workflow
+      JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
   e2e-workflow:
     build:
@@ -43,8 +42,8 @@ services:
     depends_on:
       - e2e-hub
     environment:
-      - HUB_HOST=e2e-hub
-      - HUB_PORT=4444
+      HUB_HOST: e2e-hub
+      HUB_PORT: 4444
     volumes:
       - .:/home/node/app
 #      - ../docker-vcards/modules:/home/node/app/config/modules
