@@ -38,7 +38,6 @@
       }
 
       .testCase-step {
-        list-style: none;
         padding: 0 0 0.2em 1em;
       }
     }
@@ -56,6 +55,16 @@
     }
   }
 
+  .viewportList {
+    list-style: none;
+    padding: 0;
+
+    .viewport {
+      display: inline-block;
+      padding: 0 0 0.2em 1em;
+    }
+  }
+
   .image-container {
     border: 4px inset #aaaaaa;
     display: inline-block;
@@ -66,7 +75,7 @@
       background: rgba(0, 0, 0, 0);
       border: 1px dotted #aaaaaa;
       position: absolute;
-      
+
       &:hover {
         background: rgba(255, 0, 0, 0.5);
       }

@@ -69,12 +69,25 @@ block content
 
       .flex-center
         if results && queryCase && queryStep && results.testCases[queryCase]
-          pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
+          ul#viewportList.viewportList
+            each viewportSize, viewportName in config.viewports
+              li.viewport
+                if queryViewport == viewportName
+                  = viewportName
+                else
+                  a(href='/app/'
+                    + configFile
+                    + '?viewport=' + encodeURIComponent(viewportName)
+                    + '&case=' + encodeURIComponent(queryCase)
+                    + '&step=' + encodeURIComponent(queryStep)
+                  )= viewportName
+
           #image-container.image-container(style= 'max-width: ' + (results.viewports[queryViewport].width+20) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
             if clickRect
               .clickRect(style='left: ' + clickRect.x + '; top: ' + (clickRect.y - clickRect.scrollTop) + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
+          pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
 
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
     #output-content.modalLayer-content
