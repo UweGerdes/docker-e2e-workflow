@@ -17,7 +17,7 @@ gulp:
       - '.lesshintrc'
     jsstandard:
       - 'config/*.js'
-      - 'config/modules/**/tests/e2e-workflow/*.js'
+#      - 'config/modules/**/tests/e2e-workflow/*.js'
       - 'gulpfile.js'
       - 'gulp/**/*.js'
       - 'index.js'
