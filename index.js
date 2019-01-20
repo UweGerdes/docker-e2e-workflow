@@ -23,7 +23,7 @@ chai.use(chaiAsPromised)
 
 let testData = null
 const filename = argv.cfg || path.join('config', 'default.js')
-const driverBrowser = 'chrome'
+const driverBrowser = 'firefox'
 
 if (fs.existsSync(path.join(__dirname, filename))) {
   log('Executing: "' + path.join(__dirname, filename) + '"')
@@ -169,7 +169,7 @@ function buildDriver (driverBrowser) {
   return new Builder()
     .forBrowser(driverBrowser)
     .usingServer('http://' + process.env.HUB_HOST + ':' + process.env.HUB_PORT + '/wd/hub')
-    .setChromeOptions(new chrome.Options().headless())
+    .setChromeOptions(new chrome.Options().addArguments('--kiosk').headless())
     .setFirefoxOptions(new firefox.Options().headless())
     .build()
 }
