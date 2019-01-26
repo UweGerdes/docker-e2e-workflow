@@ -122,4 +122,9 @@ const runModule = (filename) => {
 
 if (process.env.NODE_ENV === 'development') {
   loadTasks.importTasks(tasks)
+} else {
+  loadTasks.importTasks({
+    'test-e2e-workflow-modules': tasks['test-e2e-workflow-modules'],
+    'test-e2e-workflow-modules-exec': tasks['test-e2e-workflow-modules-exec']
+  })
 }
