@@ -19,53 +19,39 @@ block content
         else
           | Keine Config geladen
 
+    .flex-row
       ul#configs.configs.flex-right
         each config, label in configs
           li.config
+            - viewportName = queryViewport || Object.keys(config.viewports)[0]
             if configFile == config.filename
-              strong= label
+              h3= label
             else
-              a(href='/app/' + config.filename)= label
+              h3
+                a(href='/app/' + config.filename + '?viewport=' + encodeURIComponent(viewportName))= label
             if config.summary && config.summary.fail > 0
               = ': '
-              strong.error= config.summary.fail + ' Fehler'
-
-    .flex-row
-      if config && config.viewports
-        ul#viewports.viewports.flex-left
-          each viewportSize, viewportName in config.viewports
-            li.viewport
-              h2.viewportName
-                a(href='/app/'
-                  + configFile
-                  + '?viewport=' + encodeURIComponent(viewportName)
-                )= viewportName
-              if queryViewport == viewportName
-                .config
-                  if results && results.testCases
-                    ul.testCases
-                      each testCase, testCaseName in results.testCases
-                        h3.testCase-name= testCaseName
-                        li.testCase
-                          ul.testCase-steps
-                            each step, label in testCase.steps
-                              li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
-                                if queryStep == label
-                                  strong= label
-                                else
-                                  a(href='/app/'
-                                    + configFile
-                                    + '?viewport=' + encodeURIComponent(viewportName)
-                                    + '&case=' + encodeURIComponent(testCaseName)
-                                    + '&step=' + encodeURIComponent(label)
-                                  )= label
-                                if step.errors
-                                  each error in step.errors
-                                    .error.small=error
-                  else if results && results.status == 'not executed'
-                    h4 -
-                  else
-                    h4 keine Ergebisse
+              h3.error= config.summary.fail + ' Fehler'
+            if results && results.testCases
+              ul.testCases
+                each testCase, testCaseName in results.testCases
+                  h4.testCase-name= testCaseName
+                  li.testCase
+                    ul.testCase-steps
+                      each step, label in testCase.steps
+                        li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
+                          if queryStep == label
+                            strong= label
+                          else
+                            a(href='/app/'
+                              + configFile
+                              + '?viewport=' + encodeURIComponent(viewportName)
+                              + '&case=' + encodeURIComponent(testCaseName)
+                              + '&step=' + encodeURIComponent(label)
+                            )= label
+                          if step.errors
+                            each error in step.errors
+                              .error.small=error
 
       .flex-center
         if results && queryCase && queryStep && results.testCases[queryCase]
@@ -82,11 +68,11 @@ block content
                     + '&step=' + encodeURIComponent(queryStep)
                   )= viewportName
 
-          #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width+2) + 'px; max-width: ' + (results.viewports[queryViewport].width+20) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
+          #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
             if clickRect
-              .clickRect(style='left: ' + clickRect.x + '; top: ' + (clickRect.y - clickRect.scrollTop) + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
+              .clickRect(style='left: ' + clickRect.x + '; top: ' + (clickRect.y - (clickRect.scrollTop || 0)) + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
           pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
 
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
