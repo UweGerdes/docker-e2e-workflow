@@ -32,7 +32,7 @@ block content
             if config.summary && config.summary.fail > 0
               = ': '
               h3.error= config.summary.fail + ' Fehler'
-            if results && results.testCases
+            if locals.results && locals.results.testCases
               ul.testCases
                 each testCase, testCaseName in results.testCases
                   h4.testCase-name= testCaseName
