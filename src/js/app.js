@@ -96,7 +96,7 @@ handler['data-click-color'] = {
       const pix = canvasContext.getImageData(x, y, 1, 1)
       console.log(element.dataset.clickColor, x, y, pix.data[0], pix.data[1], pix.data[2], pix.data[3])
       colorOutput.textContent = '#' + rgb2hex([pix.data[0], pix.data[1], pix.data[2]])
-      positionOutput.textContent = x + ', ' + y
+      positionOutput.textContent = 'x:' + x + ', y:' + y
     })
   }
 }
