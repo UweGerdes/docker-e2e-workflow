@@ -63,6 +63,46 @@ handler['data-xhr'] = {
 }
 
 /**
+ * add action for color check
+ */
+function colorCheck() {
+  const pickerOutput = document.querySelectorAll('.color-check-output')
+  const imgContainer = document.querySelector('.image-container')
+  const img = document.querySelector('img.screenshot')
+  const canvas = document.querySelector('canvas#imgCanvas')
+  const canvasContext = canvas.getContext("2d")
+  pickerOutput.textContent = '#654321'
+  img.classList.toggle('hidden')
+  canvas.classList.toggle('hidden')
+  canvasContext.drawImage(img, 0, 0)
+}
+
+/**
+ * toggle element by id
+ */
+handler['data-click-color'] = {
+  elements: [window],
+  event: 'load',
+  func: () => {
+    const element = document.querySelector('[data-click-color]')
+    const canvas = document.querySelector('canvas#imgCanvas')
+    const canvasContext = canvas.getContext("2d")
+    const colorOutput = document.querySelector(element.dataset.clickColor)
+    const positionOutput = document.querySelector('.mouse-position-output')
+    colorCheck();
+    element.addEventListener('click', (e) => {
+      const rect = e.target.getBoundingClientRect();
+      const x = Math.round(e.clientX - rect.left); //x position within the element.
+      const y = Math.round(e.clientY - rect.top);  //y position within the element.
+      const pix = canvasContext.getImageData(x, y, 1, 1)
+      console.log(element.dataset.clickColor, x, y, pix.data[0], pix.data[1], pix.data[2], pix.data[3])
+      colorOutput.textContent = '#' + rgb2hex([pix.data[0], pix.data[1], pix.data[2]])
+      positionOutput.textContent = x + ', ' + y
+    })
+  }
+}
+
+/**
  * attach event to elements
  *
  * @param {DOMelement} element - to attach event
@@ -87,3 +127,17 @@ Object.values(handler).forEach((handler) => {
     attachEventHandler(element, handler.event, handler.func)
   })
 })
+
+function rgb2hex(colorArray) {
+  let hex = ''
+  colorArray.forEach((color) => {
+    console.log(color)
+    hex += componentToHex(color)
+  })
+  return hex.toUpperCase()
+}
+
+function componentToHex(c) {
+  let hex = c.toString(16)
+  return hex.length === 1 ? '0' + hex : hex
+}

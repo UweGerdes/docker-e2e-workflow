@@ -6,6 +6,10 @@
 
 @import './includes/layout';
 
+.hidden {
+  display: none;
+}
+
 .app {
   margin: 0 auto;
   max-width: 1500px;
@@ -65,6 +69,23 @@
     }
   }
 
+  .image-legend {
+    display: flex;
+
+    &-left {
+      flex-basis: 60%;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+
+    &-right {
+      flex-basis: 40%;
+      flex-grow: 1;
+      flex-shrink: 1;
+      text-align: right;
+    }
+  }
+
   .image-container {
     border: 4px inset #aaaaaa;
     display: inline-block;
@@ -81,6 +102,10 @@
       &:hover {
         background: rgba(255, 0, 0, 0.5);
       }
+    }
+
+    .imgCanvas {
+      cursor: crosshair;
     }
   }
 
@@ -125,6 +150,28 @@
   }
 }
 
+.mouse-position-output {
+  margin-right: 0.5em;
+}
+
+.color-check-button {
+  border: 1px solid #cccccc;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 0.5em;
+  padding: 0.2em 0.4em;
+
+  &:hover,
+  &.active {
+  border: 1px solid #666666;
+  }
+
+  &::after {
+    content: ' \1F3A8';
+    font-size: 2em;
+  }
+}
+
 .modalLayer {
   background-color: rgba(128, 128, 128, 0.3);
   height: 100%;
@@ -146,10 +193,6 @@
     @media all and (min-width: 768px) {
       width: 50%;
     }
-  }
-
-  &.hidden {
-    display: none;
   }
 }
 

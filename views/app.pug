@@ -55,24 +55,34 @@ block content
 
       .flex-center
         if results && queryCase && queryStep && results.testCases[queryCase]
-          ul#viewportList.viewportList
-            each viewportSize, viewportName in config.viewports
-              li.viewport
-                if queryViewport == viewportName
-                  = viewportName
-                else
-                  a(href='/app/'
-                    + configFile
-                    + '?viewport=' + encodeURIComponent(viewportName)
-                    + '&case=' + encodeURIComponent(queryCase)
-                    + '&step=' + encodeURIComponent(queryStep)
-                  )= viewportName
-
+          .image-legend(style= 'width: ' + (results.viewports[queryViewport].width) + 'px;')
+            .image-legend-left
+              ul#viewportList.viewportList
+                each viewportSize, viewportName in config.viewports
+                  li.viewport
+                    if queryViewport == viewportName
+                      = viewportName
+                    else
+                      a(href='/app/'
+                        + configFile
+                        + '?viewport=' + encodeURIComponent(viewportName)
+                        + '&case=' + encodeURIComponent(queryCase)
+                        + '&step=' + encodeURIComponent(queryStep)
+                      )= viewportName
+            .image-legend-right
+              span.mouse-position-output
+              span.color-check-button(data-toggle=".color-check-output, .mouse-position-output", title="Colorpicker")
+              span.color-check-output
           #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
             if clickRect
               .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
+            canvas#imgCanvas.imgCanvas.hidden(
+              width=results.viewports[queryViewport].width,
+              height=results.viewports[queryViewport].height,
+              data-click-color=".color-check-output"
+            )
           pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
 
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
