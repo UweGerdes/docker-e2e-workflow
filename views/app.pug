@@ -72,7 +72,7 @@ block content
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
             if clickRect
-              .clickRect(style='left: ' + clickRect.x + '; top: ' + (clickRect.y - (clickRect.scrollTop || 0)) + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
+              .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
           pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
 
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })

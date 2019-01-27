@@ -121,13 +121,12 @@ if (fs.existsSync(path.join(__dirname, filename))) {
                 clickElement = await driver.findElement(by(testStep.click))
                 await driver.executeScript('arguments[0].scrollIntoView();', clickElement)
                 testStep.clickRect = await clickElement.getRect()
-                if (driverBrowser === 'chrome') {
-                  testStep.clickRect.scrollTop = await driver.executeScript('return document.body.scrollTop;')
-                }
+                testStep.clickRect.scrollTop = await driver.executeScript('return document.body.scrollTop;')
               } catch (error) {
                 err(testStep, 'no element to click: ' + testStep.click + ' ' + error)
               }
             }
+            await driver.executeScript('document.body.scrollTop = 0;')
             const screenshot = await driver.takeScreenshot()
             await saveFile(
               path.join(resultPath, testCaseName, label + '.png'),
