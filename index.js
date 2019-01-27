@@ -23,7 +23,8 @@ chai.use(chaiAsPromised)
 
 let testData = null
 const filename = argv.cfg || path.join('config', 'default.js')
-const driverBrowser = 'chrome'
+const driverBrowser = 'firefox'
+// const driverBrowser = 'chrome'
 
 if (fs.existsSync(path.join(__dirname, filename))) {
   log('Executing: "' + path.join(__dirname, filename) + '"')
