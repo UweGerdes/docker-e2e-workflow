@@ -70,9 +70,9 @@ block content
                         + '&step=' + encodeURIComponent(queryStep)
                       )= viewportName
             .image-legend-right
-              span.mouse-position-output
-              span.color-check-button(data-toggle=".color-check-output, .mouse-position-output", title="Colorpicker")
-              span.color-check-output
+              span.color-check-button(data-toggle=".color-check-output, .mouse-position-output, img.screenshot, canvas#imgCanvas", title="Colorpicker")
+              span.mouse-position-output.hidden
+              span.color-check-output.hidden
           #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
             img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect

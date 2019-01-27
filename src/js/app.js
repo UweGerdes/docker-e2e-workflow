@@ -63,17 +63,16 @@ handler['data-xhr'] = {
 }
 
 /**
- * add action for color check
+ * build canvas for color picking
  */
-function colorCheck() {
-  const pickerOutput = document.querySelectorAll('.color-check-output')
-  const imgContainer = document.querySelector('.image-container')
-  const img = document.querySelector('img.screenshot')
+function buildCanvas() {
+  const img = document.querySelector('.image-container img.screenshot')
   const canvas = document.querySelector('canvas#imgCanvas')
+  canvas.width = img.width
+  canvas.height = img.height
   const canvasContext = canvas.getContext("2d")
-  pickerOutput.textContent = '#654321'
-  img.classList.toggle('hidden')
-  canvas.classList.toggle('hidden')
+  canvasContext.fillStyle = "#FFFFFF"
+  canvasContext.fillRect(0, 0, canvas.width, canvas.height);
   canvasContext.drawImage(img, 0, 0)
 }
 
@@ -89,7 +88,7 @@ handler['data-click-color'] = {
     const canvasContext = canvas.getContext("2d")
     const colorOutput = document.querySelector(element.dataset.clickColor)
     const positionOutput = document.querySelector('.mouse-position-output')
-    colorCheck();
+    buildCanvas();
     element.addEventListener('click', (e) => {
       const rect = e.target.getBoundingClientRect();
       const x = Math.round(e.clientX - rect.left); //x position within the element.
