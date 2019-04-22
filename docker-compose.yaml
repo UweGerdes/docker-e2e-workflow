@@ -3,13 +3,13 @@ version: "3"
 services:
 
   e2e-hub:
-    image: selenium/hub:3.141.59-europium
+    image: selenium/hub
     ports:
       - 51344:4444
     hostname: e2e-hub
 
   e2e-chrome:
-    image: selenium/node-chrome:3.141.59-europium
+    image: selenium/node-chrome
     volumes:
       - /dev/shm:/dev/shm
     depends_on:
@@ -20,7 +20,7 @@ services:
       JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
   e2e-firefox:
-    image: selenium/node-firefox:3.141.59-europium
+    image: selenium/node-firefox
     volumes:
       - /dev/shm:/dev/shm
     depends_on:
