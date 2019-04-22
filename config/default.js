@@ -45,7 +45,7 @@ module.exports = {
           title: 'Webserver - E2E Workflow',
           elements: {
             '//h1': 'Keine Config geladen',
-            '//a[@href="/app/config/default.js"]': 'default test e2e workflow'
+            '//a[@href="/app/config/default.js?viewport=Mobile"]': 'E2E Workflow'
           },
           elementsNotExist: [
             '//a[@href="/app"]'
