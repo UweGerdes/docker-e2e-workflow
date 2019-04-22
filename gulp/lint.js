@@ -40,7 +40,7 @@ const tasks = {
    * @task jsstandard
    * @namespace tasks
    */
-  'jsstandard': () => gulp.src(config.gulp.watch.jsstandard)
+  'jsstandard': gulp.src(config.gulp.watch.jsstandard)
     .pipe(cache('jsstandard'))
     // .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
     .pipe(standard())
@@ -56,11 +56,9 @@ const tasks = {
    * @task jsonlint
    * @namespace tasks
    */
-  'jsonlint': () => {
-    return gulp.src(config.gulp.watch.jsonlint)
-      .pipe(jsonlint())
-      .pipe(jsonlint.reporter())
-  },
+  'jsonlint': gulp.src(config.gulp.watch.jsonlint)
+    .pipe(jsonlint())
+    .pipe(jsonlint.reporter()),
   /**
    * #### Lint less files
    *
@@ -69,13 +67,11 @@ const tasks = {
    * @task lesshint
    * @namespace tasks
    */
-  'lesshint': () => {
-    return gulp.src(config.gulp.watch.less)
-      .pipe(lesshint())
-      // .on('error', function () {})
-      .pipe(lesshint.reporter())
-      .pipe(lesshint.failOnError())
-  },
+  'lesshint': gulp.src(config.gulp.watch.less)
+    .pipe(lesshint())
+    // .on('error', function () {})
+    .pipe(lesshint.reporter())
+    .pipe(lesshint.failOnError()),
   /**
    * #### Lint yaml files
    *
@@ -84,13 +80,11 @@ const tasks = {
    * @task yamllint
    * @namespace tasks
    */
-  'yamllint': () => {
-    return gulp.src(config.gulp.watch.yamllint)
-      .pipe(yamlValidate({ space: 2 }))
-      .on('error', (msg) => {
-        console.log(msg)
-      })
-  },
+  'yamllint': gulp.src(config.gulp.watch.yamllint)
+    .pipe(yamlValidate({ space: 2 }))
+    .on('error', (msg) => {
+      console.log(msg)
+    }),
   /**
    * #### Lint pug files
    *
@@ -99,10 +93,8 @@ const tasks = {
    * @task puglint
    * @namespace tasks
    */
-  'puglint': () => {
-    return gulp.src(config.gulp.watch.puglint)
-      .pipe(pugLinter({ failAfterError: true }))
-  }
+  'puglint': gulp.src(config.gulp.watch.puglint)
+    .pipe(pugLinter({ failAfterError: true }))
 }
 
 loadTasks.importTasks(tasks)
