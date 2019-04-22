@@ -1,4 +1,4 @@
-# .dockerignore for compare-layouts
+# .dockerignore for e2e-workflow
 .git
 node_modules
 results/*
