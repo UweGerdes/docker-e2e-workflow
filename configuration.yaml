@@ -22,6 +22,7 @@ gulp:
       - 'gulp/**/*.js'
       - 'index.js'
       - 'lib/**/*.js'
+      - '!lib/ansiColors.js'
       - 'server.js'
     yamllint:
       - '**/*.yaml'
@@ -33,7 +34,6 @@ gulp:
       - 'views/**/*.pug'
     server-restart:
       - './server.js'
-      - 'lib/ansiColors.js'
       - 'lib/config.js'
       - 'lib/ipv4addresses.js'
     test-e2e-workflow-default:
