@@ -41,7 +41,7 @@
     "acorn": "^6.1.1",
     "ajv": "^6.10.0",
     "glob": "^7.1.2",
-    "gulp": "^4.0.0",
+    "gulp": "^3.9.1",
     "gulp-autoprefixer": "^6.0.0",
     "gulp-cached": "^1.1.1",
     "gulp-develop-server": "^0.5.2",

@@ -15,7 +15,7 @@ RUN apt-get update && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 	npm install -g \
-				gulp \
+				gulp@3.9.1 \
 				nodemon && \
 	npm install && \
 	chown -R ${USER_NAME}:${USER_NAME} ${NODE_HOME}
