@@ -101,8 +101,7 @@ const tasks = {
    */
   'puglint': () => {
     return gulp.src(config.gulp.watch.puglint)
-      .pipe(pugLinter())
-      .pipe(pugLinter.reporter('fail'))
+      .pipe(pugLinter({ failAfterError: true }))
   }
 }
 
