@@ -38,6 +38,7 @@
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "devDependencies": {
+    "ajv": "^6.10.0",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
