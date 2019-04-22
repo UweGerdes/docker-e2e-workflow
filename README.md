@@ -2,11 +2,11 @@
 
 Regression testing for frontend developement.
 
-At the moment the configuration.yaml and docker-compose.yaml are wired for use with my docker-vcards project.
+At the moment the configuration.yaml and docker-compose.yaml are wired for use with my docker-expressjs-boilerplate projects (tests in modules/**/tests/e2e-workflow/*.js). Copy docker-compose.yaml to other project, make some changes and use.
 
 ## Config File
 
-The configuration file defines urls, viewport widths and page elements.
+The configuration file defines urls, viewport widths and page elements. A simple example is `config/default.js`.
 
 ## Docker Build
 
@@ -29,10 +29,12 @@ Open the server address listed in the output. Read content.
 You might want to use some of these commands:
 
 ```bash
-$ docker-compose exec e2e-workflow-vcards bash
+$ docker-compose exec e2e-workflow bash
 ```
 
 ## Changelog
+
+v0.4.0 update dependencies, refactoring
 
 v0.3.3 template refactoring, update styling
 
