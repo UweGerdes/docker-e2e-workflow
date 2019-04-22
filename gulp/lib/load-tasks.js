@@ -15,7 +15,7 @@ module.exports = {
    */
   importTasks: (tasks) => {
     Object.keys(tasks)
-      .forEach((task) => { // jscs:ignore jsDoc
+      .forEach((task) => {
         if (typeof tasks[task] === 'function') {
           gulp.task(task, tasks[task])
         } else {

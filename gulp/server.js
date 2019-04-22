@@ -77,7 +77,7 @@ const tasks = {
    * @param {function} callback - gulp callback
    */
   'server-changed': (callback) => {
-    server.changed((error) => { // jscs:ignore jsDoc
+    server.changed((error) => {
       if (!error) {
         livereload.changed({ path: '/', quiet: false })
       }
