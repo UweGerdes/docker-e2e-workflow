@@ -8,6 +8,9 @@
     "enabled": true,
     "style": "one_space"
   },
+  "spaceAroundComma": {
+    "allowNewline" : true
+  },
   "zeroUnit": {
     "style": "no_unit"
   }
