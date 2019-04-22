@@ -65,7 +65,7 @@ const tasks = {
   'server-start': (callback) => {
     server.listen({
       path: config.server.server,
-      env: { VERBOSE: true, FORCE_COLOR: 1 }
+      env: { VERBOSE: config.server.verbose === true, FORCE_COLOR: 1 }
     },
     callback)
   },
