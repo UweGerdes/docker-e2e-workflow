@@ -94,7 +94,7 @@ if (fs.existsSync(path.join(__dirname, filename))) {
               for (const selector of Object.keys(testStep.input)) {
                 let element = null
                 try {
-                  element = driver.findElement(by(selector))
+                  element = await driver.findElement(by(selector))
                 } catch (error) {
                   err(testStep, 'input field "' + selector + '" not found')
                 }
