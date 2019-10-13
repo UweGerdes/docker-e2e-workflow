@@ -1,0 +1,93 @@
+// header.less
+
+.header {
+  background-color: #f0f0f0;
+
+  &-content {
+    margin: 0 auto;
+    max-width: ~'calc(1200px + 2em)';
+    padding: 0 1em;
+
+    .login-status {
+      text-align: right;
+
+      &-ok {
+        display: inline-block;
+        padding: 1em;
+      }
+
+      &-login,
+      &-logout {
+        display: inline-block;
+
+        &:hover {
+          background-color: #ffffff;
+          color: #666666;
+        }
+      }
+
+      .login-link,
+      .logout-link {
+        color: #000000;
+        display: inline-block;
+        padding: 1em;
+        text-decoration: none;
+      }
+    }
+
+    .flex {
+      &-left {
+        flex: 2 0 auto;
+        order: 1;
+      }
+
+      &-right {
+        flex: 1 0 auto;
+        order: 2;
+      }
+    }
+  }
+
+  &-breadcrumbs {
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  &-breadcrumb {
+    float: left;
+
+    &-link {
+      color: #000000;
+      display: block;
+      padding: 1em;
+      text-align: center;
+      text-decoration: none;
+
+      &:hover {
+        background-color: #ffffff;
+        color: #666666;
+      }
+
+      &:before {
+        content: '> ';
+      }
+    }
+
+    &:first-child &-link {
+      &:before {
+        content: '';
+      }
+    }
+
+    &-label {
+      color: #000000;
+      padding: 1em;
+
+      &:before {
+        content: '> ';
+      }
+    }
+  }
+}

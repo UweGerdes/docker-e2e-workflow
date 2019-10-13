@@ -1,5 +1,5 @@
 /**
- * Testdata for vcards
+ * Testdata for e2e-workflow default
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */

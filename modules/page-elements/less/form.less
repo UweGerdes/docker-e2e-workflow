@@ -1,0 +1,207 @@
+// form.less
+
+.field {
+  background-color: #f0f0f0;
+  margin: 0 0 0.2em;
+  padding: 1em;
+
+  &container {
+    background-color: #f0f0f0;
+    display: flex;
+    margin: 0 0 0.2em;
+    padding: 1em;
+  }
+
+  &-label {
+    align-self: flex-start;
+    display: block;
+    margin: 0 0 0.5em;
+    padding-top: 0.5em;
+  }
+
+  &-value {
+    &-input {
+      margin-bottom: 0.5em;
+      width: 100%;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .input-text,
+    .input-email,
+    .input-url,
+    .input-password {
+      border: 1px solid #666666;
+      border-radius: 5px;
+      padding: 4px 6px;
+      width: 100%;
+    }
+
+    .input-checkbox {
+      opacity: 0;
+
+      & + .checkbox-label {
+        display: inline-block;
+        line-height: 1.5em;
+        margin-left: -20px;
+        padding: 3px 0;
+
+        &:before {
+          content: '\2610';
+          float: left;
+          font-size: 1.5em;
+          line-height: 1em;
+          padding: 0 0.3em 0 0;
+        }
+      }
+
+      &:checked + .checkbox-label {
+        &:before {
+          content: '\2611';
+        }
+      }
+    }
+
+    .input-radio {
+      opacity: 0;
+
+      & + .radio-label {
+        display: inline-block;
+        line-height: 1.5em;
+        padding: 3px 0 0;
+
+        &:nth-child(2) {
+          margin-left: -20px;
+        }
+
+        &:before {
+          content: '\25CE';
+          float: left;
+          font-size: 1.5em;
+          line-height: .8em;
+          padding: 0 0.3em 0 0;
+        }
+      }
+
+      &:checked + .radio-label {
+        &:before {
+          content: '\25C9';
+        }
+      }
+    }
+
+    .input-select {
+      border: 1px solid #666666;
+      border-radius: 5px;
+      margin-right: 0.5em;
+      padding: 4px 6px;
+    }
+
+    .input-textarea {
+      border: 1px solid #666666;
+      border-radius: 5px;
+      font-family: @font_family;
+      margin-right: 0.5em;
+      padding: 4px 6px;
+      width: 100%;
+    }
+
+    .input-button,
+    .input-submit {
+      border: 1px solid #666666;
+      border-radius: 5px;
+      margin-right: 0.5em;
+      padding: 4px 6px;
+    }
+
+    &-group {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    &-group-input {
+      flex: 1 0 100%;
+      margin-bottom: 1em;
+
+      &.field_address-street {
+        flex: 1 0 70%;
+        margin-right: 0.5em;
+
+        @media all and (min-width: 500px) {
+          flex: 1 0 84%;
+        }
+
+        @media all and (min-width: 768px) {
+          flex: 1 0 75%;
+        }
+      }
+
+      &.field_address-housenumber {
+        flex: 0 0 6em;
+      }
+
+      &.field_address-zip {
+        flex: 0 0 5em;
+        margin-right: 0.5em;
+      }
+
+      &.field_address-city {
+        flex: 1 0 49%;
+      }
+    }
+
+    &-output {
+      display: inline-block;
+      padding: 0.5em 0;
+    }
+  }
+
+  @media all and (min-width: 768px) {
+    align-items: baseline;
+    display: flex;
+
+    &-label {
+      flex-basis: 20%;
+      flex-grow: 1;
+      padding-right: 1em;
+      text-align: right;
+    }
+
+    &-value {
+      flex-basis: 80%;
+      flex-grow: 1;
+
+      & > &-input {
+        width: 80%;
+      }
+
+      &-group {
+        justify-content: space-between;
+        width: 80%;
+      }
+
+      &-group &-input {
+        flex: 0 0 79%;
+      }
+    }
+  }
+
+  @media all and (min-width: 1024px) {
+    &-value {
+      & > &-input {
+        width: 60%;
+      }
+
+      &-group {
+        width: 60%;
+      }
+
+      &-group &-input {
+        flex: 0 0 59%;
+      }
+    }
+  }
+}

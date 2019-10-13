@@ -1,260 +1,371 @@
 /**
- * ## HTTP-Server for e2e-workflow results
+ * HTTP-Server for expressjs projects
  *
  * @module server
  */
-'use strict'
 
-const bodyParser = require('body-parser')
-const chalk = require('chalk')
-const dateFormat = require('dateformat')
-const exec = require('child_process').exec
-const express = require('express')
-const fs = require('fs')
-const morgan = require('morgan')
-const path = require('path')
-const config = require('./lib/config')
-const ansiColors = require('./lib/ansiColors')
-const ipv4addresses = require('./lib/ipv4addresses')
-const files = require('./lib/files')
-const app = express()
+'use strict';
 
-const httpPort = config.server.httpPort
-const docRoot = config.server.docroot
-const modulesRoot = config.server.modules
-const verbose = config.server.verbose
+const bodyParser = require('body-parser'),
+  chalk = require('chalk'),
+  cookieParser = require('cookie-parser'),
+  dateFormat = require('dateformat'),
+  express = require('express'),
+  createGracefulShutdownMiddleware = require('express-graceful-shutdown'),
+  session = require('express-session'),
+  fs = require('fs'),
+  glob = require('glob'),
+  https = require('https'),
+  i18n = require('i18n'),
+  MemoryStore = require('memorystore')(session),
+  morgan = require('morgan'),
+  path = require('path'),
+  config = require('./lib/config'),
+  ipv4addresses = require('./lib/ipv4addresses'),
+  log = require('./lib/log'),
+  app = express(),
+  server = require('http').createServer(app);
+
+const options = {
+  key: fs.readFileSync(path.join(__dirname, config.server.httpsKey)),
+  cert: fs.readFileSync(path.join(__dirname, config.server.httpsCert))
+};
+const httpsServer = https.createServer(options, app);
+
+let routers = { };
 
 /**
- * Weberver logging
+ * Weberver logging: colored log format starting with [time]
  *
- * using log format starting with [time]
+ * @name set_logformat
  */
-if (verbose) {
-  morgan.token('time', () => { // jscs:ignore jsDoc
-    return dateFormat(new Date(), 'HH:MM:ss')
-  })
+/* c8 ignore next 7 */
+if (config.server.verbose) {
+  morgan.token('time', () => {
+    return dateFormat(new Date(), 'HH:MM:ss');
+  });
   app.use(morgan('[' + chalk.gray(':time') + '] ' +
-    ':method :status :url :res[content-length] Bytes - :response-time ms'))
+    ':method :status :url :res[content-length] Bytes - :response-time ms'));
 }
 
-// base directory for views
-app.set('views', __dirname)
+/**
+ * Serve static files for base route and /jsdoc
+ *
+ * @name request_serve_static_files
+ */
+app.use(express.static(config.server.docroot));
+app.use(express.static(config.server.generated));
+app.use('/jsdoc', express.static(config.gulp.build.jsdoc.dest));
 
-// render ejs files
-app.set('view engine', 'ejs')
+/**
+ * Do graceful shutdown on SIGTERM signal
+ *
+ * @name server_graceful_shutdown
+ */
+app.use(createGracefulShutdownMiddleware(server, { forceTimeout: 30000 }));
 
-// work on post requests
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+/**
+ * Routes from modules
+ *
+ * @name module_router_loader
+ */
+glob.sync(config.server.modules + '/*/server/index.js')
+  .forEach((filename) => {
+    const regex = new RegExp(config.server.modules + '(/[^/]+)/server/index.js');
+    const baseRoute = filename.replace(regex, '$1');
+    routers[baseRoute] = require(filename);
+  });
 
-// Serve static files
-app.use(express.static(docRoot))
+/**
+ * Default base directory for views
+ *
+ * @name view_default_directory
+ */
+app.set('views', __dirname);
+
+/**
+ * Default render ejs files
+ *
+ * @name view_engine_default_ejs
+ */
+app.set('view engine', 'ejs');
+
+/**
+ * Use body-parser.json on post requests
+ *
+ * @name use_bodyParser
+ */
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+/**
+ * Use cookie-parser on requests
+ *
+ * @name use_cookieParser
+ */
+app.use(cookieParser());
+
+/**
+ * Use i18n for requests
+ *
+ * @name use_i18n
+ */
+i18n.configure({
+  defaultLocale: 'de',
+  directory: config.gulp.build.locales.dest,
+  autoReload: true,
+  updateFiles: false,
+  cookie: 'lang',
+  queryParameter: 'lang'
+});
+app.use(i18n.init);
+app.use((req, res, next) => {
+  if (req.query.lang) {
+    res.cookie('lang', req.query.lang, { maxAge: 900000, httpOnly: true });
+  } else if (!res.cookie.lang) {
+    const lang = req.acceptsLanguages(...Object.keys(i18n.getCatalog()));
+    if (lang) {
+      i18n.setLocale(lang);
+    }
+  }
+  next();
+});
+
+/**
+ * Use session handling with 24h memorystore
+ *
+ * @name use_session
+ */
+app.use(session({
+  store: new MemoryStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
+  secret: 'uif fsranöaiorawrua vrw',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    // secure: true, // HTTPS
+    // domain: 'example.com',
+    // path: 'foo/bar',
+    // maxAge: expiryDate
+  }
+}));
+
+/**
+ * Use express in modules
+ *
+ * @name module_router_use_express
+ */
+for (const router of Object.values(routers)) {
+  /* c8 ignore next 3 */
+  if (router.useExpress) {
+    router.useExpress(app);
+  }
+}
 
 /**
  * Route for root dir
  *
- * @param {Object} req - request
- * @param {Object} res - response
+ * @param {object} req - request
+ * @param {object} res - response
  */
-app.get('/', (req, res) => {
-  res.sendFile(path.join(docRoot, 'index.html'))
-})
+/* c8 ignore next 3 */
+const requestGetBaseRoute = (req, res) => {
+  res.sendFile(path.join(config.server.docroot, 'index.html'));
+};
+app.get('/', requestGetBaseRoute);
 
 /**
  * Route for app main page
  *
- * @param {Object} req - request
- * @param {Object} res - response
+ * @param {object} req - request
+ * @param {object} res - response
  */
-app.get('/app', async (req, res) => {
-  res.render(viewPath('app.pug'), {
-    title: 'E2E Workflow',
-    hostname: req.hostname,
-    livereloadPort: getLivereloadPort(req),
-    configs: await getConfigs(),
-    config: {
-      name: 'Keine Config geladen',
-      configfile: 'none'
-    },
-    results: { status: 'not executed' }
-  })
-})
+const requestGetAppRoute = (req, res) => {
+  res.render(viewPath('app'), config.getData(req));
+};
+app.get('/app', requestGetAppRoute);
 
 /**
- * Route for app config page
+ * Route for i18n ejs test page
  *
- * @param {Object} req - request
- * @param {Object} res - response
+ * @param {object} req - request
+ * @param {object} res - response
  */
-app.get(/^\/app\/(.+)$/, async (req, res) => {
-  const config = files.requireFile(req.params[0])
-  let results
-  const resultsFilename = req.params[0] || path.join('config', 'default.js')
-  const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''))
-  try {
-    results = files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'))
-  } catch (e) { }
-  res.render(viewPath('app.pug'), {
-    title: 'E2E Workflow',
-    hostname: req.hostname,
-    livereloadPort: getLivereloadPort(req),
-    configs: await getConfigs(),
-    configFile: req.params[0],
-    config: config,
-    queryViewport: req.query.viewport || '',
-    queryCase: req.query.case || '',
-    queryStep: req.query.step || '',
-    results: results,
-    resultsPath: resultsPath
-  })
-})
+const requestGetI18nRoute = (req, res) => {
+  res.render(viewPath('i18n-test'), config.getData(req));
+};
+app.get('/i18n-ejs', requestGetI18nRoute);
 
 /**
- * Route for results
- *
- * @param {Object} req - request
- * @param {Object} res - response
+ * Route for error 500 test page - simply throw error
  */
-app.get(/^(\/results\/.+)$/, (req, res) => {
-  res.sendFile(path.join(__dirname, req.params[0]))
-})
+const requestGet500Route = () => {
+  throw new Error('testing server error');
+};
+app.get('/error500', requestGet500Route);
 
 /**
- * Run test
+ * Server listens on process.env.SERVER_PORT
  *
- * @param {Object} req - request
- * @param {Object} res - response
+ * @name server_listen
  */
-app.get(/^\/run\/(.+)$/, (req, res) => {
-  runConfig(res, req.params[0])
-})
+server.listen(process.env.SERVER_PORT);
+/**
+ * Server fires on error
+ *
+ * @event server_listen:onError
+ */
+server.on('error', onError);
+/**
+ * Server fires on listening
+ *
+ * @event server_listen:onListening
+ */
+server.on('listening', onListening.bind(null, 'http', process.env.SERVER_PORT));
 
 /**
- * Route for everything else
+ * Server listens on process.env.HTTPS_PORT
  *
- * @param {Object} req - request
- * @param {Object} res - response
+ * @name server_listen
  */
-app.get('*', (req, res) => {
-  res.status(404).render(viewPath('404.ejs'), {
-    hostname: req.hostname,
-    livereloadPort: getLivereloadPort(req)
-  })
-})
+httpsServer.listen(process.env.HTTPS_PORT);
+/**
+ * Server fires on error
+ *
+ * @event server_listen:onError
+ */
+httpsServer.on('error', onError);
+/**
+ * Server fires on listening
+ *
+ * @event server_listen:onListeningHttps
+ */
+httpsServer.on('listening', onListening.bind(null, 'https', process.env.HTTPS_PORT));
 
-// Fire it up!
-console.log('[' + chalk.greenBright(dateFormat(new Date(), 'HH:MM:ss')) + '] ' + 'server listening on ' +
-  chalk.greenBright('http://' + ipv4addresses.get()[0] + ':' + httpPort))
+/**
+ * connect server and use routes from modules
+ *
+ * @name module_router_connect_server
+ */
+for (const [baseRoute, router] of Object.entries(routers)) {
+/* c8 ignore next 3 */
+  if (router.connectServer) {
+    router.connectServer(server, httpsServer);
+  }
+  app.use(baseRoute, router.router);
+}
 
-app.listen(httpPort)
+/**
+ * Route for not found errors
+ *
+ * @param {object} req - request
+ * @param {object} res - response
+ */
+const requestGet404Route = (req, res) => {
+  let data = config.getData(req);
+  if (req.error) {
+    data.error = req.error;
+  } else {
+    data.error = {
+      code: 404,
+      name: 'not found'
+    };
+  }
+  res.status(404).render(viewPath('error'), data);
+};
+app.get('*', requestGet404Route);
 
 /**
  * Handle server errors
  *
- * @param {Object} err - error
- * @param {Object} req - request
- * @param {Object} res - response
- * @param {Object} next - needed for complete signature
+ * @param {object} err - error
+ * @param {object} req - request
+ * @param {object} res - response
+ * @param {object} next - needed for complete signature
  */
-app.use((err, req, res, next) => {
-  console.error('SERVER ERROR:', err)
+const requestError500Handler = (err, req, res, next) => {
+  /* c8 ignore next 3 */
+  if (req.path !== '/error500/') {
+    console.error('SERVER ERROR:', err.message);
+  }
   if (err) {
-    res.status(500)
-      .render(viewPath('500.ejs'), {
-        error: err,
-        hostname: req.hostname,
-        livereloadPort: getLivereloadPort(req)
-      })
+    res
+      .status(500)
+      .render(viewPath('error'), {
+        error: {
+          code: 500,
+          name: 'server error',
+          error: err
+        },
+        ...config.getData(req)
+      });
+  /* c8 ignore next 3 */
   } else {
-    next()
+    next();
   }
-})
-
-/**
- * Get port number for livereload
- *
- * @private
- * @param {Object} req - request
- */
-function getLivereloadPort (req) {
-  let livereloadPort = config.server.livereloadPort
-  const host = req.get('Host')
-  if (host.indexOf(':') > 0) {
-    livereloadPort = parseInt(host.split(':')[1]) + 1
-  }
-  return livereloadPort
-}
+};
+app.use(requestError500Handler);
 
 /**
  * Get the path for file to render
  *
- * @private
- * @param {String} page - page type
- * @param {String} type - file type (ejs, jade, pug, html)
+ * @param {string} page - page type
+ * @param {string} type - file type (ejs, jade, pug, html)
  */
-function viewPath (page = '404.ejs') {
-  return modulesRoot + '/views/' + page
+/* c8 ignore next 3 */
+function viewPath(page = 'error', type = 'ejs') {
+  return config.server.modules + '/pages/views/' + page + '.' + type;
 }
 
 /**
- * get configuration files and labels
- */
-async function getConfigs () {
-  let paths = []
-  let configs = {}
-  if (process.env.NODE_ENV === 'development') {
-    paths = config.gulp.tests['test-e2e-workflow-default']
-  }
-  paths = paths.concat(config.gulp.tests['test-e2e-workflow-modules'])
-  for (const filepath of paths) {
-    for (const filename of await files.getFilenames(filepath)) {
-      let config = { }
-      let resultFile = path.join('.', 'results', filename.replace(/\.js$/, ''), 'results.json')
-      if (fs.existsSync(resultFile)) {
-        config = await files.requireFile(resultFile)
-      } else {
-        config = await files.requireFile(filename)
-      }
-      config.filename = filename
-      if (configs[config.name]) {
-        throw new Error('duplicate test name')
-      }
-      configs[config.name] = config
-    }
-  }
-  return configs
-}
-
-/**
- * Execute the tests
+ * Event listener for HTTP server "error" event.
  *
- * @private
- * @param {Object} res - response
- * @param {String} configFile - filename
+ * @param {object} error - error object
+ * @listens server_listen:onError
  */
-function runConfig (res, configFile) {
-  console.log('run', configFile)
-  res.status(200)
-  const loader = exec('export FORCE_COLOR=1; node index.js --cfg=' + configFile)
-  loader.stdout.on('data', (data) => {
-    console.log(data.toString().trim())
-    res.write(ansiColors.toHTML(data.toString().trim().replace(/\n/, '<br />')) + '<br />')
-    res.flush()
-  })
-  loader.stderr.on('data', (data) => {
-    console.log('stderr: ' + data.toString().trim())
-    res.write(ansiColors.toHTML('stderr: ' + data.toString().trim().replace(/\n/, '<br />')) + '<br />')
-    res.flush()
-  })
-  loader.on('error', (err) => {
-    console.log('error: ' + err.toString().trim())
-    res.write(ansiColors.toHTML('err: ' + err.toString().trim().replace(/\n/, '<br />')) + '<br />')
-  })
-  loader.on('close', (code) => {
-    if (code > 0) {
-      console.log('e2e-workflow exit-code: ' + code)
-      res.write('e2e-workflow exit-code: ' + code)
-    }
-    res.end()
-  })
+/* c8 ignore next 18 */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(process.env.SERVER_PORT + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(process.env.SERVER_PORT + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
 }
+
+/**
+ * Event listener for server "listening" event
+ *
+ * emits event for gulp server-start task
+ *
+ * @param {string} proto - protocol
+ * @param {string} port - error object
+ * @listens server_listen:onListeningHttps
+ */
+function onListening(proto, port) {
+  log.info('server listening on ' +
+    chalk.greenBright(proto + '://' + ipv4addresses.get()[0] + ':' + port));
+  /* c8 ignore next 3 */
+  if (process.send !== undefined && proto === 'https') {
+    process.send('server listening');
+  }
+}
+
+/**
+ * Show message on exit
+ */
+/* c8 ignore next 3 */
+process.on('exit', () => {
+  console.log('server exited.');
+});

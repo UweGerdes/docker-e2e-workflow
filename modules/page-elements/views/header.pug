@@ -1,0 +1,22 @@
+//- header.pug
+block header
+  #header.header
+    #header-content.header-content.flex-wrapper
+      .flex-block.flex-left
+        ul.header-breadcrumbs
+          block breadcrumbs
+            li.header-breadcrumb
+              a.header-breadcrumb-link(href='/app/') Home
+      if session
+        .flex-block.flex-right
+          #login-status.login-status
+            block loginStatus
+              if session.userdata
+                .login-status-ok= 'Angemeldet über ' + session.oauthProvider + ' als '  + session.userdata.username
+                | #{' '}
+                .login-status-logout
+                  a.logout-link(href=(session.logoutLink ? session.logoutLink : '/login/logout/')) abmelden
+              else
+                .login-status-login
+                  a.login-link(href=(locals.loginLink ? loginLink : '/login/')) anmelden
+

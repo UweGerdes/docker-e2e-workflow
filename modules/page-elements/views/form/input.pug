@@ -1,0 +1,69 @@
+//- widgets/form/input.pug
+
+mixin input(attr)
+  - name = attr.name
+  if attr.type == 'submit'
+    - delete(attr.name)
+  - text = ''
+  if attr.text != ''
+    - text = __(attr.text)
+    - delete(attr.text)
+  if attr.options
+    if attr.type == 'select'
+      - options = attr.options
+      - delete(attr.type)
+      - delete(attr.label)
+      - options = attr.options
+      - delete(attr.options)
+      select.input-select&attributes(attr)
+        each label, value in options
+          option(
+            value=value,
+            selected=(value == values[attr.name])
+          )= __(label)
+      - attr.type = 'select'
+    else
+      - i = 0
+      each label, value in attr.options
+        input(
+          class='input-' + attr.type,
+          type=attr.type,
+          name=attr.name,
+          value=value,
+          id=attr.name + i,
+          checked=(attr.type == 'radio' && value == values[attr.name])
+        )
+        label(class=attr.type + '-label', for=attr.name + i++)= __(label)
+  else if attr.type == 'hidden'
+    input(
+      type='hidden',
+      name=attr.name,
+      value=(attr.value ? attr.value : values[attr.name])
+    )
+  else if attr.type == 'textarea'
+    if values[attr.name]
+      - value = values[attr.name]
+    else
+      if attr.value != ''
+        - value = __(attr.value)
+    if attr.placeholder != ''
+      - attr.placeholder = __(attr.placeholder)
+    - delete(attr.label)
+    - delete(attr.value)
+    textarea.input-textarea&attributes(attr)= value
+  else
+    if values[attr.name]
+      if attr.type != 'checkbox'
+        - attr.value = values[attr.name]
+    else
+      if attr.value != ''
+        - attr.value = __(attr.value)
+    if attr.placeholder != ''
+      - attr.placeholder = __(attr.placeholder)
+    input(
+      class='input-' + attr.type,
+      id=attr.name,
+      checked=(attr.type == 'checkbox' && attr.value == values[attr.name])
+    )&attributes(attr)
+  if text
+    label(class=attr.type + '-label', for=attr.name)= text

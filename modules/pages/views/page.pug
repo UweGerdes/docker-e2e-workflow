@@ -1,0 +1,11 @@
+//- page.pug
+doctype html
+html
+  head
+    include ../../page-elements/views/head.pug
+  body
+    #page.page
+      include ../../page-elements/views/header.pug
+      #content.content
+        block content
+      include ../../page-elements/views/footer.pug

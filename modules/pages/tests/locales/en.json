@@ -1,0 +1,7 @@
+{
+  "translate string": "Translate String",
+  "number %s": {
+    "one": "Number one",
+    "other": "Number %s"
+  }
+}

@@ -1,0 +1,11 @@
+//- widgets/fieldcontainer.pug
+
+include input.pug
+
+mixin fieldcontainer(attr)
+  .fieldcontainer(class='fieldcontainer_' + (attr.class ? attr.class : attr.name))
+    .field-label= __(attr.label)
+    - delete(attr.label)
+    .field-value
+      .field-value-input(class='field-value-input-' + attr.name)
+        + input(attr)

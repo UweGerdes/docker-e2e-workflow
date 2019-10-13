@@ -202,7 +202,7 @@ function saveFile (file, content) {
             log(chalk.red(file + ' save error: ' + error))
             reject(new Error('file not saved'))
           } else {
-            resolve(file + 'saved')
+            resolve(file + ' saved')
           }
         }
       )

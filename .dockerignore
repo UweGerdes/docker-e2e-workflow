@@ -1,4 +1,6 @@
-# .dockerignore for e2e-workflow
-.git
-node_modules
-results/*
+# dockerignore
+/.git
+/coverage
+/deploy
+/docs/jsdoc
+/results

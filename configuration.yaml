@@ -1,41 +1,112 @@
 #
-#  Configuration for e2e.workflow
+#  Configuration for gulp expressjs projects
 #
-
 gulp:
+  start:
+    development:
+      gulp:
+        - 'lint'
+        - 'build'
+        - 'watch'
+        - 'livereload-start'
+        - 'server-start'
+        - 'tests'
+        - 'livereload'
+#        - 'livereload-all'
+      build:
+        - 'less'
+        - 'js'
+        - 'locales'
+#        - 'jsdoc'
+      tests:
+        - 'test-modules'
+      lint:
+        - 'ejslint'
+        - 'eslint'
+        - 'jsonlint'
+        - 'yamllint'
+        - 'puglint'
+      server:
+        - 'server-changed'
+        - 'tests'
+    staging:
+      gulp:
+        - 'watch'
+        - 'server-start'
+      build: []
+      tests: []
+      lint: []
+      server:
+        - 'server-changed'
+      watch:
+        - 'server'
+    production:
+      gulp:
+        - 'build'
+        - 'server-start'
+      build:
+        - 'less'
+        - 'js'
+        - 'locales'
+      tests: []
+      lint: []
+      server:
+        - 'server-changed'
   watch:
-    js:
-      - 'src/js/**/*.js'
-    jsdoc:
-      - 'index.js'
-      - 'gulpfile.js'
-      - 'server.js'
+    eslint:
+      - '*.js'
+      - '.eslintrc.js'
       - 'gulp/**/*.js'
-      - 'src/**/*.js'
-    jsonlint:
-      - '*.json'
-      - '.lesshintrc'
-    jsstandard:
-      - 'config/*.js'
-#      - 'config/modules/**/tests/e2e-workflow/*.js'
-      - 'gulpfile.js'
-      - 'gulp/**/*.js'
-      - 'index.js'
       - 'lib/**/*.js'
-      - '!lib/ansiColors.js'
-      - 'server.js'
+      - 'modules/**/*.js'
+    js:
+      - 'modules/*/js/*.js'
+    jsdoc:
+#      - 'nofile.js'
+      - '*.js'
+      - 'gulp/**/*.js'
+      - 'lib/**/*.js'
+      - 'modules/**/*.js'
+    jsonlint:
+      - '**/*.json'
+      - '.lesshintrc'
+      - '!coverage/**/*.json'
+      - '!src/locales/*.json'
+      - '!modules/**/locales/*.json'
+    locales:
+      - 'src/locales/*.json'
+      - 'modules/**/locales/*.json'
     yamllint:
       - '**/*.yaml'
       - '**/*.yml'
+    ejslint-livereload:
+      - '**/*.ejs'
     less:
-      - 'src/less/app.less'
       - 'src/less/**/*.less'
+      - 'modules/**/*.less'
     puglint:
-      - 'views/**/*.pug'
-    server-restart:
-      - './server.js'
-      - 'lib/config.js'
-      - 'lib/ipv4addresses.js'
+      - '**/*.pug'
+    server:
+      - 'server.js'
+      - 'lib/*.js'
+      - 'modules/*/server/**/*.js'
+      - 'modules/*/*.yaml'
+    livereload:
+      - 'public/**/*.html'
+      - 'public/img/**/*.*'
+      - 'generated/**/*.css'
+      - 'modules/**/*.ejs'
+      - 'modules/**/*.pug'
+      - 'results/modules/**/*.json'
+    livereload-all:
+      - 'generated/**/*.js'
+      - 'locales/**/*.*'
+    test-modules:
+      - '*.js'
+      - 'modules/**/tests/model/*.*'
+      - 'modules/**/tests/server/*.*'
+      - 'modules/**/views/**/*.*'
+      - 'htdocs/js/**/*.js'
     test-e2e-workflow-default:
       - 'index.js'
       - 'config/default.js'
@@ -45,41 +116,64 @@ gulp:
       - 'config/modules/*/server/**/*.js'
       - 'config/modules/*/tests/e2e-workflow/*.js'
       - 'config/modules/*/views/**/*.*'
-    livereload:
-      - 'htdocs/**/*.html'
-      - 'views/**/*.pug'
-      - 'htdocs/img/**/*.*'
-      - 'htdocs/css/app.css'
-      - 'htdocs/js/**/*.js'
-      - 'results/modules/**/*.json'
-  build:
-    jsdoc:
-      src:
-        - 'index.js'
-        - 'gulpfile.js'
-        - 'server.js'
-        - 'gulp/**/*.js'
-        - 'lib/**/*.js'
-        - 'src/**/*.js'
-      dest: 'docs/jsdoc'
-    js:
-      src: 'src/js/*.js'
-      dest: 'htdocs/js'
-      replace:
-        '/js': ''
-    less:
-      src: 'src/less/app.less'
-      dest: 'htdocs/css'
   tests:
+    modules:
+      - 'modules/**/tests/model/*.js'
+      - 'modules/**/tests/server/*.js'
+      - 'modules/**/tests/views/*.js'
     test-e2e-workflow-default:
       - 'config/default.js'
     test-e2e-workflow-modules:
       - 'config/modules/**/tests/e2e-workflow/*.js'
+  lint:
+    eslint:
+      fixtureDir: './fixture'
+  build:
+    jsdoc:
+      src:
+        - '*.js'
+        - 'gulp/**/*.js'
+        - 'lib/**/*.js'
+        - 'modules/**/*.js'
+        - 'src/**/*.js'
+      dest: 'docs/jsdoc'
+    js:
+      src:
+        - 'modules/*/js/*.js'
+      dest: 'generated'
+      replace:
+        'modules/(.+/)js/.+': '$1'
+    less:
+      src:
+        - 'src/less/app.less'
+        - 'modules/*/less/layout.less'
+      dest: 'generated'
+    locales:
+      dest: 'locales'
+    deploy:
+      src:
+        - 'CHANGELOG.md'
+        - 'configuration.yaml'
+        - 'Dockerfile'
+        - 'LICENSE'
+        - 'package.json'
+        - 'README.md'
+        - 'server.js'
+        - 'generated/*'
+        - 'lib/**/*'
+        - 'locales/*'
+        - 'modules/*/*.json'
+        - 'modules/*/*.yaml'
+        - 'modules/*/server/**/*'
+        - 'modules/*/views/**/*'
+        - 'public/**/*'
+      dest: 'deploy'
 
 server:
   server: ./server.js
-  docroot: ./htdocs
-  modules: .
-  httpPort: 8080
-  livereloadPort: 8081
+  docroot: ./public
+  generated: ./generated
+  modules: ./modules
   verbose: false
+  httpsKey: ./key/selfsigned.key
+  httpsCert: ./key/selfsigned.crt

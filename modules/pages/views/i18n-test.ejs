@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+<%- include("../../page-elements/views/head.ejs") %>
+	</head>
+	<body>
+		<div class="page">
+<%- include("../../page-elements/views/header.ejs") %>
+			<div id="content" class="content">
+				<h1 id="headline" class="headline">i18n Test</h1>
+				<p id="translate-string"><%= __('translate string') %></p>
+				<p id="plurals">
+					<span id="plurals-one"><%= __n('number %s', 1) %></span>
+					<span id="plurals-two"><%= __n('number %s', 2) %></span>
+					<span id="plurals-other"><%= __n('number %s', 3) %></span>
+				</p>
+			</div>
+<%- include("../../page-elements/views/footer.ejs") %>
+		</div>
+	</body>
+</html>

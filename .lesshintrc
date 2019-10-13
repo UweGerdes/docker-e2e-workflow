@@ -4,12 +4,14 @@
   "hexLength": {
     "style": "long"
   },
+  "idSelector": false,
+  "qualifyingElement": false,
   "spaceAfterPropertyColon": {
     "enabled": true,
     "style": "one_space"
   },
   "spaceAroundComma": {
-    "allowNewline" : true
+    "allowNewline": true
   },
   "zeroUnit": {
     "style": "no_unit"

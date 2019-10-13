@@ -1,5 +1,8 @@
-# ignore generated files
-docs
-htdocs/css
-htdocs/js
-results
+#
+/coverage
+/deploy
+/docs/jsdoc
+/generated
+/key
+/locales
+/results

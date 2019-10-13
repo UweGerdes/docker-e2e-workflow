@@ -1,136 +1,50 @@
-// Styles for vCard - page layout and basic settings
-
-@import 'vars';
+// Styles for frontend - page layout and basic settings
 
 body {
   background-color: #ffffff;
   border: 0;
-  color: #000000;
+  color: @text_color;
   font-family: @font_family;
-  font-size: 12pt;
+  font-size: @font_size;
   margin: 0;
-  padding: 0 30px;
-}
-
-p,
-li,
-td,
-th,
-dt,
-dd {
-  font-family: @font_family;
-  font-size: 1em;
-}
-
-p {
-  margin-bottom: 0.5em;
-  margin-top: 0.5em;
+  padding: 0;
 }
 
 h1 {
-  clear: both;
-  color: #000099;
-  font-size: 1.8em;
+  color: @headline_color;
+  font-size: @h1_font_size;
   font-weight: bold;
-  margin-bottom: 1.0em;
-  margin-top: 1.0em;
+  margin-bottom: 1.0rem;
+  margin-top: 0;
 }
 
 h2 {
-  clear: both;
-  color: #000099;
-  font-size: 1.6em;
+  color: @headline_color;
+  font-size: @h2_font_size;
   font-weight: bold;
-  margin-bottom: 0.8em;
-  margin-top: 1.0em;
+  margin-bottom: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 h3 {
-  clear: both;
-  color: #000099;
-  font-size: 1.4em;
+  color: @headline_color;
+  font-size: @h3_font_size;
   font-weight: bold;
-  margin-bottom: 0.5em;
-  margin-top: 0.8em;
+  margin-bottom: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 h4 {
-  clear: both;
-  color: #000099;
-  font-size: 1.2em;
+  color: @headline_color;
+  font-size: @h4_font_size;
   font-weight: bold;
-  margin-bottom: 0.5em;
-  margin-top: 0.5em;
-}
-
-h5 {
-  clear: both;
-  color: #000099;
-  font-size: 1.0em;
-  font-weight: bold;
-  margin-bottom: 0.5em;
-  margin-top: 0.5em;
-}
-
-ul {
-  margin-bottom: 1em;
-  margin-top: 0;
-}
-
-ol {
-  margin-bottom: 1em;
-  margin-top: 0;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  margin: 0.5em 0 0.8em 0;
-  padding: 0;
-}
-
-th {
-  font-weight: bold;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  vertical-align: top;
-}
-
-td {
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  vertical-align: top;
-}
-
-input {
-  font-family: @font_family;
+  margin-bottom: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 a {
+  color: @link_color;
   text-decoration: underline;
-
-  &:link,
-  &:visited,
-  &:active {
-    color: #333333;
-  }
-
-  &:hover {
-    color: #0000ff;
-  }
-}
-
-em {
-  color: #000099;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-strong,
-b {
-  font-weight: bold;
 }
 
 img {
@@ -149,4 +63,8 @@ hr {
 div {
   margin: 0;
   padding: 0;
+}
+
+.hidden {
+  display: none;
 }

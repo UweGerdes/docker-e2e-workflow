@@ -1,11 +1,14 @@
-extends page/index.pug
+extends ../../pages/views/page.pug
+
+append head
+  link(rel='stylesheet', href='/'+ moduleName + '/layout.css')
 
 block content
-  #app.app
+  #e2e.e2e
 
-    #header.header.flex-row
+    #e2e-header.e2e-header.flex-row
       h1#headline.headline.flex-left
-        if configFile
+        if locals.configFile
           span.launch&attributes({
             title: 'starten',
             'data-xhr': '/run/' + configFile,
@@ -21,40 +24,41 @@ block content
 
     .flex-row
       ul#configs.configs.flex-right
-        each config, label in configs
-          li.config
-            - viewportName = queryViewport || Object.keys(config.viewports)[0]
-            if configFile == config.filename
-              h3= label
-            else
-              h3
-                a(href='/app/' + config.filename + '?viewport=' + encodeURIComponent(viewportName))= label
-            if config.summary && config.summary.fail > 0
-              = ': '
-              h3.error= config.summary.fail + ' Fehler'
-            if locals.results && locals.results.testCases
-              ul.testCases
-                each testCase, testCaseName in results.testCases
-                  h4.testCase-name= testCaseName
-                  li.testCase
-                    ul.testCase-steps
-                      each step, label in testCase.steps
-                        li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
-                          if queryStep == label
-                            strong= label
-                          else
-                            a(href='/app/'
-                              + configFile
-                              + '?viewport=' + encodeURIComponent(viewportName)
-                              + '&case=' + encodeURIComponent(testCaseName)
-                              + '&step=' + encodeURIComponent(label)
-                            )= label
-                          if step.errors
-                            each error in step.errors
-                              .error.small=error
+        if locals.configs
+          each config, label in configs
+            li.config
+              - viewportName = queryViewport || Object.keys(config.viewports)[0]
+              if configFile == config.filename
+                h2= label
+              else
+                h2
+                  a(href='/e2e/' + config.filename + '?viewport=' + encodeURIComponent(viewportName))= label
+              if config.summary && config.summary.fail > 0
+                = ': '
+                h3.error= config.summary.fail + ' Fehler'
+              if locals.results && locals.results.testCases
+                ul.testCases
+                  each testCase, testCaseName in results.testCases
+                    h4.testCase-name= testCaseName
+                    li.testCase
+                      ul.testCase-steps
+                        each step, label in testCase.steps
+                          li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
+                            if queryStep == label
+                              strong= label
+                            else
+                              a(href = '/e2e/'
+                                + configFile
+                                + '?viewport=' + encodeURIComponent(viewportName)
+                                + '&case=' + encodeURIComponent(testCaseName)
+                                + '&step=' + encodeURIComponent(label)
+                              )= label
+                            if step.errors
+                              each error in step.errors
+                                .error.small=error
 
       .flex-center
-        if results && queryCase && queryStep && results.testCases[queryCase]
+        if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase]
           .image-legend(style= 'width: ' + (results.viewports[queryViewport].width) + 'px;')
             .image-legend-left
               ul#viewportList.viewportList
@@ -63,7 +67,7 @@ block content
                     if queryViewport == viewportName
                       = viewportName
                     else
-                      a(href='/app/'
+                      a(href = '/e2e/'
                         + configFile
                         + '?viewport=' + encodeURIComponent(viewportName)
                         + '&case=' + encodeURIComponent(queryCase)
@@ -74,7 +78,7 @@ block content
               span.mouse-position-output.hidden
               span.color-check-output.hidden
           #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
-            img.screenshot(src= '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
+            img.screenshot(src = '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
             - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
             if clickRect
               .clickRect(style='left: ' + clickRect.x + '; top: ' + clickRect.y + '; width: ' + clickRect.width + '; height: ' + clickRect.height + ';')
@@ -89,4 +93,4 @@ block content
     #output-content.modalLayer-content
 
 append footer
-  script(src='/js/app.js')
+  script(src='/'+ moduleName + '/script.js')

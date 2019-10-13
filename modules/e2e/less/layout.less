@@ -1,0 +1,224 @@
+/*
+ * Styles for e2e-workflow
+ *
+ * (c) Uwe Gerdes, entwicklung@uwegerdes.de
+ */
+
+@list_width: 30%;
+@failed_color: #cc0000;
+
+.e2e {
+  margin: 0 auto;
+  max-width: 1500px;
+  padding: 0 0 20px;
+  position: relative;
+
+  .viewports {
+    list-style: none;
+    padding: 0 2em 0 0;
+
+    h2:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .config {
+    vertical-align: top;
+
+    .testCases {
+      list-style: none;
+      padding: 0 0 0 1em;
+
+      .testCase-name {
+        margin: 0 0 0.5em;
+      }
+
+      .testCase-steps {
+        list-style: none;
+        padding: 0;
+      }
+
+      .testCase-step {
+        padding: 0 0 0.2em 1em;
+      }
+    }
+  }
+
+  .queryStep {
+    font-size: 0.8em;
+    height: 1.3em;
+    margin: 0 0 0.5em;
+    overflow: hidden;
+    width: min-content;
+
+    &:hover {
+      height: auto;
+    }
+  }
+
+  .viewportList {
+    list-style: none;
+    padding: 0;
+
+    .viewport {
+      display: inline-block;
+      padding: 0 0 0.2em 1em;
+    }
+  }
+
+  .image-legend {
+    display: flex;
+
+    &-left {
+      flex-basis: 60%;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+
+    &-right {
+      flex-basis: 40%;
+      flex-grow: 1;
+      flex-shrink: 1;
+      text-align: right;
+    }
+  }
+
+  .image-container {
+    border: 4px inset #aaaaaa;
+    display: inline-block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    text-align: left;
+
+    .clickRect {
+      background: rgba(0, 0, 0, 0);
+      border: 1px dotted #aaaaaa;
+      position: absolute;
+
+      &:hover {
+        background: rgba(255, 0, 0, 0.5);
+      }
+    }
+
+    .imgCanvas {
+      cursor: crosshair;
+    }
+  }
+
+  .configs {
+    list-style: none;
+    padding: 0;
+
+    .config {
+      width: 100%;
+
+      .label {
+        font-size: 1.2em;
+      }
+
+      .config-files {
+        list-style: none;
+        padding: 5px 0 0 15px;
+      }
+    }
+  }
+
+  .small {
+    font-size: 0.8em;
+  }
+
+  .error {
+    color: #cc0000;
+
+    a:link,
+    a:visited,
+    a:active {
+      color: #cc0000;
+    }
+  }
+}
+
+.launch {
+  cursor: pointer;
+
+  &::after {
+    content: ' \1F680';
+  }
+}
+
+.mouse-position-output {
+  margin-right: 0.5em;
+  white-space: nowrap;
+}
+
+.color-check-button {
+  border: 1px solid #cccccc;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 0.5em;
+  padding: 0.2em 0.4em;
+
+  &:hover,
+  &.active {
+  border: 1px solid #666666;
+  }
+
+  &::after {
+    content: ' \1F3A8';
+    font-size: 2em;
+  }
+}
+
+.modalLayer {
+  background-color: rgba(128, 128, 128, 0.3);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+
+  &-content {
+    background-color: #ffffff;
+    border: 5px solid #999999;
+    height: 70%;
+    margin: 5% auto 0;
+    min-height: 50%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    width: 90%;
+
+    @media all and (min-width: 768px) {
+      width: 50%;
+    }
+  }
+}
+
+.flex {
+  &-row {
+    align-content: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  &-left,
+  &-center,
+  &-right {
+    flex: 1 100%;
+  }
+
+  @media all and (min-width: 600px) {
+    &-left {
+      flex: 1 0 auto;
+    }
+
+    &-center {
+      flex: 10 0 auto;
+    }
+
+    &-right {
+      flex: 1 0 auto;
+    }
+  }
+}
+

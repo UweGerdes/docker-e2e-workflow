@@ -1,101 +1,115 @@
 /**
- * ## Gulp server tasks
+ * Gulp server tasks
  *
  * @module gulp/server
+ * @requires module:lib/config
+ * @requires module:lib/ipv4addresses
+ * @requires module:lib/log
+ * @requires module:gulp/lib/load-tasks
+ * @requires module:gulp/lib/notify
  */
-'use strict'
 
-const chalk = require('chalk')
-const dateFormat = require('dateformat')
-const gulp = require('gulp')
-const server = require('gulp-develop-server')
-const livereload = require('gulp-livereload')
-const sequence = require('gulp-sequence')
-const config = require('../lib/config')
-const ipv4addresses = require('../lib/ipv4addresses.js')
-const loadTasks = require('./lib/load-tasks')
+'use strict';
+
+const fs = require('fs'),
+  gulp = require('gulp'),
+  changedInPlace = require('gulp-changed-in-place'),
+  server = require('gulp-develop-server'),
+  livereload = require('gulp-livereload'),
+  sequence = require('gulp-sequence'),
+  path = require('path'),
+  config = require('../lib/config'),
+  ipv4addresses = require('../lib/ipv4addresses'),
+  loadTasks = require('./lib/load-tasks'),
+  log = require('../lib/log'),
+  notify = require('./lib/notify');
+
 
 const tasks = {
   /**
-   * ### server start task
+   * Start all configured server tasks for current NODE_ENV setting
    *
-   * @task server
-   * @param {function} callback - gulp callback
-   * @namespace tasks
+   * @function server
+   * @param {function} callback - gulp callback to signal end of task
    */
-  'server': (callback) => {
+  /* c8 ignore next 6 */
+  'server': [['eslint'], (callback) => {
     sequence(
-      'livereload-start',
-      'server-start',
+      ...config.gulp.start[process.env.NODE_ENV].server,
       callback
-    )
-  },
-  /**
-   * ### server restart, triggered by watch
-   *
-   * @task server
-   * @namespace tasks
-   * @param {function} callback - gulp callback
-   */
-  'server-restart': [['jsstandard'], (callback) => {
-    sequence(
-      'server-changed',
-      'livereload',
-      callback
-    )
+    );
   }],
   /**
-   * ### server livereload task
+   * Server start task
    *
-   * @task livereload
-   * @namespace tasks
+   * @function server-start
+   * @param {function} callback - gulp callback to signal end of task
    */
-  'livereload': () => {
-    console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' + 'livereload triggered')
-    return gulp.src(config.gulp.watch.livereload[0])
-      .pipe(livereload())
-  },
-  /**
-   * ### server start task
-   *
-   * @task server-start
-   * @namespace tasks
-   * @param {function} callback - gulp callback
-   */
+  /* c8 ignore next 8 */
   'server-start': (callback) => {
     server.listen({
       path: config.server.server,
-      env: { VERBOSE: config.server.verbose === true, FORCE_COLOR: 1 }
+      env: { VERBOSE: true, FORCE_COLOR: 1 },
+      delay: 9000
     },
-    callback)
+    callback);
   },
   /**
-   * ### server restart task
+   * Server changed task restarts server
    *
-   * @task server-restart
-   * @namespace tasks
-   * @param {function} callback - gulp callback
+   * @function server-changed
+   * @param {function} callback - gulp callback to signal end of task
    */
+  /* c8 ignore next 8 */
   'server-changed': (callback) => {
     server.changed((error) => {
       if (!error) {
-        livereload.changed({ path: '/', quiet: false })
+        livereload.changed({ path: '/', quiet: false });
       }
-      callback()
-    })
+      callback();
+    });
   },
   /**
-   * ### server livereload start task
+   * Server livereload task notifies clients
    *
-   * @task livereload-start
-   * @namespace tasks
+   * @function livereload
    */
+  /* c8 ignore next 6 */
+  'livereload': () => {
+    return gulp.src(config.gulp.watch.livereload)
+      .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
+      .pipe(notify({ message: '<%= file.path %>', title: 'livereload' }))
+      .pipe(livereload({ quiet: false }));
+  },
+  /**
+   * Trigger of livereload task with first file configured for livereload
+   *
+   * used for full page reload if js or locales change
+   *
+   * @function livereload-all
+   */
+  /* c8 ignore next 5 */
+  'livereload-all': () => {
+    return gulp.src(config.gulp.watch.livereload[0])
+      .pipe(notify({ message: 'triggered', title: 'livereload' }))
+      .pipe(livereload({ quiet: false }));
+  },
+  /**
+   * Livereload server start task
+   *
+   * @function livereload-start
+   */
+  /* c8 ignore next 10 */
   'livereload-start': () => {
-    livereload.listen({ port: config.server.livereloadPort, delay: 2000, quiet: true })
-    console.log('[' + chalk.gray(dateFormat(new Date(), 'HH:MM:ss')) + '] ' +
-      'livereload listening on http://' +
-      ipv4addresses.get()[0] + ':' + config.server.livereloadPort)
+    livereload.listen({
+      host: ipv4addresses.get()[0],
+      port: '8081',
+      quiet: false,
+      key: fs.readFileSync(path.join(__dirname, '..', config.server.httpsKey)),
+      cert: fs.readFileSync(path.join(__dirname, '..', config.server.httpsCert))
+    });
+    log.info('livereload listening on http://' + ipv4addresses.get()[0] + ':' + process.env.LIVERELOAD_PORT);
   }
-}
+};
 
-loadTasks.importTasks(tasks)
+loadTasks.importTasks(tasks);
