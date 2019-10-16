@@ -11,7 +11,7 @@ block content
         if locals.configFile
           span.launch&attributes({
             title: 'starten',
-            'data-xhr': '/run/' + configFile,
+            'data-xhr': '/e2e/run/?config=' + configFile,
             'data-xhr-response': '#output-content',
             'data-toggle': '#output'
           })= config.name
@@ -32,7 +32,7 @@ block content
                 h2= label
               else
                 h2
-                  a(href='/e2e/' + config.filename + '?viewport=' + encodeURIComponent(viewportName))= label
+                  a(href='/e2e' + config.filename + '?viewport=' + encodeURIComponent(viewportName))= label
               if config.summary && config.summary.fail > 0
                 = ': '
                 h3.error= config.summary.fail + ' Fehler'
@@ -47,7 +47,7 @@ block content
                             if queryStep == label
                               strong= label
                             else
-                              a(href = '/e2e/'
+                              a(href = '/e2e'
                                 + configFile
                                 + '?viewport=' + encodeURIComponent(viewportName)
                                 + '&case=' + encodeURIComponent(testCaseName)
@@ -67,7 +67,7 @@ block content
                     if queryViewport == viewportName
                       = viewportName
                     else
-                      a(href = '/e2e/'
+                      a(href = '/e2e'
                         + configFile
                         + '?viewport=' + encodeURIComponent(viewportName)
                         + '&case=' + encodeURIComponent(queryCase)

@@ -25,6 +25,13 @@ router.get('/', controller.index);
  */
 router.get(/\/config\/.+/, controller.configPage);
 
+/**
+ * GET /runConfig/ route
+ *
+ * @name get_runConfig_route
+ */
+router.get('/run', controller.runConfig);
+
 module.exports = {
   router: router,
   useExpress: controller.useExpress

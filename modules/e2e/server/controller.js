@@ -8,8 +8,10 @@
 
 'use strict';
 
-const fs = require('fs'),
+const exec = require('child_process').exec,
+  fs = require('fs'),
   path = require('path'),
+  ansiColors = require('../../../lib/ansiColors'),
   config = require('../../../lib/config'),
   files = require('../../../lib/files-promises'),
   model = require('./model');
@@ -60,7 +62,11 @@ const configPage = async (req, res, next) => {
       const configuration = await files.requireFile(req.path);
       const resultsFilename = req.params[0] || path.join('config', 'default.js');
       const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''));
-      const results = await files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
+      let results;
+      if (req.query.viewport) {
+        console.log(req.query.viewport);
+        results = await files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
+      }
       let data = {
         ...config.getData(req),
         model: model.getData(),
@@ -75,18 +81,57 @@ const configPage = async (req, res, next) => {
       };
       res.render(path.join(viewBase, 'index.pug'), data);
     } catch (error) {
-      req.error = { code: 404, name: 'File not found', error: error.message };
+      req.error = { code: 500, name: 'File read error: ' + req.path, error: error.message };
       next();
     }
   } else {
-    console.log(req.path, 'not found');
+    req.error = { code: 500, name: 'Path error', error: 'Path must be /e2e/config/[path]/[testfile].js but is ' + req.path };
     next();
   }
 };
 
+/**
+ * Run test config
+ *
+ * @param {Object} req - request
+ * @param {Object} res - response
+ */
+function runConfig (req, res) {
+  res.status(200);
+  if (req.query.config) {
+    console.log('run node ' + __dirname + '/lib/index.js --cfg=' + req.query.config);
+    const loader = exec('export FORCE_COLOR=1; node ' + __dirname + '/lib/index.js --cfg=' + req.query.config);
+    loader.stdout.on('data', (data) => {
+      console.log(data.toString().trim());
+      res.write(ansiColors.toHTML(data.toString().trim().replace(/\n/, '<br />')) + '<br />');
+      res.flush();
+    });
+    loader.stderr.on('data', (data) => {
+      console.log('stderr: ' + data.toString().trim());
+      res.write(ansiColors.toHTML('stderr: ' + data.toString().trim().replace(/\n/, '<br />')) + '<br />');
+      res.flush();
+    });
+    loader.on('error', (err) => {
+      console.log('error: ' + err.toString().trim());
+      res.write(ansiColors.toHTML('err: ' + err.toString().trim().replace(/\n/, '<br />')) + '<br />');
+    });
+    loader.on('close', (code) => {
+      if (code > 0) {
+        console.log('e2e-workflow exit-code: ' + code);
+        res.write('e2e-workflow exit-code: ' + code);
+      }
+      res.end();
+    });
+  } else {
+    res.write('<h1>Error: parameter config not set<br />');
+    res.end();
+  }
+}
+
 module.exports = {
   index: index,
   configPage: configPage,
+  runConfig: runConfig,
   useExpress: useExpress
 };
 
