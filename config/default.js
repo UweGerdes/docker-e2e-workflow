@@ -19,9 +19,23 @@ module.exports = {
       uri: domain,
       steps: {
         'home': {
-          title: 'Webapp',
+          title: 'Webserver',
           elements: {
-            '//h1': 'E2E-Workflow Tests',
+            '//h1': 'Webserver',
+            '//*[@class="header"]//a[@href="/app/"]': 'Home',
+            '//*[@class="content"]//a[@href="/app/"]': 'Startseite'
+          }
+        }
+      }
+    }
+    /*
+    'e2e': {
+      uri: domain,
+      steps: {
+        'home': {
+          title: 'E2E Workflow',
+          elements: {
+            '//h1': 'E2E Workflow',
             '//a[@href="/app"]': 'Hier starten'
           },
           elementsNotExist: [
@@ -53,5 +67,6 @@ module.exports = {
         }
       }
     }
+    */
   }
 }
