@@ -108,7 +108,7 @@ gulp:
       - 'modules/**/views/**/*.*'
       - 'htdocs/js/**/*.js'
     test-e2e-workflow-default:
-      - 'index.js'
+      - 'modules/e2e/server/lib/index.js'
       - 'config/default.js'
     test-e2e-workflow-modules:
       - 'config/modules/*/js/**/*.js'

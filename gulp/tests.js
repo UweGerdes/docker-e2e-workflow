@@ -85,7 +85,7 @@ const tasks = {
    */
   'test-e2e-workflow-default-exec': (callback) => {
     const loader = exec('export FORCE_COLOR=1; ' +
-      'node index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'][0],
+      'node modules/e2e/server/lib/index.js --cfg=' + config.gulp.tests['test-e2e-workflow-default'][0],
     { cwd: baseDir });
     loader.stdout.on('data', (data) => {
       console.log(data.toString().trim());
@@ -145,7 +145,7 @@ const tasks = {
 function runModule (filename) {
   return new Promise((resolve, reject) => {
     const loader = exec('export FORCE_COLOR=1; ' +
-      'node index.js --cfg=' + filename,
+      'node modules/e2e/server/lib/index.js --cfg=' + filename,
     { cwd: baseDir });
     loader.stdout.on('data', (data) => {
       console.log(data.toString().trim());
