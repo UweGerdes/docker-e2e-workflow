@@ -10,21 +10,26 @@ module.exports = {
   group: 'Default Test',
   name: 'E2E Workflow',
   viewports: {
-    'Mobile': { width: 320, height: 568 },
+    'Mobile': { width: 320, height: 568 }
+    /*,
     'Tablet Portrait': { width: 768, height: 1024 },
     'Desktop': { width: 1200, height: 900 }
+    */
   },
   testCases: {
     'homepage': {
       uri: domain,
       steps: {
         'home': {
-          title: 'Webserver',
+          title: 'WebserverX',
           elements: {
             '//h1': 'Webserver',
-            '//*[@class="header"]//a[@href="/app/"]': 'Home',
-            '//*[@class="content"]//a[@href="/app/"]': 'Startseite'
-          }
+            '//*[@class="header"]//a[@href="/appX/"]': 'Home',
+            '//*[@class="content"]//a[@href="/app/"]': 'StartseiteX'
+          },
+          elementsNotExist: [
+            '//*[@class="content"]//a[@href="/app/"]'
+          ]
         }
       }
     }

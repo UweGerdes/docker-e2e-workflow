@@ -22,7 +22,9 @@ const { Builder, By } = require('selenium-webdriver'),
 
 chai.use(chaiAsPromised);
 
-let testData = null;
+let testData = null,
+  driver;
+
 const filename = argv.cfg || path.join('config', 'default.js');
 // const driverBrowser = 'firefox'
 const driverBrowser = 'chrome';
@@ -35,8 +37,60 @@ if (fs.existsSync(configPath)) {
   throw (new Error('ERROR: file not found: "' + configPath + '"'));
 }
 
+const testCaseHandler = {
+  title: async (testStep) => {
+    const title = await driver.getTitle();
+    try {
+      assert.equal(title, testStep.title);
+    } catch (error) {
+      err(testStep, 'title: ' + error.message);
+    }
+  },
+  elements: async (testStep) => {
+    let elements = [];
+    for (const selector of Object.keys(testStep.elements)) {
+      elements.push(
+        driver.findElement(by(selector))
+          .then((element) => {
+            element.getText()
+              .then((text) => {
+                if (testStep.elements[selector]) {
+                  assert.equal(text, testStep.elements[selector], '"' + selector + '" text');
+                }
+                return Promise.resolve();
+              })
+              .catch((error) => {
+                err(testStep, error.message);
+                return Promise.resolve();
+              });
+          })
+          .catch(() => {
+            err(testStep, 'element "' + selector + '" not found');
+            return Promise.resolve();
+          })
+      );
+    }
+    try {
+      await Promise.all(elements);
+    } catch (errors) {
+      console.log(errors);
+    }
+  },
+  elementsNotExist: (testStep) => {
+    async function testElement(selector) {
+      try {
+        await driver.findElement(by(selector));
+        err(testStep, 'element "' + selector + '" should not exist');
+      } catch (error) { } // eslint-disable-line no-empty
+    }
+    for (const selector of testStep.elementsNotExist) {
+      testElement(selector);
+    }
+  }
+};
+
 (async () => {
-  let driver = await buildDriver(driverBrowser);
+  driver = await buildDriver(driverBrowser);
   for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
     const resultPath = path.join('/home', 'node', 'app', 'results2', filename.replace(/\.js$/, ''), viewportName);
     log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ' + resultPath);
@@ -59,40 +113,13 @@ if (fs.existsSync(configPath)) {
             log(testCaseName + ': ' + label);
             testStep.errors = [];
             if (testStep.title) {
-              const title = await driver.getTitle();
-              try {
-                assert.equal(title, testStep.title);
-              } catch (error) {
-                err(testStep, 'title: ' + error.message);
-              }
+              await testCaseHandler.title(testStep);
             }
             if (testStep.elements) {
-              for (const selector of Object.keys(testStep.elements)) {
-                let element = null;
-                try {
-                  element = await driver.findElement(by(selector));
-                } catch (error) {
-                  err(testStep, 'element "' + selector + '" not found');
-                }
-                if (element) {
-                  try {
-                    const text = await element.getText();
-                    if (testStep.elements[selector]) {
-                      assert.equal(text, testStep.elements[selector], '"' + selector + '" text');
-                    }
-                  } catch (error) {
-                    err(testStep, error.message);
-                  }
-                }
-              }
+              await testCaseHandler.elements(testStep);
             }
             if (testStep.elementsNotExist) {
-              for (const selector of testStep.elementsNotExist) {
-                try {
-                  await driver.findElement(by(selector));
-                  err(testStep, 'element "' + selector + '" should not exist');
-                } catch (error) { }
-              }
+              await testCaseHandler.elementsNotExist(testStep);
             }
             if (testStep.input) {
               for (const selector of Object.keys(testStep.input)) {
