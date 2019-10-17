@@ -3,6 +3,7 @@
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
+/* eslint no-await-in-loop: 0 */
 
 'use strict';
 
@@ -39,60 +40,141 @@ if (fs.existsSync(configPath)) {
 
 const testCaseHandler = {
   title: async (testStep) => {
-    const title = await driver.getTitle();
-    try {
-      assert.equal(title, testStep.title);
-    } catch (error) {
-      err(testStep, 'title: ' + error.message);
+    if (testStep.title) {
+      const title = await driver.getTitle();
+      try {
+        assert.equal(title, testStep.title);
+      } catch (error) {
+        err(testStep, 'title: ' + error.message);
+      }
     }
   },
   elements: async (testStep) => {
-    let elements = [];
-    for (const selector of Object.keys(testStep.elements)) {
-      elements.push(
-        driver.findElement(by(selector))
-          .then((element) => {
-            element.getText()
-              .then((text) => {
-                if (testStep.elements[selector]) {
-                  assert.equal(text, testStep.elements[selector], '"' + selector + '" text');
-                }
-                return Promise.resolve();
-              })
-              .catch((error) => {
-                err(testStep, error.message);
-                return Promise.resolve();
-              });
-          })
-          .catch(() => {
-            err(testStep, 'element "' + selector + '" not found');
-            return Promise.resolve();
-          })
-      );
-    }
-    try {
-      await Promise.all(elements);
-    } catch (errors) {
-      console.log(errors);
+    if (testStep.elements) {
+      let elements = [];
+      for (const selector of Object.keys(testStep.elements)) {
+        elements.push(
+          driver.findElement(by(selector))
+            .then((element) => {
+              element.getText()
+                .then((text) => {
+                  if (testStep.elements[selector]) {
+                    assert.equal(text, testStep.elements[selector], selector + ' text');
+                  }
+                  return Promise.resolve();
+                })
+                .catch((error) => {
+                  err(testStep, error.message);
+                  return Promise.resolve();
+                });
+            })
+            .catch(() => {
+              err(testStep, selector + ' not found');
+              return Promise.resolve();
+            })
+        );
+      }
+      try {
+        await Promise.all(elements);
+      } catch (errors) {
+        console.log(errors);
+      }
     }
   },
   elementsNotExist: (testStep) => {
     async function testElement(selector) {
       try {
         await driver.findElement(by(selector));
-        err(testStep, 'element "' + selector + '" should not exist');
+        err(testStep, selector + ' should not exist');
       } catch (error) { } // eslint-disable-line no-empty
     }
-    for (const selector of testStep.elementsNotExist) {
-      testElement(selector);
+    if (testStep.elementsNotExist) {
+      for (const selector of testStep.elementsNotExist) {
+        testElement(selector);
+      }
+    }
+  },
+  input: async (testStep) => {
+    async function setValue(element, selector) {
+      if (typeof testStep.input[selector] === 'string') {
+        // text / textarea
+        try {
+          await element.clear();
+          await element.sendKeys(testStep.input[selector]);
+        } catch (error) {
+          err(testStep, selector + ' no input field');
+        }
+      } else if (testStep.input[selector] === true || testStep.input[selector] === false) {
+        // checkbox: true/false, radio: true, select+option: true
+        if (await element.isSelected() !== testStep.input[selector]) {
+          await element.click();
+        }
+      } else {
+        err(testStep, selector + ' input unprocessed: ' + testStep.input[selector]);
+      }
+    }
+    if (testStep.input) {
+      let elements = [];
+      for (const selector of Object.keys(testStep.input)) {
+        elements.push(
+          driver.findElement(by(selector))
+            .then(async (element) => {
+              await setValue(element, selector);
+              return Promise.resolve();
+            })
+            .catch(() => {
+              err(testStep, selector + ' input field not found');
+              return Promise.resolve();
+            })
+        );
+      }
+      try {
+        await Promise.all(elements);
+      } catch (errors) {
+        console.log(errors);
+      }
+    }
+  },
+  click: async (testStep) => {
+    if (testStep.click) {
+      let clickElement;
+      try {
+        clickElement = await driver.findElement(by(testStep.click));
+        await driver.executeScript('arguments[0].scrollIntoView();', clickElement);
+        testStep.clickRect = await clickElement.getRect();
+        await clickElement.click();
+      } catch (error) {
+        err(testStep, testStep.click + ' could not click');
+      }
     }
   }
 };
 
+async function execTestStep(testCaseName, label, testStep, resultPath) {
+  testData.summary.total++;
+  log('Test case: ' + testCaseName + ', test step: ' + label);
+  testStep.errors = [];
+  await testCaseHandler.title(testStep);
+  await testCaseHandler.elements(testStep);
+  await testCaseHandler.elementsNotExist(testStep);
+  await testCaseHandler.input(testStep);
+  await saveFile(
+    path.join(resultPath, testCaseName, label + '.png'),
+    Buffer.from(await driver.takeScreenshot(), 'base64')
+  );
+  await testCaseHandler.click(testStep);
+  if (testStep.errors.length === 0) {
+    testData.summary.success++;
+  } else {
+    testData.summary.fail++;
+  }
+  testData.summary.executed++;
+}
+
 (async () => {
   driver = await buildDriver(driverBrowser);
   for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
-    const resultPath = path.join('/home', 'node', 'app', 'results2', filename.replace(/\.js$/, ''), viewportName);
+    const resultPath = path.join('/home', 'node', 'app', 'results', filename.replace(/\.js$/, ''), viewportName);
     log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ' + resultPath);
     testData.summary = {
       executed: 0, success: 0, fail: 0, total: 0
@@ -109,71 +191,7 @@ const testCaseHandler = {
           await driver.get(testCase.uri);
           await driver.manage().window().setRect(vpSize);
           for (const [label, testStep] of Object.entries(testCase.steps)) {
-            testData.summary.total++;
-            log(testCaseName + ': ' + label);
-            testStep.errors = [];
-            if (testStep.title) {
-              await testCaseHandler.title(testStep);
-            }
-            if (testStep.elements) {
-              await testCaseHandler.elements(testStep);
-            }
-            if (testStep.elementsNotExist) {
-              await testCaseHandler.elementsNotExist(testStep);
-            }
-            if (testStep.input) {
-              for (const selector of Object.keys(testStep.input)) {
-                let element = null;
-                try {
-                  element = await driver.findElement(by(selector));
-                } catch (error) {
-                  err(testStep, 'input field "' + selector + '" not found');
-                }
-                if (element) {
-                  if (typeof testStep.input[selector] === 'string') {
-                    // text / textarea
-                    await element.clear();
-                    await driver.findElement(by(selector)).sendKeys(testStep.input[selector]);
-                  } else if (testStep.input[selector] === true || testStep.input[selector] === false) {
-                    // checkbox: true/false, radio: true, select+option: true
-                    const selected = await driver.findElement(by(selector)).isSelected();
-                    if (selected !== testStep.input[selector]) {
-                      await driver.findElement(by(selector)).click();
-                    }
-                  } else {
-                    err(testStep, 'input unprocessed: ' + selector + ' ' + testStep.input[selector]);
-                  }
-                }
-              }
-            }
-            let clickElement;
-            if (testStep.click) {
-              try {
-                clickElement = await driver.findElement(by(testStep.click));
-                await driver.executeScript('arguments[0].scrollIntoView();', clickElement);
-                testStep.clickRect = await clickElement.getRect();
-                testStep.clickRect.scrollTop = await driver.executeScript('return document.body.scrollTop;');
-              } catch (error) {
-                err(testStep, 'no element to click: ' + testStep.click + ' ' + error);
-              }
-            }
-            await driver.executeScript('document.body.scrollTop = 0;');
-            const screenshot = await driver.takeScreenshot();
-            await saveFile(
-              path.join(resultPath, testCaseName, label + '.png'),
-              Buffer.from(screenshot, 'base64')
-            );
-            if (testStep.click) {
-              if (clickElement) {
-                await clickElement.click();
-              }
-            }
-            if (testStep.errors.length === 0) {
-              testData.summary.success++;
-            } else {
-              testData.summary.fail++;
-            }
-            testData.summary.executed++;
+            await execTestStep(testCaseName, label, testStep, resultPath);
           }
         } catch (err) {
           log(chalk.red(err));
@@ -182,7 +200,7 @@ const testCaseHandler = {
     } catch (err) {
       log(chalk.red(err));
     } finally {
-      await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 4));
+      await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 2));
       if (testData.summary.fail === 0) {
         log(chalk.green.bold.inverse('Executed ' + testData.summary.executed + ' steps, no errors'));
       } else {
