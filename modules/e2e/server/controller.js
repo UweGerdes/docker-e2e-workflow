@@ -64,7 +64,6 @@ const configPage = async (req, res, next) => {
       const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''));
       let results;
       if (req.query.viewport) {
-        console.log(req.query.viewport);
         results = await files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
       }
       let data = {
