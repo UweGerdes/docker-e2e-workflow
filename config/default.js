@@ -20,7 +20,7 @@ module.exports = {
     'homepage': {
       uri: domain,
       steps: {
-        'home': {
+        'all fail': {
           title: 'WebserverX',
           elements: {
             '//h1': 'Webserver',
@@ -29,7 +29,25 @@ module.exports = {
           },
           elementsNotExist: [
             '//*[@class="content"]//a[@href="/app/"]'
+          ],
+          input: {
+            '//*[@class="content"]': 'Text-Eingabe'
+          },
+          click: [
+            '//*[@class="content"]//a[@href="/fail/"]'
           ]
+        },
+        'check elements': {
+          title: 'Webserver',
+          elements: {
+            '//h1': 'Webserver',
+            '//*[@class="header"]//a[@href="/app/"]': 'Home',
+            '//*[@class="content"]//a[@href="/app/"]': 'Startseite'
+          },
+          elementsNotExist: [
+            '//*[@class="error"]'
+          ],
+          click: '//*[@class="content"]//a[@href="/app/"]'
         }
       }
     }
