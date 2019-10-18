@@ -32,7 +32,9 @@ gulp:
     staging:
       gulp:
         - 'watch'
+        - 'livereload-start'
         - 'server-start'
+        - 'livereload'
       build: []
       tests: []
       lint: []
