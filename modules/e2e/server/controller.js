@@ -99,6 +99,7 @@ function runConfig (req, res) {
   res.status(200);
   if (req.query.config) {
     console.log('run node ' + __dirname + '/lib/index.js --cfg=' + req.query.config);
+    res.write('<p>');
     const loader = exec('export FORCE_COLOR=1; node ' + __dirname + '/lib/index.js --cfg=' + req.query.config);
     loader.stdout.on('data', (data) => {
       console.log(data.toString().trim());
@@ -119,10 +120,11 @@ function runConfig (req, res) {
         console.log('e2e-workflow exit-code: ' + code);
         res.write('e2e-workflow exit-code: ' + code);
       }
+      res.write('</p>');
       res.end();
     });
   } else {
-    res.write('<h1>Error: parameter config not set<br />');
+    res.write('<h1 class="error">Error: parameter config not set</h1>');
     res.end();
   }
 }
