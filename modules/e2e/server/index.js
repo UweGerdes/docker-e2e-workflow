@@ -19,13 +19,6 @@ const controller = require('./controller');
 router.get('/', controller.index);
 
 /**
- * GET /configPage/ route
- *
- * @name get_configPage_route
- */
-router.get(/\/config\/.+/, controller.configPage);
-
-/**
  * GET /runConfig/ route
  *
  * @name get_runConfig_route

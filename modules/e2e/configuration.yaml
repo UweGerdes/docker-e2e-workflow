@@ -1,1 +1,6 @@
 name: E2E Workflow
+
+config-development:
+  - config/default.js
+configs:
+  - config/**/tests/e2e-workflow/*.js

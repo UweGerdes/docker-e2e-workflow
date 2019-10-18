@@ -35,57 +35,51 @@ const useExpress = async (app) => {
  *
  * @param {object} req - request
  * @param {object} res - result
+ * @param {object} next - for error handling
  */
-const index = async (req, res) => {
-  let data = {
-    ...config.getData(req),
-    model: model.getData(),
-    configs: await getConfigs(),
-    config: {
-      name: 'Keine Config geladen',
-      configfile: 'none'
-    },
-    results: { status: 'not executed' }
-  };
-  res.render(path.join(viewBase, 'index.pug'), data);
-};
-
-/**
- * Render config page
- *
- * @param {object} req - request
- * @param {object} res - result
- */
-const configPage = async (req, res, next) => {
-  if (req.path.match(/^\/config\/.+$/)) {
-    try {
-      const configuration = await files.requireFile(req.path);
-      const resultsFilename = req.params[0] || path.join('config', 'default.js');
-      const resultsPath = path.join('results', resultsFilename.replace(/\.js/, ''));
-      let results;
-      if (req.query.viewport) {
-        results = await files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
+const index = async (req, res, next) => {
+  if (req.query.config) {
+    if (req.query.config.match(/^\/config\/.+$/)) {
+      try {
+        const configuration = await files.requireFile(req.query.config);
+        const resultsFilename = req.query.config || path.join('config', 'default.js');
+        const resultsPath = path.join('results', resultsFilename.replace(/\.js$/, ''));
+        let results;
+        if (req.query.viewport) {
+          results = await files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
+        }
+        let data = {
+          ...config.getData(req),
+          model: model.getData(),
+          configs: await getConfigs(),
+          configFile: req.query.config,
+          config: configuration,
+          queryViewport: req.query.viewport || '',
+          queryCase: req.query.case || '',
+          queryStep: req.query.step || '',
+          resultsPath: resultsPath,
+          results: results
+        };
+        res.render(path.join(viewBase, 'index.pug'), data);
+      } catch (error) {
+        req.error = { code: 500, name: 'File read error: ' + req.query.config, error: error.message };
+        next();
       }
-      let data = {
-        ...config.getData(req),
-        model: model.getData(),
-        configs: await getConfigs(),
-        configFile: req.path,
-        config: configuration,
-        queryViewport: req.query.viewport || '',
-        queryCase: req.query.case || '',
-        queryStep: req.query.step || '',
-        results: results,
-        resultsPath: resultsPath
-      };
-      res.render(path.join(viewBase, 'index.pug'), data);
-    } catch (error) {
-      req.error = { code: 500, name: 'File read error: ' + req.path, error: error.message };
+    } else {
+      req.error = { code: 500, name: 'Path error', error: 'config must be /config/[path]/[file].js but is ' + req.query.config };
       next();
     }
   } else {
-    req.error = { code: 500, name: 'Path error', error: 'Path must be /e2e/config/[path]/[testfile].js but is ' + req.path };
-    next();
+    let data = {
+      ...config.getData(req),
+      model: model.getData(),
+      configs: await getConfigs(),
+      config: {
+        name: 'Keine Config geladen'
+      },
+      results: { status: 'not executed' }
+    };
+    res.render(path.join(viewBase, 'index.pug'), data);
   }
 };
 
@@ -131,7 +125,6 @@ function runConfig (req, res) {
 
 module.exports = {
   index: index,
-  configPage: configPage,
   runConfig: runConfig,
   useExpress: useExpress
 };
@@ -143,9 +136,9 @@ async function getConfigs () {
   let paths = [];
   let configs = {};
   if (process.env.NODE_ENV === 'development') {
-    paths = config.gulp.tests['test-e2e-workflow-default'];
+    paths = config.modules.e2e['config-default'];
   }
-  paths = paths.concat(config.gulp.tests['test-e2e-workflow-modules']);
+  paths = paths.concat(config.modules.e2e.configs);
   for (const filepath of paths) {
     for (const filename of await files.getFilenames(filepath)) { // eslint-disable-line no-await-in-loop
       let config = { };

@@ -175,7 +175,7 @@ async function execTestStep(testCaseName, label, testStep, resultPath) {
   driver = await buildDriver(driverBrowser);
   for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
     const resultPath = path.join('/home', 'node', 'app', 'results', filename.replace(/\.js$/, ''), viewportName);
-    log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName) + ' ' + resultPath);
+    log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName));
     testData.summary = {
       executed: 0, success: 0, fail: 0, total: 0
     };

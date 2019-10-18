@@ -127,7 +127,7 @@ gulp:
     test-e2e-workflow-default:
       - 'config/default.js'
     test-e2e-workflow-modules:
-      - 'config/modules/**/tests/e2e-workflow/*.js'
+      - 'config/**/tests/e2e-workflow/*.js'
   lint:
     eslint:
       fixtureDir: './fixture'
