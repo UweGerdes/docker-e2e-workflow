@@ -1,0 +1,22 @@
+//- widgets/results.pug
+mixin results()
+  if locals.results && locals.results.testCases
+    ul.results
+      each testCase, testCaseName in results.testCases
+        li.result
+          h4.result-name= testCaseName
+          ul.result-steps
+            each step, label in testCase.steps
+              li(class='result-step' + (step.errors.length > 0 ? ' error' : ''))
+                if queryStep == label
+                  strong= label
+                else
+                  a(href = '/e2e/'
+                    + '?config=' + encodeURIComponent(configFile)
+                    + '&viewport=' + encodeURIComponent(viewportName)
+                    + '&case=' + encodeURIComponent(testCaseName)
+                    + '&step=' + encodeURIComponent(label)
+                  )= label
+                if step.errors
+                  each error in step.errors
+                    .result-error=error

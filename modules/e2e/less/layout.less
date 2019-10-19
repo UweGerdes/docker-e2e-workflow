@@ -13,36 +13,11 @@
   padding: 0 0 20px;
   position: relative;
 
-  .viewports {
-    list-style: none;
-    padding: 0 2em 0 0;
-
-    h2:first-child {
-      margin-top: 0;
-    }
-  }
-
-  .config {
-    vertical-align: top;
-
-    .testCases {
-      list-style: none;
-      padding: 0 0 0 1em;
-
-      .testCase-name {
-        margin: 0 0 0.5em;
-      }
-
-      .testCase-steps {
-        list-style: none;
-        padding: 0;
-      }
-
-      .testCase-step {
-        padding: 0 0 0.2em 1em;
-      }
-    }
-  }
+  @import './widgets/viewports';
+  @import './widgets/configs';
+  @import './widgets/results';
+  @import './widgets/launch';
+  @import './widgets/colorpicker';
 
   .queryStep {
     font-size: 0.8em;
@@ -53,16 +28,6 @@
 
     &:hover {
       height: auto;
-    }
-  }
-
-  .viewportList {
-    list-style: none;
-    padding: 0;
-
-    .viewport {
-      display: inline-block;
-      padding: 0 0 0.2em 1em;
     }
   }
 
@@ -104,69 +69,6 @@
     .imgCanvas {
       cursor: crosshair;
     }
-  }
-
-  .configs {
-    list-style: none;
-    padding: 0;
-
-    .config {
-      width: 100%;
-
-      .label {
-        font-size: 1.2em;
-      }
-
-      .config-files {
-        list-style: none;
-        padding: 5px 0 0 15px;
-      }
-    }
-  }
-
-  .small {
-    font-size: 0.8em;
-  }
-
-  .error {
-    color: #cc0000;
-
-    a:link,
-    a:visited,
-    a:active {
-      color: #cc0000;
-    }
-  }
-}
-
-.launch {
-  cursor: pointer;
-
-  &::after {
-    content: ' \1F680';
-  }
-}
-
-.mouse-position-output {
-  margin-right: 0.5em;
-  white-space: nowrap;
-}
-
-.color-check-button {
-  border: 1px solid #cccccc;
-  cursor: pointer;
-  display: inline-block;
-  margin-right: 0.5em;
-  padding: 0.2em 0.4em;
-
-  &:hover,
-  &.active {
-  border: 1px solid #666666;
-  }
-
-  &::after {
-    content: ' \1F3A8';
-    font-size: 2em;
   }
 }
 

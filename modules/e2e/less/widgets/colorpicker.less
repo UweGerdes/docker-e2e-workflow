@@ -1,0 +1,29 @@
+.colorpicker {
+  &-button {
+    border: 1px solid #cccccc;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 0.5em;
+    padding: 0.2em 0.4em;
+
+    &:hover,
+    &.active {
+    border: 1px solid #666666;
+    }
+
+    &::after {
+      content: ' \1F3A8';
+      font-size: 2em;
+    }
+  }
+
+  &-position {
+    margin-right: 0.5em;
+    white-space: nowrap;
+  }
+
+  &-color {
+    margin-right: 0.5em;
+    white-space: nowrap;
+  }
+}

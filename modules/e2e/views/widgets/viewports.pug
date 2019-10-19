@@ -1,0 +1,14 @@
+//- widgets/viewports.pug
+mixin viewports()
+  ul#viewportList.viewportList
+    each viewportSize, viewportName in config.viewports
+      li.viewport
+        if queryViewport == viewportName
+          = viewportName
+        else
+          a(href = '/e2e/'
+            + '?config=' + encodeURIComponent(configFile)
+            + '&viewport=' + encodeURIComponent(viewportName)
+            + '&case=' + encodeURIComponent(queryCase)
+            + '&step=' + encodeURIComponent(queryStep)
+          )= viewportName

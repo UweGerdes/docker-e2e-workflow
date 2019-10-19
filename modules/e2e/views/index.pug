@@ -1,5 +1,12 @@
 extends ../../pages/views/page.pug
 
+include widgets/launch.pug
+include widgets/configs.pug
+include widgets/viewports.pug
+include widgets/results.pug
+include widgets/screenshot.pug
+include widgets/colorpicker.pug
+
 append head
   link(rel='stylesheet', href='/'+ moduleName + '/layout.css')
 
@@ -8,87 +15,26 @@ block content
 
     #e2e-header.e2e-header.flex-row
       h1#headline.headline.flex-left
-        if locals.configFile
-          span.launch&attributes({
-            title: 'starten',
-            'data-xhr': '/e2e/run/?config=' + configFile,
-            'data-xhr-response': '#output-content',
-            'data-toggle': '#output'
-          })= config.name
-          if queryCase
-            span= ' - ' + queryCase
-            if queryStep
-              span= ': ' + queryStep
-        else
-          | Keine Config geladen
+        + launch()
 
     .flex-row
-      ul#configs.configs.flex-right
-        if locals.configs
-          each config, label in configs
-            li.config
-              - viewportName = queryViewport || Object.keys(config.viewports)[0]
-              if configFile == config.filename
-                h2= label
-              else
-                h2
-                  a(href='/e2e/'
-                    + '?config=' + encodeURIComponent(config.filename)
-                    + '&viewport=' + encodeURIComponent(viewportName)
-                  )= label
-              if config.summary && config.summary.fail > 0
-                = ': '
-                h3.error= config.summary.fail + ' Fehler'
-              if locals.results && locals.results.testCases
-                ul.testCases
-                  each testCase, testCaseName in results.testCases
-                    h4.testCase-name= testCaseName
-                    li.testCase
-                      ul.testCase-steps
-                        each step, label in testCase.steps
-                          li(class='testCase-step' + (step.errors.length > 0 ? ' error' : ''))
-                            if queryStep == label
-                              strong= label
-                            else
-                              a(href = '/e2e/'
-                                + '?config=' + encodeURIComponent(configFile)
-                                + '&viewport=' + encodeURIComponent(viewportName)
-                                + '&case=' + encodeURIComponent(testCaseName)
-                                + '&step=' + encodeURIComponent(label)
-                              )= label
-                            if step.errors
-                              each error in step.errors
-                                .error.small=error
+      .flex-right
+        + configs()
+        + results()
 
       .flex-center
         if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep]
           .image-legend(style= 'width: ' + (results.viewports[queryViewport].width) + 'px;')
             .image-legend-left
-              ul#viewportList.viewportList
-                each viewportSize, viewportName in config.viewports
-                  li.viewport
-                    if queryViewport == viewportName
-                      = viewportName
-                    else
-                      a(href = '/e2e/'
-                        + '?config=' + encodeURIComponent(configFile)
-                        + '&viewport=' + encodeURIComponent(viewportName)
-                        + '&case=' + encodeURIComponent(queryCase)
-                        + '&step=' + encodeURIComponent(queryStep)
-                      )= viewportName
+              + viewports()
             .image-legend-right
-              span.color-check-button(data-toggle=".color-check-output, .mouse-position-output, img.screenshot, canvas#imgCanvas, .clickRect", title="Colorpicker")
-              span.mouse-position-output.hidden
-              span.color-check-output.hidden
+              + colorpicker()
           #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
-            img.screenshot(src = '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
-            - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
-            if clickRect
-              .clickRect(style='left: ' + clickRect.x + 'px; top: ' + clickRect.y + 'px; width: ' + clickRect.width + 'px; height: ' + clickRect.height + 'px;')
+            + screenshot()
             canvas#imgCanvas.imgCanvas.hidden(
               width=results.viewports[queryViewport].width,
               height=results.viewports[queryViewport].height,
-              data-click-color=".color-check-output"
+              data-click-color=".colorpicker-color"
             )
           pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
 

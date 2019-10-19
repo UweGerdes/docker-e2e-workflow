@@ -1,0 +1,18 @@
+//- widgets/configs.pug
+mixin configs()
+  if locals.configs
+    ul#configs.configs
+      each config, label in configs
+        li.config
+          - viewportName = queryViewport || Object.keys(config.viewports)[0]
+          if configFile == config.filename
+            h2= label
+          else
+            h2
+              a(href='/e2e/'
+                + '?config=' + encodeURIComponent(config.filename)
+                + '&viewport=' + encodeURIComponent(viewportName)
+              )= label
+          if config.summary && config.summary.fail > 0
+            = ': '
+            h3.error= config.summary.fail + ' Fehler'

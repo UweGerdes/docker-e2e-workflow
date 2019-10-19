@@ -1,0 +1,15 @@
+//- widgets/launch.pug
+mixin launch()
+  if locals.configFile
+    span.launch&attributes({
+      title: 'starten',
+      'data-xhr': '/e2e/run/?config=' + configFile,
+      'data-xhr-response': '#output-content',
+      'data-toggle': '#output'
+    })= config.name
+    if queryCase
+      span= ' - ' + queryCase
+      if queryStep
+        span= ': ' + queryStep
+  else
+    | Keine Config geladen
