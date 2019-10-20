@@ -158,6 +158,21 @@ async function execTestStep(testCaseName, label, testStep, resultPath) {
   await testCaseHandler.elements(testStep);
   await testCaseHandler.elementsNotExist(testStep);
   await testCaseHandler.input(testStep);
+  await driver.executeScript('arguments[0].scrollIntoView();', await driver.findElement(by('.footer')));
+  await driver.executeScript('window.scrollTo({ top: 0, left: 0 });');
+  const vpSize = await driver.executeScript('return { width: window.innerWidth, scrollWidth: document.body.parentNode.scrollWidth, height: document.body.parentNode.scrollHeight };')
+  if (driverBrowser === 'firefox') {
+    vpSize.height += 74;
+    if (vpSize.scrollWidth > vpSize.width) {
+      vpSize.width = vpSize.scrollWidth + 15;
+    }
+  }
+  if (driverBrowser === 'chrome') {
+    if (vpSize.scrollWidth > vpSize.width) {
+      vpSize.width = vpSize.scrollWidth + 10;
+    }
+  }
+  await driver.manage().window().setRect(vpSize);
   await saveFile(
     path.join(resultPath, testCaseName, label + '.png'),
     Buffer.from(await driver.takeScreenshot(), 'base64')
@@ -180,8 +195,8 @@ async function execTestStep(testCaseName, label, testStep, resultPath) {
       executed: 0, success: 0, fail: 0, total: 0
     };
     let vpSize = { ...viewportSize };
-    if (driverBrowser === 'chrome') {
-      vpSize.height += 110;
+    if (driverBrowser === 'firefox') {
+      vpSize.height += 74;
     }
     try {
       await del([resultPath], { force: true });

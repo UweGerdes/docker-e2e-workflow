@@ -3,4 +3,4 @@ mixin screenshot()
   img.screenshot(src = '/' + resultsPath + '/' + queryViewport + '/' + queryCase + '/' + queryStep + '.png')
   - var clickRect = results.testCases[queryCase].steps[queryStep].clickRect
   if clickRect
-    .clickRect(style='left: ' + clickRect.x + 'px; top: ' + clickRect.y + 'px; width: ' + clickRect.width + 'px; height: ' + clickRect.height + 'px;')
+    .clickRect(style='left: ' + clickRect.x + 'px; top: ' + clickRect.y + 'px; width: ' + (clickRect.width - 2) + 'px; height: ' + (clickRect.height - 2) + 'px;')

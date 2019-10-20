@@ -29,7 +29,7 @@ block content
               + viewports()
             .image-legend-right
               + colorpicker()
-          #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
+          #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width + 10) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
             + screenshot()
             canvas#imgCanvas.imgCanvas.hidden(
               width=results.viewports[queryViewport].width,
