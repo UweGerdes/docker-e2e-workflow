@@ -10,7 +10,7 @@ mixin form(form, action)
     each section, section_name in form.sections
       fieldset.fieldset(class=section_name)
         if section.label
-          legend= __(section.label)
+          legend.fieldset-legend= __(section.label)
         each field in section.fields
           if field.type == 'group'
             + group(field.label, field.name, field.fields)

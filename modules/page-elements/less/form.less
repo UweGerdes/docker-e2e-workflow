@@ -12,6 +12,15 @@
     padding: 1em;
   }
 
+  &set {
+    border-width: 0;
+
+    &-legend {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  }
+
   &-label {
     align-self: flex-start;
     display: block;
@@ -128,7 +137,7 @@
 
       &.field_address-street {
         flex: 1 0 70%;
-        margin-right: 0.5em;
+        margin-right: 1.5em;
 
         @media all and (min-width: 500px) {
           flex: 1 0 84%;
@@ -145,7 +154,7 @@
 
       &.field_address-zip {
         flex: 0 0 5em;
-        margin-right: 0.5em;
+        margin-right: 1.5em;
       }
 
       &.field_address-city {
