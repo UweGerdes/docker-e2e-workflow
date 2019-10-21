@@ -150,7 +150,7 @@ const testCaseHandler = {
   }
 };
 
-async function execTestStep(testCaseName, label, testStep, resultPath) {
+async function execTestStep(testCaseName, label, testStep, resultPath, viewportName) {
   testData.summary.total++;
   log('Test case: ' + testCaseName + ', test step: ' + label);
   testStep.errors = [];
@@ -160,11 +160,16 @@ async function execTestStep(testCaseName, label, testStep, resultPath) {
   await testCaseHandler.input(testStep);
   await driver.executeScript('arguments[0].scrollIntoView();', await driver.findElement(by('.footer')));
   await driver.executeScript('window.scrollTo({ top: 0, left: 0 });');
-  const vpSize = await driver.executeScript('return { width: window.innerWidth, scrollWidth: document.body.parentNode.scrollWidth, height: document.body.parentNode.scrollHeight };')
+  const vpSize = await driver.executeScript('return { width: window.innerWidth, scrollWidth: document.body.parentNode.scrollWidth, height: document.body.parentNode.scrollHeight };');
+  if (vpSize.height > testData.viewports[viewportName].height) {
+    testStep.verticalScrollbar[viewportName] = true;
+  } else {
+    testStep.verticalScrollbar[viewportName] = false;
+  }
   if (driverBrowser === 'firefox') {
     vpSize.height += 74;
     if (vpSize.scrollWidth > vpSize.width) {
-      vpSize.width = vpSize.scrollWidth + 15;
+      vpSize.width = vpSize.scrollWidth + 7;
     }
   }
   if (driverBrowser === 'chrome') {
@@ -206,7 +211,8 @@ async function execTestStep(testCaseName, label, testStep, resultPath) {
           await driver.get(testCase.uri);
           await driver.manage().window().setRect(vpSize);
           for (const [label, testStep] of Object.entries(testCase.steps)) {
-            await execTestStep(testCaseName, label, testStep, resultPath);
+            testStep.verticalScrollbar = { };
+            await execTestStep(testCaseName, label, testStep, resultPath, viewportName);
           }
         } catch (err) {
           log(chalk.red(err));

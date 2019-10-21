@@ -29,7 +29,8 @@ block content
               + viewports()
             .image-legend-right
               + colorpicker()
-          #image-container.image-container(style= 'width: ' + (results.viewports[queryViewport].width) + 'px; max-width: ' + (results.viewports[queryViewport].width + 10) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
+          - width = results.viewports[queryViewport].width + (results.testCases[queryCase].steps[queryStep].verticalScrollbar[queryViewport] ? 12 : 0)
+          #image-container.image-container(style= 'width: ' + width + 'px; max-width: ' + (width + 10) + 'px; height: ' + results.viewports[queryViewport].height + 'px;')
             + screenshot()
             canvas#imgCanvas.imgCanvas.hidden(
               width=results.viewports[queryViewport].width,
