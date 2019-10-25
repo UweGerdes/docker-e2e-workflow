@@ -13,6 +13,7 @@ gulp:
         - 'tests'
         - 'livereload'
 #        - 'livereload-all'
+        - 'eslint'
       build:
         - 'less'
         - 'js'
@@ -35,13 +36,28 @@ gulp:
         - 'livereload-start'
         - 'server-start'
         - 'livereload'
-      build: []
+        - 'eslint'
+      build:
+        - 'less'
+        - 'js'
+        - 'locales'
       tests: []
-      lint: []
+      lint:
+        - 'eslint'
+        - 'yamllint'
+        - 'puglint'
+        - 'lesshint'
       server:
         - 'server-changed'
       watch:
         - 'server'
+        - 'livereload'
+        - 'eslint'
+        - 'js'
+        - 'yamllint'
+        - 'puglint'
+        - 'less'
+        - 'livereload-all'
     production:
       gulp:
         - 'build'
@@ -56,11 +72,9 @@ gulp:
         - 'server-changed'
   watch:
     eslint:
-      - '*.js'
+      - 'gulpfile.js'
       - '.eslintrc.js'
       - 'gulp/**/*.js'
-      - 'lib/**/*.js'
-      - 'modules/**/*.js'
     js:
       - 'modules/*/js/*.js'
     jsdoc:
@@ -130,6 +144,12 @@ gulp:
       - 'config/**/tests/e2e-workflow/*.js'
   lint:
     eslint:
+      files:
+        - '*.js'
+        - '.eslintrc.js'
+        - 'gulp/**/*.js'
+        - 'lib/**/*.js'
+        - 'modules/**/*.js'
       fixtureDir: './fixture'
   build:
     jsdoc:

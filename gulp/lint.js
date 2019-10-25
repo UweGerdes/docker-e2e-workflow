@@ -52,7 +52,7 @@ const tasks = {
       /* c8 ignore next 1 */
       return file.eslint != null && file.eslint.fixed;
     };
-    return gulp.src(config.gulp.watch.eslint)
+    return gulp.src(config.gulp.lint.eslint.files)
       .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
       .pipe(notify({ message: 'linting: <%= file.path %>', title: 'Gulp eslint' }))
       .pipe(eslint({ configFile: path.join(__dirname, '..', '.eslintrc.js'), fix: true }))
@@ -255,8 +255,14 @@ if (process.env.NODE_ENV === 'development') {
   loadTasks.importTasks(tasks);
 /* c8 ignore next 6 */
 } else {
-  loadTasks.importTasks({
+  const envTasks = {
     eslint: () => { },
     ejslint: () => { }
-  });
+  };
+  config.gulp.start[process.env.NODE_ENV].lint.forEach(
+    (key) => {
+      envTasks[key] = tasks[key];
+    }
+  );
+  loadTasks.importTasks(envTasks);
 }
