@@ -10,6 +10,19 @@ include widgets/colorpicker.pug
 append head
   link(rel='stylesheet', href='/'+ moduleName + '/layout.css')
 
+append breadcrumbs
+  li.header-breadcrumb
+    a.header-breadcrumb-link(href='/'+ moduleName + '/')= module.name
+  if locals.config && config.name
+    li.header-breadcrumb
+      a.header-breadcrumb-link(href='/'+ moduleName + '/')= config.name
+    if locals.queryCase
+      li.header-breadcrumb
+        .header-breadcrumb-label= queryCase
+        if locals.queryStep
+          li.header-breadcrumb
+            .header-breadcrumb-label= queryStep
+
 block content
   #e2e.e2e
 
