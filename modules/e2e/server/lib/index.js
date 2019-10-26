@@ -27,7 +27,7 @@ let testData = null,
   driver;
 
 const filename = argv.cfg || path.join('config', 'default.js');
-// const driverBrowser = 'firefox'
+// const driverBrowser = 'firefox';
 const driverBrowser = 'chrome';
 
 const configPath = path.join('/home', 'node', 'app', filename);
