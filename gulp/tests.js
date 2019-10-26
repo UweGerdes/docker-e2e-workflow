@@ -72,7 +72,7 @@ const tasks = {
   'test-e2e-workflow-default': [['eslint'], (callback) => {
     sequence(
       'test-e2e-workflow-default-exec',
-      'livereload',
+      'livereload-all',
       callback
     );
   }],
@@ -113,7 +113,7 @@ const tasks = {
   'test-e2e-workflow-modules': [['eslint'], (callback) => {
     sequence(
       'test-e2e-workflow-modules-exec',
-      'livereload',
+      'livereload-all',
       callback
     );
   }],
@@ -125,15 +125,10 @@ const tasks = {
    * @param {function} callback - gulp callback
    */
   'test-e2e-workflow-modules-exec': async () => {
-    let filenames = [];
-    const promises = config.gulp.tests['test-e2e-workflow-modules'].forEach((path) => {
-      return files.getFilenames(path);
-    });
-    filenames = await files.getRecentFiles(await Promise.all(promises));
-    const runs = filenames.forEach((filename) => {
-      return runModule(filename);
-    });
-    await Promise.all(runs);
+    await Promise.all(config.gulp.tests['test-e2e-workflow-modules'].map(files.getFilenames))
+      .then((filenames) => [].concat(...filenames))
+      .then(files.getRecentFiles)
+      .then(runModule);
   }
 };
 

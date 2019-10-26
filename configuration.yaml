@@ -58,6 +58,8 @@ gulp:
         - 'puglint'
         - 'less'
         - 'livereload-all'
+        - 'test-modules'
+        - 'test-e2e-workflow-modules'
     production:
       gulp:
         - 'build'
@@ -70,6 +72,8 @@ gulp:
       lint: []
       server:
         - 'server-changed'
+      watch:
+        - 'test-e2e-workflow-modules'
   watch:
     eslint:
       - 'gulpfile.js'
