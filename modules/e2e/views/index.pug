@@ -37,7 +37,8 @@ block content
               height=results.viewports[queryViewport].height,
               data-click-color=".colorpicker-color"
             )
-    pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
+    if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep]
+      pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
 
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
     #output-content.modalLayer-content
