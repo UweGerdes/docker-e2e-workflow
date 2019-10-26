@@ -25,16 +25,13 @@ append breadcrumbs
 
 block content
   #e2e.e2e
-
     .flex-row
       h1#headline.headline.flex-left
         + launch()
-
     .flex-row
       .flex-left
         + configs()
         + results()
-
       .flex-center
         if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep]
           .image-legend(style= 'width: ' + (results.viewports[queryViewport].width) + 'px;')
@@ -52,7 +49,6 @@ block content
             )
     if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep]
       pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
-
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
     #output-content.modalLayer-content
 
