@@ -128,22 +128,17 @@ gulp:
       - 'modules/**/views/**/*.*'
       - 'htdocs/js/**/*.js'
       - '!modules/e2e/server/lib/*.js'
-    test-e2e-workflow-default:
-      - 'modules/e2e/server/lib/index.js'
-      - 'config/default.js'
     test-e2e-workflow-modules:
-      - 'config/modules/*/js/**/*.js'
-      - 'config/modules/*/less/**/*.less'
-      - 'config/modules/*/server/**/*.js'
-      - 'config/modules/*/tests/e2e-workflow/*.js'
-      - 'config/modules/*/views/**/*.*'
+      - 'config/**/js/**/*.js'
+      - 'config/**/less/**/*.less'
+      - 'config/**/server/**/*.js'
+      - 'config/**/tests/e2e-workflow/*.js'
+      - 'config/**/views/**/*.*'
   tests:
     modules:
       - 'modules/**/tests/model/*.js'
       - 'modules/**/tests/server/*.js'
       - 'modules/**/tests/views/*.js'
-    test-e2e-workflow-default:
-      - 'config/default.js'
     test-e2e-workflow-modules:
       - 'config/**/tests/e2e-workflow/*.js'
   lint:

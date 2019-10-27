@@ -4,17 +4,15 @@
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
 
-const domain = 'http://' + process.env.HOSTNAME + ':8080'
+const domain = 'http://' + (process.env.TEST_SERVER || process.env.HOSTNAME) + ':8080'
 
 module.exports = {
   group: 'Default Test',
   name: 'E2E Workflow',
   viewports: {
-    'Mobile': { width: 320, height: 568 }
-    /*,
+    'Mobile': { width: 320, height: 568 },
     'Tablet Portrait': { width: 768, height: 1024 },
     'Desktop': { width: 1200, height: 900 }
-    */
   },
   testCases: {
     'homepage': {

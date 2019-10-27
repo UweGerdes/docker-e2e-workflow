@@ -9,7 +9,6 @@
 'use strict';
 
 const exec = require('child_process').exec,
-  fs = require('fs'),
   path = require('path'),
   ansiColors = require('../../../lib/ansiColors'),
   config = require('../../../lib/config'),
@@ -41,12 +40,14 @@ const index = async (req, res, next) => {
   if (req.query.config) {
     if (req.query.config.match(/^\/config\/.+$/)) {
       try {
-        const configuration = await files.requireFile(req.query.config);
+        const configuration = files.requireFile(req.query.config);
         const resultsFilename = req.query.config || path.join('config', 'default.js');
         const resultsPath = path.join('results', resultsFilename.replace(/\.js$/, ''));
         let results;
-        if (req.query.viewport) {
-          results = await files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
+        try {
+          results = files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
+        } catch (error) {
+          // console.log(error.message);
         }
         let data = {
           ...config.getData(req),
@@ -133,20 +134,16 @@ module.exports = {
  * get configuration files and labels
  */
 async function getConfigs () {
-  let paths = [];
+  let paths = config.modules.e2e.configs;
   let configs = {};
-  if (process.env.NODE_ENV === 'development') {
-    paths = config.modules.e2e['config-default'];
-  }
-  paths = paths.concat(config.modules.e2e.configs);
   for (const filepath of paths) {
     for (const filename of await files.getFilenames(filepath)) { // eslint-disable-line no-await-in-loop
       let config = { };
       let resultFile = path.join('.', 'results', filename.replace(/\.js$/, ''), 'results.json');
-      if (fs.existsSync(resultFile)) {
-        config = await files.requireFile(resultFile); // eslint-disable-line no-await-in-loop
-      } else {
-        config = await files.requireFile(filename); // eslint-disable-line no-await-in-loop
+      try {
+        config = files.requireFile(resultFile); // eslint-disable-line no-await-in-loop
+      } catch (error) {
+        config = files.requireFile(filename); // eslint-disable-line no-await-in-loop
       }
       config.filename = filename;
       if (configs[config.name]) {
