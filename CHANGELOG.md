@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.5.1
+updates for better usability in projects to test
+
 ## v0.5.0
 rebase project on expressjs-boilerplate
 
