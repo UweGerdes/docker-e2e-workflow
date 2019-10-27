@@ -1,41 +1,59 @@
-version: "3"
+# To execute this docker-compose yml file use docker-compose -f <file_name> up
+# Add the "-d" flag at the end for deattached execution
+version: "3.5"
 
 services:
+  # replace this server with server to test
+  e2e-server:
+    build:
+      context: .
+    image: uwegerdes/e2e-workflow
+    container_name: e2e-server
+    hostname: e2e-server
+    ports:
+      - 51280:8080
+      - 51281:8081
+    environment:
+      LIVERELOAD_PORT: 51281
+    volumes:
+      - .:/home/node/app
+    command: npm run dev
 
   e2e-hub:
     image: selenium/hub
-    ports:
-      - 51344:4444
+    container_name: e2e-hub
     hostname: e2e-hub
 
   e2e-chrome:
     image: selenium/node-chrome
+    container_name: e2e-chrome
     volumes:
       - /dev/shm:/dev/shm
     depends_on:
       - e2e-hub
     environment:
       HUB_HOST: e2e-hub
-      E2E_HOST: e2e-workflow
+      HUB_PORT: 4444
+      TEST_SERVER: e2e-server
       JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
   e2e-firefox:
     image: selenium/node-firefox
+    container_name: e2e-firefox
     volumes:
       - /dev/shm:/dev/shm
     depends_on:
       - e2e-hub
     environment:
       HUB_HOST: e2e-hub
-      E2E_HOST: e2e-workflow
+      HUB_PORT: 4444
+      TEST_SERVER: e2e-server
       JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
-  e2e-workflow:
-    build:
-      context: .
+  e2e-frontend:
     image: uwegerdes/e2e-workflow
-    container_name: e2e-workflow
-    hostname: e2e-workflow
+    container_name: e2e-frontend
+    hostname: e2e-frontend
     ports:
       - 51380:8080
       - 51381:8081
@@ -44,8 +62,10 @@ services:
     environment:
       HUB_HOST: e2e-hub
       HUB_PORT: 4444
+      NODE_ENV: staging
+      LIVERELOAD_PORT: 51381
     volumes:
       - .:/home/node/app
-#      - ../docker-vcards/modules:/home/node/app/config/modules
-#    command: gulp --silent
+      - ./modules:/home/node/app/config/modules
+#      - ../[test-project]/modules:/home/node/app/config/modules
     command: npm run dev
