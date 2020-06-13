@@ -68,16 +68,21 @@ const testCaseHandler = {
                   return Promise.resolve();
                 });
             })
-            .catch(() => {
-              err(testStep, selector + ' not found');
-              return Promise.resolve();
+            .catch((error) => {
+              if (error.name === 'InvalidSelectorError') {
+                err(testStep, '"' + selector + '" ' + error.message);
+                return Promise.reject(error.message);
+              } else {
+                err(testStep, selector + ' not found');
+                return Promise.resolve();
+              }
             })
         );
       }
       try {
         await Promise.all(elements);
       } catch (errors) {
-        console.log(errors);
+        // console.log(errors);
       }
     }
   },
@@ -86,7 +91,11 @@ const testCaseHandler = {
       try {
         await driver.findElement(by(selector));
         err(testStep, selector + ' should not exist');
-      } catch (error) { } // eslint-disable-line no-empty
+      } catch (error) {
+        if (error.name === 'InvalidSelectorError') {
+          err(testStep, '"' + selector + '" ' + error.message);
+        }
+      }
     }
     if (testStep.elementsNotExist) {
       for (const selector of testStep.elementsNotExist) {
@@ -122,16 +131,21 @@ const testCaseHandler = {
               await setValue(element, selector);
               return Promise.resolve();
             })
-            .catch(() => {
-              err(testStep, selector + ' input field not found');
-              return Promise.resolve();
+            .catch((error) => {
+              if (error.name === 'InvalidSelectorError') {
+                err(testStep, '"' + selector + '" ' + error.message);
+                return Promise.reject(error.message);
+              } else {
+                err(testStep, selector + ' input field not found');
+                return Promise.resolve();
+              }
             })
         );
       }
       try {
         await Promise.all(elements);
       } catch (errors) {
-        console.log(errors);
+        // console.log(errors);
       }
     }
   },
@@ -144,7 +158,11 @@ const testCaseHandler = {
         testStep.clickRect = await clickElement.getRect();
         await clickElement.click();
       } catch (error) {
-        err(testStep, testStep.click + ' could not click');
+        if (error.name === 'InvalidSelectorError') {
+          err(testStep, '"' + testStep.click + '" ' + error.message);
+        } else {
+          err(testStep, testStep.click + ' could not click');
+        }
       }
     }
   }
