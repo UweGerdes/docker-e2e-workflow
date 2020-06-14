@@ -13,7 +13,7 @@ const chai = require('chai'),
 
 chai.use(chaiHttp);
 
-describe('/pages/tests/server/i18n-test.js', function () {
+describe('/pages/tests/views/i18n-test.js', function () {
   describe('GET /i18n-ejs/', function () {
     it('should show test translations - en', function (done) {
       chai.request('http://localhost:8080')

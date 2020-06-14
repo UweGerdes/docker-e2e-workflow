@@ -1,5 +1,5 @@
 /**
- * Test for sample-client
+ * Test for https
  */
 
 'use strict';
