@@ -147,7 +147,7 @@ async function getConfigs () {
       }
       config.filename = filename;
       if (configs[config.name]) {
-        throw new Error('duplicate test name');
+        throw new Error('duplicate test name: ' + config.name);
       }
       configs[config.name] = config;
     }
