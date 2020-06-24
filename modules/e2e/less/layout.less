@@ -7,6 +7,10 @@
 @list_width: 30%;
 @failed_color: #cc0000;
 
+.content {
+  max-width: 1200px;
+}
+
 .e2e {
   margin: 0 auto;
   max-width: 1500px;
@@ -125,15 +129,16 @@
 
   @media all and (min-width: 600px) {
     &-left {
-      flex: 1 0 auto;
+      flex: 1 1 15%;
     }
 
     &-center {
-      flex: 10 0 auto;
+      padding: 0 0 0 2em;
+      flex: 10 10 auto;
     }
 
     &-right {
-      flex: 1 0 auto;
+      flex: 1 1 10%;
     }
   }
 }
