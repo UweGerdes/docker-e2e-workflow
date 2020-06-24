@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.5.2
+added hover and elementsNotVisible, upgrade package.json
+
 ## v0.5.1
 updates for better usability in projects to test
 
