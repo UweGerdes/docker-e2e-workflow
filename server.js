@@ -72,8 +72,8 @@ app.use(createGracefulShutdownMiddleware(server, { forceTimeout: 30000 }));
 glob.sync(config.server.modules + '/*/server/index.js')
   .forEach((filename) => {
     const regex = new RegExp(config.server.modules + '(/[^/]+)/server/index.js');
-    const baseRoute = filename.replace(regex, '$1');
-    routers[baseRoute] = require(filename);
+    const moduleRoute = filename.replace(regex, '$1');
+    routers[moduleRoute] = require(filename);
   });
 
 /**
@@ -182,6 +182,9 @@ app.get('/', requestGetBaseRoute);
  * @param {object} res - response
  */
 const requestGetAppRoute = (req, res) => {
+  // console.log(Object.keys(req.cookies));
+  // console.log(JSON.stringify(req.cookies, null, 2));
+  res.cookie('cookieName', 'cookieValue', { Path: '/', HttpOnly: true });
   res.render(viewPath('app'), config.getData(req));
 };
 app.get('/app', requestGetAppRoute);
@@ -248,13 +251,34 @@ httpsServer.on('listening', onListening.bind(null, 'https', process.env.HTTPS_PO
  *
  * @name module_router_connect_server
  */
-for (const [baseRoute, router] of Object.entries(routers)) {
+for (const [moduleRoute, router] of Object.entries(routers)) {
 /* c8 ignore next 3 */
   if (router.connectServer) {
     router.connectServer(server, httpsServer);
   }
-  app.use(baseRoute, router.router);
+  app.use(moduleRoute, router.router);
 }
+
+/**
+ * Route for failure handling
+ *
+ * @param {object} req - request
+ * @param {object} res - response
+ */
+const requestGetFailureRoute = (req, res, next) => {
+  let data = config.getData(req);
+  if (req.error) {
+    console.log('req.error:', req.error);
+    data.error = req.error;
+    if (data.error.code) {
+      res.status(data.error.code);
+    }
+    res.render(viewPath('error'), data);
+  } else {
+    next();
+  }
+};
+app.get('*', requestGetFailureRoute);
 
 /**
  * Route for not found errors
@@ -263,16 +287,13 @@ for (const [baseRoute, router] of Object.entries(routers)) {
  * @param {object} res - response
  */
 const requestGet404Route = (req, res) => {
-  let data = config.getData(req);
-  if (req.error) {
-    data.error = req.error;
-  } else {
-    data.error = {
+  res.status(404).render(viewPath('error'), {
+    ...config.getData(req),
+    error: {
       code: 404,
       name: 'not found'
-    };
-  }
-  res.status(404).render(viewPath('error'), data);
+    }
+  });
 };
 app.get('*', requestGet404Route);
 
