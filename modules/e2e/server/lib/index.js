@@ -49,6 +49,23 @@ const testCaseHandler = {
       }
     }
   },
+  hover: async (testStep) => {
+    if (testStep.hover) {
+      let hoverElement;
+      try {
+        hoverElement = await driver.findElement(by(testStep.hover));
+        await driver.executeScript('arguments[0].scrollIntoView();', hoverElement);
+        testStep.hoverRect = await hoverElement.getRect();
+        await driver.actions().move({ origin: hoverElement }).perform();
+      } catch (error) {
+        if (error.name === 'InvalidSelectorError') {
+          err(testStep, '"' + testStep.hover + '" ' + error.message);
+        } else {
+          err(testStep, testStep.hover + ' could not hover');
+        }
+      }
+    }
+  },
   elements: async (testStep) => {
     if (testStep.elements) {
       let elements = [];
@@ -99,6 +116,26 @@ const testCaseHandler = {
     }
     if (testStep.elementsNotExist) {
       for (const selector of testStep.elementsNotExist) {
+        testElement(selector);
+      }
+    }
+  },
+  elementsNotVisible: (testStep) => {
+    async function testElement(selector) {
+      try {
+        const element = await driver.findElement(by(selector));
+        if (await element.isDisplayed()) {
+          err(testStep, selector + ' should not be visible');
+        }
+      } catch (error) {
+        if (error.name === 'InvalidSelectorError') {
+          err(testStep, '"' + selector + '" ' + error.message);
+        }
+        err(testStep, selector + ' should exist');
+      }
+    }
+    if (testStep.elementsNotVisible) {
+      for (const selector of testStep.elementsNotVisible) {
         testElement(selector);
       }
     }
@@ -173,8 +210,10 @@ async function execTestStep(testCaseName, label, testStep, resultPath, viewportN
   log('Test case: ' + testCaseName + ', test step: ' + label);
   testStep.errors = [];
   await testCaseHandler.title(testStep);
+  await testCaseHandler.hover(testStep);
   await testCaseHandler.elements(testStep);
   await testCaseHandler.elementsNotExist(testStep);
+  await testCaseHandler.elementsNotVisible(testStep);
   await testCaseHandler.input(testStep);
   await driver.executeScript('arguments[0].scrollIntoView();', await driver.findElement(by('.footer')));
   await driver.executeScript('window.scrollTo({ top: 0, left: 0 });');
