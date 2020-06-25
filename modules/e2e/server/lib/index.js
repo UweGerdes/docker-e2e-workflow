@@ -7,7 +7,7 @@
 
 'use strict';
 
-const { Builder, By } = require('selenium-webdriver'),
+const { Builder, By, until } = require('selenium-webdriver'),
   chrome = require('selenium-webdriver/chrome'),
   firefox = require('selenium-webdriver/firefox'),
   chai = require('chai'),
@@ -38,6 +38,21 @@ const testCaseHandler = {
         assert.equal(title, testStep.title);
       } catch (error) {
         err(testStep, 'title: ' + error.message);
+      }
+    }
+  },
+  waitForElements: async (testStep) => {
+    if (testStep.waitForElements) {
+      try {
+        for (const waitForElement of testStep.waitForElements) {
+          await driver.wait(until.elementLocated(by(waitForElement)), 2000);
+        }
+      } catch (error) {
+        if (error.name === 'InvalidSelectorError') {
+          err(testStep, '"' + testStep.waitForElements + '" ' + error.message);
+        } else {
+          err(testStep, testStep.waitForElements + ' could not waitForElements: ' + error);
+        }
       }
     }
   },
@@ -202,6 +217,7 @@ async function execTestStep(testCaseName, label, testStep, resultPath, viewportN
   log('Test case: ' + testCaseName + ', test step: ' + label);
   testStep.errors = [];
   await testCaseHandler.title(testStep);
+  await testCaseHandler.waitForElements(testStep);
   await testCaseHandler.hover(testStep);
   await testCaseHandler.elements(testStep);
   await testCaseHandler.elementsNotExist(testStep);
