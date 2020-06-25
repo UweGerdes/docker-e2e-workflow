@@ -33,27 +33,27 @@ handler['data-toggle'] = {
 };
 
 /**
- * open link
+ * send request and show response in target element
  */
 handler['data-xhr'] = {
   elements: document.querySelectorAll('[data-xhr]'),
   event: 'click',
   func: function (event) {
     const element = event.target;
-    const response = document.querySelectorAll(element.dataset.xhrResponse)[0];
-    response.innerHTML = '';
+    const container = document.querySelectorAll(element.dataset.xhrResponse)[0];
+    container.innerHTML = '';
     const xhttp = new XMLHttpRequest();
     let seenBytes = 0;
     xhttp.onreadystatechange = function () {
       if (xhttp.readyState === 3) {
         var newData = xhttp.responseText.substr(seenBytes);
         seenBytes = xhttp.responseText.length;
-        response.insertAdjacentHTML('beforeEnd', newData);
-        response.scrollTop = response.scrollHeight - response.clientHeight;
+        container.insertAdjacentHTML('beforeEnd', newData);
+        container.scrollTop = container.scrollHeight - container.clientHeight;
       }
       if (xhttp.readyState === 4) {
-        response.insertAdjacentHTML('beforeEnd', '<br /><a href="javascript:location.reload()" class="button">CLOSE</a>');
-        response.scrollTop = response.scrollHeight - response.clientHeight;
+        container.insertAdjacentHTML('beforeEnd', '<br /><a href="javascript:location.reload()" class="button">CLOSE</a>');
+        container.scrollTop = container.scrollHeight - container.clientHeight;
       }
     };
     xhttp.open('GET', element.getAttribute('data-xhr'), true);
