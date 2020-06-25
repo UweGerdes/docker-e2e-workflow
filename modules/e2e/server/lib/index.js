@@ -26,17 +26,9 @@ chai.use(chaiAsPromised);
 let testData = null,
   driver;
 
-const filename = argv.cfg || path.join('config', 'default.js');
+const filenames = argv.cfg || path.join('config', 'default.js');
 // const driverBrowser = 'firefox';
 const driverBrowser = 'chrome';
-
-const configPath = path.join('/home', 'node', 'app', filename);
-if (fs.existsSync(configPath)) {
-  log('Executing: "' + configPath + '"');
-  testData = require(configPath);
-} else {
-  throw (new Error('ERROR: file not found: "' + configPath + '"'));
-}
 
 const testCaseHandler = {
   title: async (testStep) => {
@@ -250,40 +242,58 @@ async function execTestStep(testCaseName, label, testStep, resultPath, viewportN
 
 (async () => {
   driver = await buildDriver(driverBrowser);
-  for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
-    const resultPath = path.join('/home', 'node', 'app', 'results', filename.replace(/\.js$/, ''), viewportName);
-    log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName));
-    testData.summary = {
-      executed: 0, success: 0, fail: 0, total: 0
-    };
-    let vpSize = { ...viewportSize };
-    if (driverBrowser === 'firefox') {
-      vpSize.height += 74;
+  driver.manage().logs().get('browser')
+    .then(function(entries) {
+      entries.forEach(function(entry) {
+        console.log('[%s] %s', entry.level.name, entry.message);
+      });
+    })
+    .catch(error => { console.log('ERR', error); });
+
+  for (const filename of filenames.split(',')) {
+    const configPath = path.join('/home', 'node', 'app', filename);
+    if (fs.existsSync(configPath)) {
+      log('Executing: "' + configPath + '"');
+      testData = require(configPath);
+    } else {
+      throw (new Error('ERROR: file not found: "' + configPath + '", "' + argv.cfg + '"'));
     }
-    try {
-      await del([resultPath], { force: true });
-      for (const [testCaseName, testCase] of Object.entries(testData.testCases)) {
-        try {
-          await makeDir(path.join(resultPath, testCaseName));
-          await driver.get(testCase.uri);
-          await driver.manage().window().setRect(vpSize);
-          for (const [label, testStep] of Object.entries(testCase.steps)) {
-            testStep.verticalScrollbar = { };
-            await execTestStep(testCaseName, label, testStep, resultPath, viewportName);
-          }
-        } catch (err) {
-          log(chalk.red(err));
-        }
+
+    for (const [viewportName, viewportSize] of Object.entries(testData.viewports)) {
+      const resultPath = path.join('/home', 'node', 'app', 'results', filename.replace(/\.js$/, ''), viewportName);
+      log(chalk.blue.bold.inverse('starting ' + testData.name + ': ' + viewportName));
+      testData.summary = {
+        executed: 0, success: 0, fail: 0, total: 0
+      };
+      let vpSize = { ...viewportSize };
+      if (driverBrowser === 'firefox') {
+        vpSize.height += 74;
       }
-    } catch (err) {
-      log(chalk.red(err));
-    } finally {
-      await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 2));
-      if (testData.summary.fail === 0) {
-        log(chalk.green.bold.inverse('Executed ' + testData.summary.executed + ' steps, no errors'));
-      } else {
-        log(chalk.red.bold.inverse('Executed ' + testData.summary.executed + ' steps, ' +
-          testData.summary.fail + ' failed'));
+      try {
+        await del([resultPath], { force: true });
+        for (const [testCaseName, testCase] of Object.entries(testData.testCases)) {
+          try {
+            await makeDir(path.join(resultPath, testCaseName));
+            await driver.get(testCase.uri);
+            await driver.manage().window().setRect(vpSize);
+            for (const [label, testStep] of Object.entries(testCase.steps)) {
+              testStep.verticalScrollbar = { };
+              await execTestStep(testCaseName, label, testStep, resultPath, viewportName);
+            }
+          } catch (err) {
+            log(chalk.red(err));
+          }
+        }
+      } catch (err) {
+        log(chalk.red(err));
+      } finally {
+        await saveFile(path.join(resultPath, 'results.json'), JSON.stringify(testData, null, 2));
+        if (testData.summary.fail === 0) {
+          log(chalk.green.bold.inverse('Executed ' + testData.summary.executed + ' steps, no errors'));
+        } else {
+          log(chalk.red.bold.inverse('Executed ' + testData.summary.executed + ' steps, ' +
+            testData.summary.fail + ' failed'));
+        }
       }
     }
   }
