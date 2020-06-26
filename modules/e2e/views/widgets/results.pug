@@ -1,6 +1,7 @@
 //- widgets/results.pug
 mixin results()
   if locals.results && locals.results.testCases
+    - viewportName = Object.keys(config.viewports).indexOf(queryViewport) >= 0 ? queryViewport : Object.keys(config.viewports)[0]
     ul.results
       each testCase, testCaseName in results.testCases
         li.result
