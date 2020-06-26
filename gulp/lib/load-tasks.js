@@ -14,6 +14,7 @@ module.exports = {
   /**
    * Import tasks provided as an object into gulp
    *
+   * @function importTasks
    * @param {object} tasks - task list
    */
   importTasks: (tasks) => {
@@ -30,6 +31,7 @@ module.exports = {
   /**
    * Get the task list
    *
+   * @function tasks
    * @return {Array} task list
    */
   /* c8 ignore next 3 */

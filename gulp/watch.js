@@ -16,7 +16,7 @@ const gulp = require('gulp'),
 
 const tasks = {
   /**
-   * Watch and execute tasks when files changed for all tasks configured for current NODE_ENV setting
+   * Watch and execute tasks when files changed for all tasks configured for current `NODE_ENV` setting
    *
    * @function watch
    */

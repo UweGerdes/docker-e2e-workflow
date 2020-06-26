@@ -25,7 +25,7 @@ const baseDir = path.join(__dirname, '..');
 
 const tasks = {
   /**
-   * Start all tests configured for current NODE_ENV setting
+   * Start all tests configured for current `NODE_ENV` setting
    *
    * @function test
    * @param {function} callback - gulp callback to signal end of task
@@ -37,7 +37,7 @@ const tasks = {
     );
   },
   /**
-   * Start all tests configured in configuration gulp.test.modules
+   * Start all tests configured in `config.gulp.test.modules`
    *
    * @function test-modules
    * @param {function} callback - gulp callback to signal end of task
@@ -63,11 +63,10 @@ const tasks = {
       .catch(err => console.log(err));
   }],
   /**
-   * ### test-e2e-workflow-default and livereload
+   * run tasks `test-e2e-workflow-default-exec` and `livereload-all`
    *
-   * @task test-e2e-workflow-default
-   * @namespace tasks
-   * @param {function} callback - gulp callback
+   * @function test-e2e-workflow-default
+   * @param {function} callback - gulp callback to signal end of task
    */
   'test-e2e-workflow-default': [['eslint'], (callback) => {
     sequence(
@@ -77,11 +76,10 @@ const tasks = {
     );
   }],
   /**
-   * ### e2e-workflow-default-exec: test task
+   * execute tests for files from `config.gulp.test.test-e2e-workflow-default`
    *
-   * @task test-e2e-workflow-default-exec
-   * @namespace tasks
-   * @param {function} callback - gulp callback
+   * @function test-e2e-workflow-default-exec
+   * @param {function} callback - gulp callback to signal end of task
    */
   'test-e2e-workflow-default-exec': (callback) => {
     const loader = exec('export FORCE_COLOR=1; ' +
@@ -104,11 +102,10 @@ const tasks = {
     });
   },
   /**
-   * ### test-e2e-workflow-modules and livereload
+   * run tasks `test-e2e-workflow-modules-exec` and `livereload-all`
    *
-   * @task test-e2e-workflow-modules
-   * @namespace tasks
-   * @param {function} callback - gulp callback
+   * @function test-e2e-workflow-modules
+   * @param {function} callback - gulp callback to signal end of task
    */
   'test-e2e-workflow-modules': [['eslint'], (callback) => {
     sequence(
@@ -118,11 +115,10 @@ const tasks = {
     );
   }],
   /**
-   * ### test-e2e-workflow-modules test task
+   * execute tests for files from `config.gulp.test.test-e2e-workflow-modules`, test only one if recently changed
    *
-   * @task test-e2e-workflow-modules-exec
-   * @namespace tasks
-   * @param {function} callback - gulp callback
+   * @function test-e2e-workflow-modules-exec
+   * @param {function} callback - gulp callback to signal end of task
    */
   'test-e2e-workflow-modules-exec': async () => {
     await Promise.all(config.gulp.tests['test-e2e-workflow-modules'].map(files.getFilenames))
@@ -135,6 +131,7 @@ const tasks = {
 /**
  * start module test
  *
+ * @function runModule
  * @param {array} files - list with glob paths
  */
 function runModule (filename) {

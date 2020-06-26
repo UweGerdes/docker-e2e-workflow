@@ -30,9 +30,9 @@ const gulp = require('gulp'),
   config = require('./lib/config');
 
 /**
- * Default task
+ * Gulp `default` task
  *
- * start build and watch, some needed for changedInPlace dryrun
+ * start tasks depending on `NODE_ENV`, some starts needed for changedInPlace dryrun
  *
  * @name module:gulpfile.default
  * @param {function} callback - gulp callback to signal end of task

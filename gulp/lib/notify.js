@@ -9,14 +9,13 @@
 const gulpNotify = require('gulp-notify');
 
 /**
- * Log only to console, not GUI
+ * Log notification only to console, not GUI
  *
- * @param {pbject} options - options
+ * @function notify
+ * @param {pbject} options - reporter options, e.g. { message: 'text output', title: 'message title' }
  * @param {function} callback - gulp callback to signal end of task
  * @type {function}
  */
-const notify = gulpNotify.withReporter((options, callback) => {
+module.exports = gulpNotify.withReporter((options, callback) => {
   callback();
 });
-
-module.exports = notify;

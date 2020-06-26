@@ -29,7 +29,7 @@ const gulp = require('gulp'),
 
 const tasks = {
   /**
-   * Default gulp lint task
+   * default gulp lint task, start all tasks for current `NODE_ENV`
    *
    * @function lint
    * @param {function} callback - gulp callback to signal end of task
@@ -41,11 +41,10 @@ const tasks = {
     );
   },
   /**
-   * Lint js files
-   *
-   * apply eslint to js files
+   * Apply eslint to `config.gulp.lint.eslint.files` files
    *
    * @function eslint
+   * @return {Gulp-Pipe} piped steps for eslint, report, fixture, logging and fail on error
    */
   'eslint': () => {
     const isFixed = (file) => {
@@ -76,11 +75,10 @@ const tasks = {
       .pipe(eslint.failAfterError());
   },
   /**
-   * Lint json files
-   *
-   * apply jsonlint json files
+   * Apply jsonlint to `config.gulp.watch.jsonlint` files
    *
    * @function jsonlint
+   * @return {Gulp-Pipe} piped steps for jsonlint
    */
   'jsonlint': () => {
     return gulp.src(config.gulp.watch.jsonlint)
@@ -88,11 +86,10 @@ const tasks = {
       .pipe(jsonlint.reporter());
   },
   /**
-   * Lint locales json files
-   *
-   * apply jsonlint locales json files
+   * Apply jsonlint to `config.gulp.watch.locales` files
    *
    * @function localesjsonlint
+   * @return {Gulp-Pipe} piped steps for locales json files, report and fail on error
    */
   'localesjsonlint': () => {
     return gulp.src(config.gulp.watch.locales)
@@ -101,11 +98,10 @@ const tasks = {
       .pipe(jsonlint.failOnError());
   },
   /**
-   * Lint less files
-   *
-   * apply lesshint to less files
+   * Apply lesshint to `config.gulp.watch.less` files
    *
    * @function lesshint
+   * @return {Gulp-Pipe} piped steps for lesslint, report and fail on error
    */
   'lesshint': () => {
     return gulp.src(config.gulp.watch.less)
@@ -115,11 +111,10 @@ const tasks = {
       .pipe(lesshint.failOnError());
   },
   /**
-   * Lint yaml files
-   *
-   * apply yamlValidate to yaml files
+   * Apply yamlValidate to `config.gulp.watch.yamllint` files
    *
    * @function yamllint
+   * @return {Gulp-Pipe} piped steps for yamllint, log on error
    */
   'yamllint': () => {
     return gulp.src(config.gulp.watch.yamllint)
@@ -130,20 +125,19 @@ const tasks = {
       });
   },
   /**
-   * Lint pug files
-   *
-   * apply pug-linter to pug files
+   * Apply pug-linter to `config.gulp.watch.puglint` files
    *
    * @function puglint
+   * @return {Gulp-Pipe} piped steps for puglint, report and fail on error
    */
   'puglint': () => {
     return gulp.src(config.gulp.watch.puglint)
       .pipe(pugLinter({ reporter: 'default', failAfterError: true }));
   },
   /**
-   * Lint ejs and livereload task
+   * Run `ejslint` and `livereload-all` task
    *
-   * @function lint
+   * @function ejslint
    * @param {function} callback - gulp callback to signal end of task
    */
   /* c8 ignore next 6 */
@@ -155,15 +149,13 @@ const tasks = {
     );
   },
   /**
-   * Lint ejs files
+   * Lint `config.gulp.watch.ejslint` files
    *
    * - replace `<%=`, `<%-` tags with output = [expression];
    * - strip non ejs html and `<%` and `%>`
    * - keep lines for counting
    *
-   * options are supplied here - TODO use .ejslintrc
-   *
-   * @function ejslint
+   * @function ejslint-exec
    * @param {function} callback - gulp callback to signal end of task
    */
   'ejslint-exec': async (callback) => {
