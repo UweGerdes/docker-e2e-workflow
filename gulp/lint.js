@@ -147,12 +147,13 @@ const tasks = {
    * @param {function} callback - gulp callback to signal end of task
    */
   /* c8 ignore next 6 */
-  'ejslint-livereload': [['ejslint'], (callback) => {
+  'ejslint': (callback) => {
     sequence(
+      'ejslint-exec',
       'livereload-all',
       callback
     );
-  }],
+  },
   /**
    * Lint ejs files
    *
@@ -165,7 +166,7 @@ const tasks = {
    * @function ejslint
    * @param {function} callback - gulp callback to signal end of task
    */
-  'ejslint': (callback) => {
+  'ejslint-exec': async (callback) => {
     /**
      * Replace expression output tags
      *
@@ -218,7 +219,7 @@ const tasks = {
       });
     };
 
-    Promise.all(config.gulp.watch['ejslint-livereload'].map(filePromises.getFilenames))
+    Promise.all(config.gulp.watch.ejslint.map(filePromises.getFilenames))
       .then((filenames) => [].concat(...filenames))
       .then((filenames) => {
         return Promise.all(
@@ -245,8 +246,8 @@ const tasks = {
         /* c8 ignore next 3 */
         if (errorList.join('').length > 0) {
           error = new PluginError('ejslint', errorList.join(''));
+          callback(error);
         }
-        callback(error);
       });
   }
 };

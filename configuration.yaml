@@ -98,7 +98,7 @@ gulp:
     yamllint:
       - '**/*.yaml'
       - '**/*.yml'
-    ejslint-livereload:
+    ejslint:
       - '**/*.ejs'
     less:
       - 'src/less/**/*.less'
@@ -114,12 +114,12 @@ gulp:
       - 'public/**/*.html'
       - 'public/img/**/*.*'
       - 'generated/**/*.css'
-      - 'modules/**/*.ejs'
-      - 'modules/**/*.pug'
       - 'results/modules/**/*.json'
     livereload-all:
       - 'generated/**/*.js'
       - 'locales/**/*.*'
+      - 'modules/**/*.ejs'
+      - 'modules/**/*.pug'
     test-modules:
       - '*.js'
       - 'modules/**/tests/model/*.*'
