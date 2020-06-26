@@ -223,7 +223,7 @@ async function execTestStep(testCaseName, label, testStep, resultPath, viewportN
   await testCaseHandler.elementsNotExist(testStep);
   await testCaseHandler.elementsNotVisible(testStep);
   await testCaseHandler.input(testStep);
-  await driver.executeScript('arguments[0].scrollIntoView();', await driver.findElement(by('.footer')));
+  await driver.executeScript('window.scrollTo({ bottom: 0, right: 0 });');
   await driver.executeScript('window.scrollTo({ top: 0, left: 0 });');
   const vpSize = await driver.executeScript('return { width: window.innerWidth, scrollWidth: document.body.parentNode.scrollWidth, height: document.body.parentNode.scrollHeight };');
   if (vpSize.height > testData.viewports[viewportName].height) {
@@ -291,8 +291,8 @@ async function execTestStep(testCaseName, label, testStep, resultPath, viewportN
           try {
             await makeDir(path.join(resultPath, testCaseName));
             await driver.get(testCase.uri);
-            await driver.manage().window().setRect(vpSize);
             for (const [label, testStep] of Object.entries(testCase.steps)) {
+              await driver.manage().window().setRect(vpSize);
               testStep.verticalScrollbar = { };
               await execTestStep(testCaseName, label, testStep, resultPath, viewportName);
             }
