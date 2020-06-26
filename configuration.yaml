@@ -18,7 +18,7 @@ gulp:
         - 'less'
         - 'js'
         - 'locales'
-#        - 'jsdoc'
+        - 'jsdoc'
       tests:
         - 'test-modules'
       lint:
@@ -82,7 +82,6 @@ gulp:
     js:
       - 'modules/*/js/*.js'
     jsdoc:
-#      - 'nofile.js'
       - '*.js'
       - 'gulp/**/*.js'
       - 'lib/**/*.js'
@@ -127,7 +126,6 @@ gulp:
       - 'modules/**/tests/server/*.*'
       - 'modules/**/views/**/*.*'
       - 'htdocs/js/**/*.js'
-      - '!modules/e2e/server/lib/*.js'
     test-e2e-workflow-modules:
       - 'config/**/js/**/*.js'
       - 'config/**/less/**/*.less'
