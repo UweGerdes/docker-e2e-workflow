@@ -8,7 +8,7 @@ mixin results()
           ul.result-steps
             each step, label in testCase.steps
               li.result-step
-                if queryStep == label
+                if queryCase == testCaseName && queryStep == label
                   strong= label
                 else
                   a(href = '/e2e/'

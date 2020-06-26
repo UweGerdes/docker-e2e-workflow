@@ -1,6 +1,6 @@
 //- widgets/configs.pug
 mixin configs()
-  if locals.configs
+  if locals.configs && (!locals.results || !locals.results.testCases)
     ul#configs.configs
       each config, label in configs
         li.config
