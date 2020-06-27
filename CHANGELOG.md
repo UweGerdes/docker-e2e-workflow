@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.5.3
+added waitForElements, update jsdoc, linting, refactoring
+
 ## v0.5.2
 added hover and elementsNotVisible, upgrade package.json
 
