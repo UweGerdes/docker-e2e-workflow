@@ -132,6 +132,8 @@ gulp:
       - 'config/**/server/**/*.js'
       - 'config/**/tests/e2e-workflow/*.js'
       - 'config/**/views/**/*.*'
+      - '!config/**/tests/server/**/*.js'
+      - '!config/**/tests/views/**/*.*'
   tests:
     modules:
       - 'modules/**/tests/model/*.js'
