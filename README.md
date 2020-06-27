@@ -1,12 +1,12 @@
 # Docker for e2e-workflow
 
-Regression testing for frontend developement.
+Workflow testing for frontend developement.
 
-At the moment the configuration.yaml and docker-compose.yaml are wired for use with my docker-expressjs-boilerplate projects (tests in modules/**/tests/e2e-workflow/*.js). Copy docker-compose.yaml to other project, make some changes and use.
+Copy docker-compose.yaml to other project, make some changes and use. See `docker-expressjs-boilerplate` for sample compose and test file.
 
 ## Config File
 
-The configuration file defines urls, viewport widths and page elements. A simple example is `config/default.js`.
+The configuration file defines urls, viewport widths and page elements. A simple example is in `modules/e2e/tests/e2e-workflow/default.js`.
 
 ## Docker Build
 
@@ -25,9 +25,3 @@ $ docker-compose up
 ```
 
 Open the server address listed in the output. Read content.
-
-You might want to use some of these commands:
-
-```bash
-$ docker-compose exec e2e-workflow bash
-```
