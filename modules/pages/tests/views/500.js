@@ -1,5 +1,7 @@
 /**
  * Test for 500 error page elements
+ *
+ * @module modules/pages/tests/views/500
  */
 
 'use strict';

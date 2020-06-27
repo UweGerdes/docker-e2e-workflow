@@ -1,7 +1,8 @@
-/*
+/**
  * Testing http end-to-end workflow
  *
- * (c) Uwe Gerdes, entwicklung@uwegerdes.de
+ * @module modules/e2e/server/lib/index
+ * @author Uwe Gerdes, entwicklung@uwegerdes.de
  */
 /* eslint no-await-in-loop: 0 */
 

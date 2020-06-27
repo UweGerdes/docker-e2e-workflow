@@ -1,7 +1,7 @@
 /**
  * Controller for boilerplate
  *
- * @module modules/boilerplate/server/controller
+ * @module modules/e2e/server/controller
  * @requires modules/boilerplate/server/model
  * @requires module:lib/config
  */
@@ -20,6 +20,7 @@ const viewBase = path.join(path.dirname(__dirname), 'views');
 /**
  * Serve results files
  *
+ * @function useExpress
  * @param {object} app - express server
  */
 const useExpress = async (app) => {
@@ -32,6 +33,7 @@ const useExpress = async (app) => {
 /**
  * Render index page
  *
+ * @function index
  * @param {object} req - request
  * @param {object} res - result
  * @param {object} next - for error handling
@@ -87,6 +89,7 @@ const index = async (req, res, next) => {
 /**
  * Run test config
  *
+ * @function runConfig
  * @param {Object} req - request
  * @param {Object} res - response
  */
@@ -132,6 +135,9 @@ module.exports = {
 
 /**
  * get configuration files and labels
+ *
+ * @function getConfigs
+ * @returns {Object} configuration data
  */
 async function getConfigs () {
   let paths = config.modules.e2e.configs;

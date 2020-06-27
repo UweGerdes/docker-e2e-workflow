@@ -1,6 +1,7 @@
 /**
  * Test for page elements
  *
+ * @module modules/e2e/tests/views/e2e
  * @requires module:lib/config
  */
 

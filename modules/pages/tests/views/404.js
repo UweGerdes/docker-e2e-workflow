@@ -1,5 +1,7 @@
 /**
  * Test for 404 error page elements
+ *
+ * @module modules/pages/tests/views/404
  */
 
 'use strict';

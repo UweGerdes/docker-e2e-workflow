@@ -1,7 +1,7 @@
 /**
  * Model for boilerplate
  *
- * @module modules/boilerplate/server/model
+ * @module modules/e2e/server/model
  */
 
 'use strict';

@@ -1,5 +1,7 @@
 /**
- * Test for i18n translations from /modules/pages/tests/locales
+ * Test for i18n translations from `/modules/pages/tests/locales`
+ *
+ * @module modules/pages/tests/views/i18ntest
  */
 
 'use strict';

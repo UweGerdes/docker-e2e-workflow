@@ -65,7 +65,7 @@ app.use('/jsdoc', express.static(config.gulp.build.jsdoc.dest));
 app.use(createGracefulShutdownMiddleware(server, { forceTimeout: 30000 }));
 
 /**
- * Routes from modules
+ * Load routes from modules
  *
  * @name module_router_loader
  */
@@ -209,45 +209,49 @@ const requestGet500Route = () => {
 app.get('/error500', requestGet500Route);
 
 /**
- * Server listens on process.env.SERVER_PORT
+ * HTTP server listens on process.env.SERVER_PORT
  *
- * @name server_listen
+ * @name httpsServer:listen
  */
 server.listen(process.env.SERVER_PORT);
 /**
- * Server fires on error
+ * HTTP server fires on error
  *
+ * @name httpServer:onError
  * @event server_listen:onError
  */
 server.on('error', onError);
 /**
- * Server fires on listening
+ * HTTP server fires on listening
  *
+ * @name httpServer:onListening
  * @event server_listen:onListening
  */
 server.on('listening', onListening.bind(null, 'http', process.env.SERVER_PORT));
 
 /**
- * Server listens on process.env.HTTPS_PORT
+ * HTTPS server listens on process.env.HTTPS_PORT
  *
- * @name server_listen
+ * @name httpsServer:listen
  */
 httpsServer.listen(process.env.HTTPS_PORT);
 /**
- * Server fires on error
+ * HTTPS server fires on error
  *
- * @event server_listen:onError
+ * @name httpsServer:onError
+ * @event server_listen:onErrorHttps
  */
 httpsServer.on('error', onError);
 /**
- * Server fires on listening
+ * HTTPS server fires on listening
  *
+ * @name httpsServer:onListening
  * @event server_listen:onListeningHttps
  */
 httpsServer.on('listening', onListening.bind(null, 'https', process.env.HTTPS_PORT));
 
 /**
- * connect server and use routes from modules
+ * Connect server and use routes from modules
  *
  * @name module_router_connect_server
  */
@@ -281,7 +285,7 @@ const requestGetFailureRoute = (req, res, next) => {
 app.get('*', requestGetFailureRoute);
 
 /**
- * Route for not found errors
+ * Route for 404 / not found errors
  *
  * @param {object} req - request
  * @param {object} res - response
@@ -298,7 +302,7 @@ const requestGet404Route = (req, res) => {
 app.get('*', requestGet404Route);
 
 /**
- * Handle server errors
+ * Handle server 500 errors
  *
  * @param {object} err - error
  * @param {object} req - request
@@ -340,10 +344,12 @@ function viewPath(page = 'error', type = 'ejs') {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Event listener for server `error` event.
  *
+ * @function onError
  * @param {object} error - error object
  * @listens server_listen:onError
+ * @listens server_listen:onErrorHttps
  */
 /* c8 ignore next 18 */
 function onError(error) {
@@ -366,12 +372,14 @@ function onError(error) {
 }
 
 /**
- * Event listener for server "listening" event
+ * Event listener for server `listening` event
  *
  * emits event for gulp server-start task
  *
+ * @function onListening
  * @param {string} proto - protocol
  * @param {string} port - error object
+ * @listens server_listen:onListening
  * @listens server_listen:onListeningHttps
  */
 function onListening(proto, port) {

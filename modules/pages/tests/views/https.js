@@ -1,5 +1,7 @@
 /**
  * Test for https
+ *
+ * @module modules/pages/tests/views/https
  */
 
 'use strict';

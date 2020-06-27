@@ -1,5 +1,7 @@
 /**
- * scripts for e2e-workflow
+ * Browser scripts for e2e-workflow
+ *
+ * @module modules/e2e/js/script
  */
 
 'use strict';
@@ -7,7 +9,9 @@
 let handler = {};
 
 /**
- * toggle element by id
+ * Toggle element by id
+ *
+ * @name handle-data-toggle
  */
 handler['data-toggle'] = {
   elements: [window],
@@ -33,7 +37,9 @@ handler['data-toggle'] = {
 };
 
 /**
- * send request and show response in target element
+ * Send request and show response in target element
+ *
+ * @name handle-data-xhr
  */
 handler['data-xhr'] = {
   elements: document.querySelectorAll('[data-xhr]'),
@@ -62,7 +68,9 @@ handler['data-xhr'] = {
 };
 
 /**
- * toggle element by id
+ * Toggle color-picker element and init content
+ *
+ * @name handle-data-click-color
  */
 handler['data-click-color'] = {
   elements: [window],
@@ -89,8 +97,9 @@ handler['data-click-color'] = {
 };
 
 /**
- * attach event to elements
+ * Attach event to elements depending on browser capabilities
  *
+ * @function attachEventHandler
  * @param {DOMelement} element - to attach event
  * @param {string} event - type
  * @param {function} handler - event handler
@@ -106,7 +115,9 @@ function attachEventHandler (element, event, handler) {
 }
 
 /**
- * attach event handlers
+ * Attach all event handlers
+ *
+ * @name attach-all-handlers
  */
 Object.values(handler).forEach((handler) => {
   handler.elements.forEach((element) => {
@@ -115,7 +126,9 @@ Object.values(handler).forEach((handler) => {
 });
 
 /**
- * build canvas for color picking
+ * Build canvas for color picking
+ *
+ * @function buildCanvas
  */
 function buildCanvas() {
   const img = document.querySelector('.image-container img.screenshot');
@@ -128,6 +141,13 @@ function buildCanvas() {
   canvasContext.drawImage(img, 0, 0);
 }
 
+/**
+ * Convert rgb color value to hex
+ *
+ * @function rgb2hex
+ * @param {Array} colorArray - three int values
+ * @returns {String} hex representation of color
+ */
 function rgb2hex(colorArray) {
   let hex = '';
   colorArray.forEach((color) => {
@@ -137,6 +157,13 @@ function rgb2hex(colorArray) {
   return hex.toUpperCase();
 }
 
+/**
+ * Convert int to hex
+ *
+ * @function componentToHex
+ * @param {int} c - integer to be converted
+ * @returns {String} two digit hex representation
+ */
 function componentToHex(c) {
   let hex = c.toString(16);
   return hex.length === 1 ? '0' + hex : hex;

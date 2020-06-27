@@ -1,7 +1,7 @@
 /**
  * Testdata for e2e-workflow default
  *
- * (c) Uwe Gerdes, entwicklung@uwegerdes.de
+ * @module modules/e2e/tests/e2e-workflow/default
  */
 
 const domain = 'http://' + (process.env.TEST_SERVER || process.env.HOSTNAME) + ':8080';
