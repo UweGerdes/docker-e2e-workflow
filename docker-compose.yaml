@@ -68,6 +68,6 @@ services:
       - .:/home/node/app
       - ./modules:/home/node/app/config/modules
 #      - ../[test-project]/modules:/home/node/app/config/modules
-#      - ./tests/e2e-workflow:/home/node/app/config/modules/[test-project]/tests/e2e-workflow
-#      - ./tests/e2e-workflow/results:/home/node/app/results/config/modules/[test-project]/tests/e2e-workflow
+#      - ./tests/[test-module]/e2e-workflow:/home/node/app/config/modules/[test-module]/tests/e2e-workflow
+#      - ./tests/[test-module]/e2e-workflow/results:/home/node/app/results/config/modules/[test-module]/tests/e2e-workflow
     command: npm run dev
