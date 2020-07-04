@@ -1,0 +1,26 @@
+// page-elements/less/modallayer.less
+
+.modalLayer {
+  background-color: rgba(128, 128, 128, 0.3);
+  height: 100%;
+  left: 0;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+
+  &-content {
+    background-color: #ffffff;
+    border: 5px solid #999999;
+    height: auto;
+    margin: 5% auto 0;
+    overflow: auto;
+    padding: 1em 1.5em;
+    width: 90%;
+
+    @media all and (min-width: 768px) {
+      width: 50%;
+    }
+  }
+}

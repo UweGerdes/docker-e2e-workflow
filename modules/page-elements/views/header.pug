@@ -9,14 +9,23 @@ block header
               a.header-breadcrumb-link(href='/app/') Home
       if session
         .flex-block.flex-right
-          #login-status.login-status
+          #login-status.login-status= __('User')
             block loginStatus
-              if session.userdata
-                .login-status-ok= 'Angemeldet über ' + session.oauthProvider + ' als '  + session.userdata.username
-                | #{' '}
-                .login-status-logout
-                  a.logout-link(href=(session.logoutLink ? session.logoutLink : '/login/logout/')) abmelden
-              else
-                .login-status-login
-                  a.login-link(href=(locals.loginLink ? loginLink : '/login/')) anmelden
+              ul#login-status-list.login-status-list.list
+                if session.userdata
+                  li.list-item.login-status-ok= 'Angemeldet über ' + session.oauthProvider + ' als '  + session.userdata.username
+                  | #{' '}
+                  li.list-item.login-status-logout
+                    a.link.edit-link(href=(session.editLink ? session.editLink : '/login/edit/')) bearbeiten
+                  li.list-item.login-status-logout
+                    a.link.logout-link(href=(session.logoutLink ? session.logoutLink : '/login/logout/')) abmelden
+                else
+                  li.list-item.login-status-loginLayer
+                    span.link.loginLayer-link&attributes({
+                      'data-xhr': '/login/include/loginform',
+                      'data-xhr-response': '#modalLayer-content',
+                      'data-toggle': '#modalLayer'
+                    })= __('login')
+                  li.list-item.login-status-register
+                    a.link.register-link(href=(locals.registerLink ? registerLink : '/login/signup/'))= __('sign up')
 

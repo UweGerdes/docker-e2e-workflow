@@ -9,16 +9,35 @@
     padding: 0 1em;
 
     .login-status {
+      color: #000000;
+      display: inline-block;
+      padding: 1em;
+      position: relative;
       text-align: right;
 
       &-ok {
         display: inline-block;
+        margin-right: -1em;
         padding: 1em;
       }
 
-      &-login,
-      &-logout {
-        display: inline-block;
+      &-list {
+        background-color: #cccccc;
+        border: 1px solid #999999;
+        display: none;
+        margin-right: -3em;
+        padding: 0;
+        position: absolute;
+        right: 3em;
+        top: 2em;
+      }
+
+      &:hover .login-status-list {
+        display: block;
+      }
+
+      .list-item {
+        display: block;
 
         &:hover {
           background-color: #ffffff;
@@ -26,9 +45,9 @@
         }
       }
 
-      .login-link,
-      .logout-link {
+      .link {
         color: #000000;
+        cursor: pointer;
         display: inline-block;
         padding: 1em;
         text-decoration: none;
@@ -44,6 +63,7 @@
       &-right {
         flex: 1 0 auto;
         order: 2;
+        text-align: right;
       }
     }
   }

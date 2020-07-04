@@ -1,4 +1,7 @@
 {
+  "User": "User",
+  "login": "login",
+  "sign up": "sign up",
   "Street": "Street",
   "Number": "No",
   "Zip": "Zip",

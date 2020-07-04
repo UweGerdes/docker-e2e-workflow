@@ -1,4 +1,7 @@
 {
+  "User": "Benutzer",
+  "login": "anmelden",
+  "sign up": "registrieren",
   "Street": "Straße",
   "Number": "Nr",
   "Zip": "PLZ",
