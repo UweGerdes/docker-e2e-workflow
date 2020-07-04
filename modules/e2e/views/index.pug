@@ -8,14 +8,14 @@ include widgets/screenshot.pug
 include widgets/colorpicker.pug
 
 append head
-  link(rel='stylesheet', href='/'+ moduleName + '/layout.css')
+  link(rel='stylesheet', href='/'+ modulePath + '/layout.css')
 
 append breadcrumbs
   li.header-breadcrumb
-    a.header-breadcrumb-link(href='/'+ moduleName + '/')= module.name
+    a.header-breadcrumb-link(href='/'+ modulePath + '/')= module.name
   if locals.config && config.name
     li.header-breadcrumb
-      a.header-breadcrumb-link(href='/'+ moduleName + '/')= config.name
+      a.header-breadcrumb-link(href='/'+ modulePath + '/')= config.name
     if locals.queryCase
       li.header-breadcrumb
         .header-breadcrumb-label= queryCase
