@@ -32,16 +32,6 @@ const filenames = argv.cfg || path.join('config', 'default.js');
 const driverBrowser = 'chrome';
 
 const testCaseHandler = {
-  title: async (testStep) => {
-    if (testStep.title) {
-      const title = await driver.getTitle();
-      try {
-        assert.equal(title, testStep.title);
-      } catch (error) {
-        err(testStep, 'title: ' + error.message);
-      }
-    }
-  },
   waitForElements: async (testStep) => {
     if (testStep.waitForElements) {
       try {
@@ -54,6 +44,16 @@ const testCaseHandler = {
         } else {
           err(testStep, testStep.waitForElements + ' could not waitForElements: ' + error);
         }
+      }
+    }
+  },
+  title: async (testStep) => {
+    if (testStep.title) {
+      const title = await driver.getTitle();
+      try {
+        assert.equal(title, testStep.title);
+      } catch (error) {
+        err(testStep, 'title: ' + error.message);
       }
     }
   },
@@ -217,8 +217,8 @@ async function execTestStep(testCaseName, label, testStep, resultPath, viewportN
   testData.summary.total++;
   log('Test case: ' + testCaseName + ', test step: ' + label);
   testStep.errors = [];
-  await testCaseHandler.title(testStep);
   await testCaseHandler.waitForElements(testStep);
+  await testCaseHandler.title(testStep);
   await testCaseHandler.hover(testStep);
   await testCaseHandler.elements(testStep);
   await testCaseHandler.elementsNotExist(testStep);
