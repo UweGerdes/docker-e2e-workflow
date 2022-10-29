@@ -23,6 +23,10 @@ services:
     image: selenium/hub
     container_name: e2e-hub
     hostname: e2e-hub
+    ports:
+      - 54442:4442
+      - 54443:4443
+      - 54444:4444
 
   e2e-chrome:
     image: selenium/node-chrome
@@ -32,8 +36,9 @@ services:
     depends_on:
       - e2e-hub
     environment:
-      HUB_HOST: e2e-hub
-      HUB_PORT: 4444
+      SE_EVENT_BUS_HOST: e2e-hub
+      SE_EVENT_BUS_PUBLISH_PORT: 4442
+      SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
       TEST_SERVER: e2e-server
       JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
@@ -45,8 +50,9 @@ services:
     depends_on:
       - e2e-hub
     environment:
-      HUB_HOST: e2e-hub
-      HUB_PORT: 4444
+      SE_EVENT_BUS_HOST: e2e-hub
+      SE_EVENT_BUS_PUBLISH_PORT: 4442
+      SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
       TEST_SERVER: e2e-server
       JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
