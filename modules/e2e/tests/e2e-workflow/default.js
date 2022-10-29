@@ -10,18 +10,18 @@ module.exports = {
   group: 'Default Test',
   name: 'E2E Workflow',
   viewports: {
-    'Mobile': { width: 320, height: 568 },
-    'Tablet': { width: 768, height: 1024 },
-    'Desktop': { width: 1200, height: 900 }
+    // 'Mobile': { width: 320, height: 568 },
+    'Tablet': { width: 768, height: 1024 }
+    // 'Desktop': { width: 1200, height: 900 }
   },
   testCases: {
     'homepage': {
       uri: domain,
       steps: {
-        'all fail': {
+        'all tests should fail': {
           title: 'WebserverX',
           elements: {
-            '//h1': 'Webserver',
+            '//h1': 'WebserverX',
             '//*[@class="header"]//a[@href="/appX/"]': 'Home',
             '//*[@class="content"]//a[@href="/app/"]': 'StartseiteX'
           },
@@ -48,16 +48,15 @@ module.exports = {
           click: '//*[@class="content"]//a[@href="/app/"]'
         }
       }
-    }
-    /*
-    'e2e': {
-      uri: domain,
+    },
+    'app': {
+      uri: domain + '/app/',
       steps: {
         'home': {
-          title: 'E2E Workflow',
+          title: 'Module',
           elements: {
-            '//h1': 'E2E Workflow',
-            '//a[@href="/app"]': 'Hier starten'
+            '//h1': 'Module:',
+            '//a[@href="/e2e/"]': 'E2E Workflow'
           },
           elementsNotExist: [
             '//a[@href="/app/config/default.js"]'
@@ -65,29 +64,20 @@ module.exports = {
         }
       }
     },
-    'open app': {
-      uri: domain,
+    'e2e': {
+      uri: domain + '/e2e/',
       steps: {
-        'home2': {
-          title: 'Webapp',
-          elements: {
-            '//h1': 'E2E-Workflow Tests',
-            '//a[@href="/app"]': 'Hier starten'
-          },
-          click: 'a[href="/app"]'
-        },
-        'start': {
-          title: 'Webserver - E2E Workflow',
+        'home': {
+          title: 'E2E Workflow',
           elements: {
             '//h1': 'Keine Config geladen',
-            '//a[@href="/app/config/default.js?viewport=Mobile"]': 'E2E Workflow'
+            '#configs .config a': 'E2E Workflow'
           },
           elementsNotExist: [
-            '//a[@href="/app"]'
+            '//a[@href="/app/config/default.js"]'
           ]
         }
       }
     }
-    */
   }
 };

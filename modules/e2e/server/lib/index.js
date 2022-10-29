@@ -62,14 +62,14 @@ const testCaseHandler = {
       let hoverElement;
       try {
         hoverElement = await driver.findElement(by(testStep.hover));
-        await driver.executeScript('arguments[0].scrollIntoView();', hoverElement);
+        // await driver.executeScript('arguments[0].scrollIntoView();', hoverElement);
         testStep.hoverRect = await hoverElement.getRect();
-        await driver.actions().move({ origin: hoverElement }).perform();
+        await driver.actions().move({ origin: hoverElement, x: 1, y: 1 }).perform();
       } catch (error) {
         if (error.name === 'InvalidSelectorError') {
           err(testStep, '"' + testStep.hover + '" ' + error.message);
         } else {
-          err(testStep, testStep.hover + ' could not hover');
+          err(testStep, testStep.hover + ' could not hover: ' + error.name);
         }
       }
     }
