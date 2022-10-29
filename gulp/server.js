@@ -16,28 +16,15 @@ const fs = require('fs'),
   changedInPlace = require('gulp-changed-in-place'),
   server = require('gulp-develop-server'),
   livereload = require('gulp-livereload'),
-  sequence = require('gulp-sequence'),
   path = require('path'),
+  glob = require('glob'),
   config = require('../lib/config'),
   ipv4addresses = require('../lib/ipv4addresses'),
-  loadTasks = require('./lib/load-tasks'),
   log = require('../lib/log'),
-  notify = require('./lib/notify');
+  notify = require('./lib/notify'),
+  lint = require('./lint');
 
-const tasks = {
-  /**
-   * Start all configured server tasks for current `NODE_ENV` setting
-   *
-   * @function server
-   * @param {function} callback - gulp callback to signal end of task
-   */
-  /* c8 ignore next 6 */
-  'server': [['eslint'], (callback) => {
-    sequence(
-      ...config.gulp.start[process.env.NODE_ENV].server,
-      callback
-    );
-  }],
+let tasks = {
   /**
    * Server start task
    *
@@ -46,12 +33,14 @@ const tasks = {
    */
   /* c8 ignore next 8 */
   'server-start': (callback) => {
-    server.listen({
-      path: config.server.server,
-      env: { VERBOSE: true, FORCE_COLOR: 1 },
-      delay: 9000
-    },
-    callback);
+    server.listen(
+      {
+        path: config.server.server,
+        env: { VERBOSE: true, FORCE_COLOR: 1 },
+        delay: 9000
+      },
+      callback
+    );
   },
   /**
    * Server changed task restarts server
@@ -60,14 +49,17 @@ const tasks = {
    * @param {function} callback - gulp callback to signal end of task
    */
   /* c8 ignore next 8 */
-  'server-changed': (callback) => {
-    server.changed((error) => {
-      if (!error) {
-        livereload.changed({ path: '/', quiet: false });
-      }
-      callback();
-    });
-  },
+  'server-changed': gulp.series(
+    lint.eslint,
+    function serverChanged(callback) {
+      server.changed((error) => {
+        if (!error) {
+          livereload.changed({ path: '/', quiet: false });
+        }
+        callback();
+      });
+    }
+  ),
   /**
    * Server livereload task notifies clients
    *
@@ -99,7 +91,7 @@ const tasks = {
    * @function livereload-start
    */
   /* c8 ignore next 10 */
-  'livereload-start': () => {
+  'livereload-start': (callback) => {
     livereload.listen({
       host: ipv4addresses.get()[0],
       port: '8081',
@@ -108,7 +100,21 @@ const tasks = {
       cert: fs.readFileSync(path.join(__dirname, '..', config.server.httpsCert))
     });
     log.info('livereload listening on http://' + ipv4addresses.get()[0] + ':' + process.env.LIVERELOAD_PORT);
+    callback();
   }
 };
 
-loadTasks.importTasks(tasks);
+let moduleTasks = [];
+/**
+ * Load gulp server from modules
+ *
+ * @name module_gulp_loader
+ */
+glob.sync(config.server.modules + '/*/gulp/server.js')
+  .forEach((filename) => {
+    const task = require('.' + filename);
+    moduleTasks.push(task);
+    tasks = Object.assign({}, tasks, task);
+  });
+
+module.exports = Object.assign({}, tasks, ...moduleTasks);

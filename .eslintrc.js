@@ -65,6 +65,13 @@ module.exports = {
     quotes: [1, 'single'],
     'wrap-iife': [2, 'outside'],
     'vars-on-top': 0,
+    'no-loss-of-precision': 0,
+    'no-promise-executor-return': 0,
+    'no-unreachable-loop': 0,
+    'no-unsafe-optional-chaining': 0,
+    'no-useless-backreference': 0,
+    'default-case-last': 0,
+    'no-nonoctal-decimal-escape': 0,
   },
   env: {
     node: true,

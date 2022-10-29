@@ -10,37 +10,45 @@
  * @requires module:gulp/tests
  * @requires module:gulp/watch
  * @requires module:lib/config
+ * @requires module:lib/log
  */
 
 'use strict';
 
+global.gulpStatus = { isWatching: false };
+
+const { series } = require('gulp'),
+  config = require('./lib/config');
+
+const tasks = {
+  ...require('./gulp/build'),
+  ...require('./gulp/lint'),
+  ...require('./gulp/tests'),
+  ...require('./gulp/server'),
+  ...require('./gulp/watch')
+};
 /* c8 ignore next 3 */
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }
 
-require('./gulp/build');
-require('./gulp/lint');
-require('./gulp/server');
-require('./gulp/tests');
-require('./gulp/watch');
-
-const gulp = require('gulp'),
-  sequence = require('gulp-sequence'),
-  config = require('./lib/config');
-
 /**
- * Gulp `default` task
+ * Start all configured tasks for current `NODE_ENV` setting
  *
- * start tasks depending on `NODE_ENV`, some starts needed for changedInPlace dryrun
- *
- * @name module:gulpfile.default
+ * @function server
  * @param {function} callback - gulp callback to signal end of task
  */
-/* c8 ignore next 6 */
-gulp.task('default', (callback) => {
-  sequence(
-    ...config.gulp.start[process.env.NODE_ENV].gulp,
-    callback
-  );
-});
+Object.keys(config.gulp.start[process.env.NODE_ENV])
+  .forEach((group) => {
+    const myTasks = Object.keys(tasks)
+      .filter(key => config.gulp.start[process.env.NODE_ENV][group].includes(key))
+      .reduce((obj, key) => {
+        return {
+          ...obj,
+          [key]: tasks[key]
+        };
+      }, {});
+    tasks[group] = series(...Object.values(myTasks));
+  });
+
+module.exports = tasks;

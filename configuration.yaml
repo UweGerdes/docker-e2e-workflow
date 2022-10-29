@@ -4,16 +4,17 @@
 gulp:
   start:
     development:
-      gulp:
+      default:
         - 'lint'
         - 'build'
         - 'watch'
         - 'livereload-start'
         - 'server-start'
-        - 'tests'
+#        - 'tests'
         - 'livereload'
 #        - 'livereload-all'
-        - 'eslint'
+#        - 'eslint'
+        - 'server'
       build:
         - 'less'
         - 'js'
@@ -27,11 +28,27 @@ gulp:
         - 'jsonlint'
         - 'yamllint'
         - 'puglint'
+        - 'lesshint'
       server:
         - 'server-changed'
+        - 'test-modules'
+      deploy:
+        - 'deploy'
+      watch:
+        - 'server'
+        - 'livereload'
+        - 'eslint'
+        - 'ejslint'
+        - 'js'
+        - 'jsonlint'
+        - 'yamllint'
+#        - 'puglint'
+        - 'less'
+        - 'livereload-all'
         - 'tests'
+        - 'locales'
     staging:
-      gulp:
+      default:
         - 'watch'
         - 'livereload-start'
         - 'server-start'
@@ -41,7 +58,6 @@ gulp:
         - 'less'
         - 'js'
         - 'locales'
-      tests: []
       lint:
         - 'eslint'
         - 'yamllint'
@@ -58,10 +74,9 @@ gulp:
         - 'puglint'
         - 'less'
         - 'livereload-all'
-        - 'test-modules'
-        - 'test-e2e-workflow-modules'
+        - 'tests'
     production:
-      gulp:
+      default:
         - 'build'
         - 'server-start'
       build:
@@ -72,8 +87,7 @@ gulp:
       lint: []
       server:
         - 'server-changed'
-      watch:
-        - 'test-e2e-workflow-modules'
+      watch: []
   watch:
     eslint:
       - 'gulpfile.js'
@@ -103,44 +117,35 @@ gulp:
     less:
       - 'src/less/**/*.less'
       - 'modules/**/*.less'
-    puglint:
-      - '**/*.pug'
+#    puglint:
+#      - '**/*.pug'
     server:
       - 'server.js'
       - 'lib/*.js'
-      - 'modules/*/server/**/*.js'
+      - 'modules/*/server/*.js'
       - 'modules/*/*.yaml'
     livereload:
       - 'public/**/*.html'
       - 'public/img/**/*.*'
       - 'generated/**/*.css'
-      - 'results/modules/**/*.json'
     livereload-all:
       - 'generated/**/*.js'
       - 'locales/**/*.*'
       - 'modules/**/*.ejs'
-      - 'modules/**/*.pug'
-    test-modules:
-      - '*.js'
+#      - 'modules/**/*.pug'
+    tests:
+      - 'server.js'
+      - 'modules/**/js/**/*.*'
+      - 'modules/**/server/**/*.*'
       - 'modules/**/tests/model/*.*'
       - 'modules/**/tests/server/*.*'
       - 'modules/**/views/**/*.*'
       - 'htdocs/js/**/*.js'
-    test-e2e-workflow-modules:
-      - 'config/**/js/**/*.js'
-      - 'config/**/less/**/*.less'
-      - 'config/**/server/**/*.js'
-      - 'config/**/tests/e2e-workflow/*.js'
-      - 'config/**/views/**/*.*'
-      - '!config/**/tests/server/**/*.js'
-      - '!config/**/tests/views/**/*.*'
   tests:
     modules:
       - 'modules/**/tests/model/*.js'
       - 'modules/**/tests/server/*.js'
       - 'modules/**/tests/views/*.js'
-    test-e2e-workflow-modules:
-      - 'config/**/tests/e2e-workflow/*.js'
   lint:
     eslint:
       files:

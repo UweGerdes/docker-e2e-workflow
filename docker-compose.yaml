@@ -13,10 +13,12 @@ services:
     ports:
       - 51280:8080
       - 51281:8081
+      - 51283:8443
     environment:
       LIVERELOAD_PORT: 51281
     volumes:
       - .:/home/node/app
+      - ./modules:/home/node/app/config/modules
     command: npm run dev
 
   e2e-hub:
@@ -63,6 +65,7 @@ services:
     ports:
       - 51380:8080
       - 51381:8081
+      - 51383:8443
     depends_on:
       - e2e-hub
     environment:

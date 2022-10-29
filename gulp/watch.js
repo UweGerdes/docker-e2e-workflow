@@ -9,10 +9,17 @@
 
 'use strict';
 
-const gulp = require('gulp'),
+const { watch } = require('gulp'),
+  glob = require('glob'),
   config = require('../lib/config'),
-  log = require('../lib/log'),
-  loadTasks = require('./lib/load-tasks');
+  log = require('../lib/log');
+
+const gulpTasks = {
+  ...require('./build'),
+  ...require('./lint'),
+  ...require('./server'),
+  ...require('./tests')
+};
 
 const tasks = {
   /**
@@ -20,24 +27,37 @@ const tasks = {
    *
    * @function watch
    */
-  /* c8 ignore next 17 */
-  'watch': () => {
-    const tasks = loadTasks.tasks();
-    let tasklist = config.gulp.watch;
-    if (config.gulp.start[process.env.NODE_ENV] && config.gulp.start[process.env.NODE_ENV].watch) {
-      tasklist = config.gulp.start[process.env.NODE_ENV].watch
-        .reduce((obj, key) => ({ ...obj, [key]: config.gulp.watch[key] }), {});
-    }
-    for (let task in tasklist) {
+  /* c8 ignore next 19 */
+  'watch': (callback) => {
+    global.gulpStatus.isWatching = true;
+
+    const watchTasks = config.gulp.start[process.env.NODE_ENV].watch
+      .reduce((obj, key) => {
+        return {
+          ...obj,
+          [key]: tasks[key]
+        };
+      }, {});
+
+    for (let task in watchTasks) {
       if (config.gulp.watch.hasOwnProperty(task)) {
-        if (tasks.indexOf(task) >= 0) {
-          gulp.watch(config.gulp.watch[task], [task]);
-          log.info('Task "' + task + '" is watching: [ ' +
-            config.gulp.watch[task].join(', ') + ' ]');
-        }
+        log.info('Task "' + task + '" is watching: ' + config.gulp.watch[task].join(', '));
+        watch(config.gulp.watch[task], { events: 'all', ignoreInitial: true }, gulpTasks[task]);
       }
     }
+    callback();
   }
 };
 
-loadTasks.importTasks(tasks);
+let moduleTasks = [];
+/**
+ * Load gulp watch from modules
+ *
+ * @name module_gulp_loader
+ */
+glob.sync(config.server.modules + '/*/gulp/watch.js')
+  .forEach((filename) => {
+    moduleTasks.push(require('.' + filename));
+  });
+
+module.exports = Object.assign({}, tasks, ...moduleTasks);

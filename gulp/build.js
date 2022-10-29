@@ -6,67 +6,52 @@
  * @requires module:lib/files-promises
  * @requires module:gulp/lib/load-tasks
  * @requires module:gulp/lib/notify
+ * @requires module:gulp/lint
  */
 
 'use strict';
 
 const gulp = require('gulp'),
   autoprefixer = require('gulp-autoprefixer'),
-  jsdoc = require('gulp-jsdoc3'),
-  less = require('gulp-less'),
+  gulpJsdoc = require('gulp-jsdoc3'),
+  gulpLess = require('gulp-less'),
   mergeTranslations = require('gulp-merge-translations'),
   rename = require('gulp-rename'),
-  sequence = require('gulp-sequence'),
   gulpStreamToPromise = require('gulp-stream-to-promise'),
+  glob = require('glob'),
+  gulpTouch = require('./lib/gulp-vinyl-touch'),
   lessPluginGlob = require('less-plugin-glob'),
-  combiner = require('stream-combiner2'),
   config = require('../lib/config'),
   filePromises = require('../lib/files-promises'),
-  loadTasks = require('./lib/load-tasks'),
-  notify = require('./lib/notify');
+  notify = require('./lib/notify'),
+  lint = require('./lint');
 
 const tasks = {
-  /**
-   * Default gulp build task
-   *
-   * Build all tasks configured for current NODE_ENV setting
-   *
-   * @function build
-   * @param {function} callback - gulp callback to signal end of task
-   */
-  'build': (callback) => {
-    sequence(
-      ...config.gulp.start[process.env.NODE_ENV].build,
-      callback
-    );
-  },
   /**
    * Compile less files
    *
    * @function less
    */
-  'less': [['lesshint'], () => {
-    return combiner.obj([
-      gulp.src(config.gulp.build.less.src),
-      less({
+  'less': gulp.series(lint.lesshint, function less() {
+    return gulp.src(config.gulp.build.less.src)
+      .pipe(gulpLess({
         plugins: [lessPluginGlob]
-      }),
-      autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9', 'ios 6', 'android 4'),
-      rename(path => {
+      }))
+      .pipe(autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9', 'ios 6', 'android 4'))
+      .pipe(rename(path => {
         path.dirname = path.dirname.replace(/\/less$/, '');
         return path;
-      }),
-      gulp.dest(config.gulp.build.less.dest),
-      notify({ message: 'written: <%= file.path %>', title: 'Gulp less' })
-    ])
-      .on('error', () => { });
-  }],
+      }))
+      .pipe(gulpTouch())
+      .pipe(gulp.dest(config.gulp.build.less.dest))
+      .pipe(notify({ message: 'written: <%= file.path %>', title: 'Gulp less' }));
+  }),
   /**
    * Compile js files
    *
    * @function js
    */
-  'js': [['eslint'], (callback) => {
+  'js': gulp.series(lint.eslint, function js(callback) {
     Promise.all(config.gulp.build.js.src.map(filePromises.getFilenames))
       .then((filenames) => [].concat(...filenames))
       .then(filePromises.getRecentFiles)
@@ -80,6 +65,7 @@ const tasks = {
                   path.dirname = filename.replace(new RegExp(key), config.gulp.build.js.replace[key]);
                 });
               }))
+              .pipe(gulpTouch())
               .pipe(gulp.dest(config.gulp.build.js.dest))
               .pipe(notify({ message: 'written: <%= file.path %>', title: 'Gulp js' }))
           ));
@@ -90,13 +76,13 @@ const tasks = {
         callback();
       })
       .catch(err => console.log(err));
-  }],
+  }),
   /**
    * Compile locales files
    *
    * @function locales
    */
-  'locales': [['localesjsonlint'], () => {
+  'locales': gulp.series(lint.localesjsonlint, function locales() {
     return gulp.src(config.gulp.watch.locales)
       .pipe(mergeTranslations('', {
         sep: '',
@@ -104,14 +90,14 @@ const tasks = {
       }))
       .pipe(gulp.dest(config.gulp.build.locales.dest))
       .pipe(notify({ message: 'written: <%= file.path %>', title: 'Gulp locales' }));
-  }],
+  }),
   /**
    * Compile jsdoc
    *
    * @function jsdoc
    * @param {function} callback - gulp callback to signal end of task
    */
-  'jsdoc': [['eslint'], (callback) => {
+  'jsdoc': (callback) => {
     const jsdocConfig = {
       'tags': {
         'allowUnknownTags': true
@@ -136,8 +122,8 @@ const tasks = {
       }
     };
     gulp.src(config.gulp.build.jsdoc.src, { read: false })
-      .pipe(jsdoc(jsdocConfig, callback));
-  }],
+      .pipe(gulpJsdoc(jsdocConfig, callback));
+  },
   /**
    * Copy files to deploy
    *
@@ -150,4 +136,15 @@ const tasks = {
   }
 };
 
-loadTasks.importTasks(tasks);
+let moduleTasks = [];
+/**
+ * Load gulp build from modules
+ *
+ * @name module_gulp_loader
+ */
+glob.sync(config.server.modules + '/*/gulp/build.js')
+  .forEach((filename) => {
+    moduleTasks.push(require('.' + filename));
+  });
+
+module.exports = Object.assign({}, tasks, ...moduleTasks);

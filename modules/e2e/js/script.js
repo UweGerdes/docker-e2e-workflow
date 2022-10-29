@@ -9,65 +9,6 @@
 let handler = {};
 
 /**
- * Toggle element by id
- *
- * @name handle-data-toggle
- */
-handler['data-toggle'] = {
-  elements: [window],
-  event: 'load',
-  func: () => {
-    const elements = document.querySelectorAll('[data-toggle]');
-    elements.forEach((element) => {
-      const toggleList = document.querySelectorAll(element.dataset.toggle);
-      element.addEventListener('click', () => {
-        toggleList.forEach((toggled) => {
-          toggled.classList.toggle('hidden');
-        });
-      });
-      toggleList.forEach((toggled) => {
-        toggled.childNodes.forEach((child) => {
-          child.addEventListener('click', (event) => {
-            event.stopPropagation();
-          });
-        });
-      });
-    });
-  }
-};
-
-/**
- * Send request and show response in target element
- *
- * @name handle-data-xhr
- */
-handler['data-xhr'] = {
-  elements: document.querySelectorAll('[data-xhr]'),
-  event: 'click',
-  func: function (event) {
-    const element = event.target;
-    const container = document.querySelectorAll(element.dataset.xhrResponse)[0];
-    container.innerHTML = '';
-    const xhttp = new XMLHttpRequest();
-    let seenBytes = 0;
-    xhttp.onreadystatechange = function () {
-      if (xhttp.readyState === 3) {
-        var newData = xhttp.responseText.substr(seenBytes);
-        seenBytes = xhttp.responseText.length;
-        container.insertAdjacentHTML('beforeEnd', newData);
-        container.scrollTop = container.scrollHeight - container.clientHeight;
-      }
-      if (xhttp.readyState === 4) {
-        container.insertAdjacentHTML('beforeEnd', '<br /><a href="javascript:location.reload()" class="button">CLOSE</a>');
-        container.scrollTop = container.scrollHeight - container.clientHeight;
-      }
-    };
-    xhttp.open('GET', element.getAttribute('data-xhr'), true);
-    xhttp.send();
-  }
-};
-
-/**
  * Toggle color-picker element and init content
  *
  * @name handle-data-click-color

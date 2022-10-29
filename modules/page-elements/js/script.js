@@ -51,13 +51,10 @@ handlers['data-xhr'] = {
     const xhttp = new XMLHttpRequest();
     let seenBytes = 0;
     xhttp.onreadystatechange = function () {
-      if (xhttp.readyState === 3) {
+      if (xhttp.readyState === 3 || xhttp.readyState === 4) {
         var newData = xhttp.responseText.substr(seenBytes);
         seenBytes = xhttp.responseText.length;
         container.insertAdjacentHTML('beforeEnd', newData);
-        container.scrollTop = container.scrollHeight - container.clientHeight;
-      }
-      if (xhttp.readyState === 4) {
         container.scrollTop = container.scrollHeight - container.clientHeight;
       }
     };

@@ -24,10 +24,12 @@ const viewBase = path.join(path.dirname(__dirname), 'views');
  * @param {object} app - express server
  */
 const useExpress = async (app) => {
-  app.get(/\/results\/.+/,
+  app.get(
+    /\/results\/.+/,
     (req, res) => {
       res.sendFile(path.join(__dirname, '..', '..', '..', decodeURIComponent(req.path)));
-    });
+    }
+  );
 };
 
 /**
@@ -102,12 +104,10 @@ function runConfig (req, res) {
     loader.stdout.on('data', (data) => {
       console.log(data.toString().trim());
       res.write(ansiColors.toHTML(data.toString().trim().replace(/\n/, '<br />')) + '<br />');
-      res.flush();
     });
     loader.stderr.on('data', (data) => {
       console.log('stderr: ' + data.toString().trim());
       res.write(ansiColors.toHTML('stderr: ' + data.toString().trim().replace(/\n/, '<br />')) + '<br />');
-      res.flush();
     });
     loader.on('error', (err) => {
       console.log('error: ' + err.toString().trim());
