@@ -1,9 +1,31 @@
 name: E2E Workflow
 
 gulp:
+  start:
+    development:
+      tests:
+      default:
+      build:
+      lint:
+      server:
+      deploy:
+      watch:
+        - 'test-e2e-workflow-modules'
   watch:
     eslint:
       - modules/e2e/server/lib/index.js
+      - modules/e2e/tests/e2e-workflow/*.js
+    test-e2e-workflow-modules:
+      - 'config/**/js/**/*.js'
+      - 'config/**/less/**/*.less'
+      - 'config/**/server/**/*.js'
+      - 'config/**/tests/e2e-workflow/*.js'
+      - 'config/**/views/**/*.*'
+      - '!config/**/tests/server/**/*.js'
+      - '!config/**/tests/views/**/*.*'
+  tests:
+    test-e2e-workflow-modules:
+      - 'config/**/tests/e2e-workflow/*.js'
 
 configs:
   - config/**/tests/e2e-workflow/*.js
