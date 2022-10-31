@@ -222,7 +222,9 @@ let moduleTasks = [];
  */
 glob.sync(config.server.modules + '/*/gulp/lint.js')
   .forEach((filename) => {
-    moduleTasks.push(require('.' + filename));
+    const task = require('.' + filename);
+    moduleTasks.push(task);
+    tasks = Object.assign({}, tasks, task);
   });
 
 module.exports = Object.assign({}, tasks, ...moduleTasks);

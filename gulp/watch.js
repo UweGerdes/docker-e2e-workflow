@@ -9,7 +9,7 @@
 
 'use strict';
 
-const { watch } = require('gulp'),
+const { series, watch } = require('gulp'),
   glob = require('glob'),
   config = require('../lib/config'),
   log = require('../lib/log');
@@ -31,20 +31,25 @@ const tasks = {
   'watch': (callback) => {
     global.gulpStatus.isWatching = true;
 
-    const watchTasks = config.gulp.start[process.env.NODE_ENV].watch
-      .reduce((obj, key) => {
-        return {
-          ...obj,
-          [key]: tasks[key]
-        };
-      }, {});
-
-    for (let task in watchTasks) {
+    for (let task in gulpTasks) {
       if (config.gulp.watch.hasOwnProperty(task)) {
         log.info('Task "' + task + '" is watching: ' + config.gulp.watch[task].join(', '));
         watch(config.gulp.watch[task], { events: 'all', ignoreInitial: true }, gulpTasks[task]);
       }
     }
+
+    Object.keys(config.gulp.start[process.env.NODE_ENV])
+      .filter(group => config.gulp.watch.hasOwnProperty(group))
+      .forEach((group) => {
+        let taskSeries = [];
+        config.gulp.start[process.env.NODE_ENV][group]
+          .filter(key => gulpTasks.hasOwnProperty(key))
+          .forEach((key) => {
+            taskSeries.push(gulpTasks[key]);
+          });
+        log.info('Task "' + group + '" is watching: ' + config.gulp.watch[group].join(', '));
+        watch(config.gulp.watch[group], { events: 'all', ignoreInitial: true }, series(...taskSeries));
+      });
     callback();
   }
 };

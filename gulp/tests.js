@@ -46,7 +46,6 @@ const tasks = {
       })
       .catch(err => console.log(err));
   }
-  // })
 };
 
 let moduleTasks = [];
@@ -57,7 +56,9 @@ let moduleTasks = [];
  */
 glob.sync(config.server.modules + '/*/gulp/tests.js')
   .forEach((filename) => {
-    moduleTasks.push(require('.' + filename));
+    const task = require('.' + filename);
+    moduleTasks.push(task);
+    tasks = Object.assign({}, tasks, task);
   });
 
 module.exports = Object.assign({}, tasks, ...moduleTasks);

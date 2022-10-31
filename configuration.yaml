@@ -4,24 +4,19 @@
 gulp:
   start:
     development:
+      tests:
+        - 'test-modules'
       default:
-        - 'lint'
-        - 'build'
         - 'watch'
         - 'livereload-start'
         - 'server-start'
-#        - 'tests'
+        - 'tests'
         - 'livereload'
-#        - 'livereload-all'
-#        - 'eslint'
-        - 'server'
       build:
         - 'less'
         - 'js'
         - 'locales'
         - 'jsdoc'
-      tests:
-        - 'test-modules'
       lint:
         - 'ejslint'
         - 'eslint'
@@ -42,7 +37,7 @@ gulp:
         - 'js'
         - 'jsonlint'
         - 'yamllint'
-#        - 'puglint'
+        - 'puglint'
         - 'less'
         - 'livereload-all'
         - 'tests'
@@ -58,6 +53,7 @@ gulp:
         - 'less'
         - 'js'
         - 'locales'
+      tests: []
       lint:
         - 'eslint'
         - 'yamllint'
@@ -97,12 +93,13 @@ gulp:
       - 'modules/*/js/*.js'
     jsdoc:
       - '*.js'
-      - 'gulp/**/*.js'
-      - 'lib/**/*.js'
-      - 'modules/**/*.js'
+#      - 'gulp/**/*.js'
+#      - 'lib/**/*.js'
+#      - 'modules/**/*.js'
     jsonlint:
-      - '**/*.json'
       - '.lesshintrc'
+      - '**/*.json'
+      - '!locales/*.json'
       - '!coverage/**/*.json'
       - '!src/locales/*.json'
       - '!modules/**/locales/*.json'
@@ -117,13 +114,8 @@ gulp:
     less:
       - 'src/less/**/*.less'
       - 'modules/**/*.less'
-#    puglint:
-#      - '**/*.pug'
-    server:
-      - 'server.js'
-      - 'lib/*.js'
-      - 'modules/*/server/*.js'
-      - 'modules/*/*.yaml'
+    puglint:
+      - '**/*.pug'
     livereload:
       - 'public/**/*.html'
       - 'public/img/**/*.*'
@@ -132,15 +124,19 @@ gulp:
       - 'generated/**/*.js'
       - 'locales/**/*.*'
       - 'modules/**/*.ejs'
-#      - 'modules/**/*.pug'
+      - 'modules/**/*.pug'
     tests:
-      - 'server.js'
       - 'modules/**/js/**/*.*'
-      - 'modules/**/server/**/*.*'
+      - 'modules/**/tests/server/**/*.js'
       - 'modules/**/tests/model/*.*'
       - 'modules/**/tests/server/*.*'
       - 'modules/**/views/**/*.*'
       - 'htdocs/js/**/*.js'
+    server:
+      - 'server.js'
+      - 'lib/*.js'
+      - 'modules/*/server/*.js'
+      - 'modules/*/*.yaml'
   tests:
     modules:
       - 'modules/**/tests/model/*.js'
