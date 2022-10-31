@@ -19,7 +19,7 @@ const gulp = require('gulp'),
   files = require('../lib/files-promises'),
   notify = require('./lib/notify');
 
-const tasks = {
+let tasks = {
   /**
    * Start all tests configured in `config.gulp.test.modules`
    *
@@ -56,7 +56,7 @@ let moduleTasks = [];
  */
 glob.sync(config.server.modules + '/*/gulp/tests.js')
   .forEach((filename) => {
-    const task = require('.' + filename);
+    let task = require('.' + filename);
     moduleTasks.push(task);
     tasks = Object.assign({}, tasks, task);
   });
