@@ -40,15 +40,15 @@ if (!process.env.NODE_ENV) {
  */
 Object.keys(config.gulp.start[process.env.NODE_ENV])
   .forEach((group) => {
-    const myTasks = config.gulp.start[process.env.NODE_ENV][group]
-      .filter(key => Object.keys(tasks).includes(key))
-      .reduce((obj, key) => {
+    const configuredTasks = config.gulp.start[process.env.NODE_ENV][group]
+      .filter(task => tasks.hasOwnProperty(task))
+      .reduce((obj, task) => {
         return {
           ...obj,
-          [key]: tasks[key]
+          [task]: tasks[task]
         };
       }, {});
-    tasks[group] = series(...Object.values(myTasks));
+    tasks[group] = series(...Object.values(configuredTasks));
   });
 
 module.exports = tasks;

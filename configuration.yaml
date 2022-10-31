@@ -44,16 +44,15 @@ gulp:
         - 'locales'
     staging:
       default:
+        - 'eslint'
         - 'watch'
         - 'livereload-start'
         - 'server-start'
         - 'livereload'
-        - 'eslint'
       build:
         - 'less'
         - 'js'
         - 'locales'
-      tests: []
       lint:
         - 'eslint'
         - 'yamllint'
@@ -79,11 +78,8 @@ gulp:
         - 'less'
         - 'js'
         - 'locales'
-      tests: []
-      lint: []
       server:
         - 'server-changed'
-      watch: []
   watch:
     eslint:
       - 'gulpfile.js'
@@ -93,9 +89,6 @@ gulp:
       - 'modules/*/js/*.js'
     jsdoc:
       - '*.js'
-#      - 'gulp/**/*.js'
-#      - 'lib/**/*.js'
-#      - 'modules/**/*.js'
     jsonlint:
       - '.lesshintrc'
       - '**/*.json'
