@@ -26,7 +26,7 @@ const gulp = require('gulp'),
   filePromises = require('../lib/files-promises'),
   notify = require('./lib/notify');
 
-const tasks = {
+let tasks = {
   /**
    * Apply eslint to `config.gulp.lint.eslint.files` files
    *
@@ -222,7 +222,7 @@ let moduleTasks = [];
  */
 glob.sync(config.server.modules + '/*/gulp/lint.js')
   .forEach((filename) => {
-    const task = require('.' + filename);
+    let task = require('.' + filename);
     moduleTasks.push(task);
     tasks = Object.assign({}, tasks, task);
   });

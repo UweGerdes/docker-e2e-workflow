@@ -112,7 +112,7 @@ let moduleTasks = [];
  */
 glob.sync(config.server.modules + '/*/gulp/server.js')
   .forEach((filename) => {
-    const task = require('.' + filename);
+    let task = require('.' + filename);
     moduleTasks.push(task);
     tasks = Object.assign({}, tasks, task);
   });

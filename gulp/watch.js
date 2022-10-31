@@ -21,7 +21,7 @@ const gulpTasks = {
   ...require('./tests')
 };
 
-const tasks = {
+let tasks = {
   /**
    * Watch and execute tasks when files changed for all tasks configured for current `NODE_ENV` setting
    *
@@ -62,7 +62,9 @@ let moduleTasks = [];
  */
 glob.sync(config.server.modules + '/*/gulp/watch.js')
   .forEach((filename) => {
-    moduleTasks.push(require('.' + filename));
+    let task = require('.' + filename);
+    moduleTasks.push(task);
+    tasks = Object.assign({}, tasks, task);
   });
 
 module.exports = Object.assign({}, tasks, ...moduleTasks);

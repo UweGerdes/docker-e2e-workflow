@@ -26,7 +26,7 @@ const gulp = require('gulp'),
   notify = require('./lib/notify'),
   lint = require('./lint');
 
-const tasks = {
+let tasks = {
   /**
    * Compile less files
    *
@@ -144,7 +144,9 @@ let moduleTasks = [];
  */
 glob.sync(config.server.modules + '/*/gulp/build.js')
   .forEach((filename) => {
-    moduleTasks.push(require('.' + filename));
+    let task = require('.' + filename);
+    moduleTasks.push(task);
+    tasks = Object.assign({}, tasks, task);
   });
 
 module.exports = Object.assign({}, tasks, ...moduleTasks);
