@@ -10,7 +10,7 @@
 
 const exec = require('child_process').exec,
   path = require('path'),
-  ansiColors = require('../../../lib/ansiColors'),
+  ansiColors = require('./lib/ansiColors'),
   config = require('../../../lib/config'),
   files = require('../../../lib/files-promises'),
   model = require('./model');

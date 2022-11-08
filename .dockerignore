@@ -1,6 +1,10 @@
 # dockerignore
+/.dockerignore
 /.git
+/.gitignore
+/CHANGELOG.md
 /coverage
 /deploy
-/docs/jsdoc
+/docs
+/fixture
 /results

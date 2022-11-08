@@ -1,7 +1,6 @@
-# Dockerfile for expressjs projects
+# Dockerfile for e2e-workflow
 
-ARG NODEIMAGE_VERSION=latest
-FROM uwegerdes/nodejs:${NODEIMAGE_VERSION}
+FROM uwegerdes/expressjs-boilerplate
 
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
@@ -15,29 +14,12 @@ ENV LIVERELOAD_PORT ${LIVERELOAD_PORT}
 
 USER root
 
-COPY package.json ${NODE_HOME}/
-COPY . ${APP_HOME}
-
 RUN apt-get update && \
 	apt-get dist-upgrade -y && \
 	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-	chown -R ${USER_NAME}:${USER_NAME} ${NODE_HOME} && \
-	npm -g config set user ${USER_NAME} && \
-	if [ "${NODE_ENV}" = "development" ] ; then \
-		npm install -g --cache /tmp/root-cache \
-					c8 \
-					gulp-cli \
-					mocha \
-					nodemon ; \
-	fi && \
-	rm -r /tmp/*
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod 755 /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-USER ${USER_NAME}
+COPY --chown=${USER_NAME}:${USER_NAME} package.json ${NODE_HOME}/
 
 WORKDIR ${NODE_HOME}
 
@@ -48,6 +30,10 @@ RUN perl -i.bak -0pe 's/(.+prefer-regex-literals.+?:).+?\n.+?\n.+?\n/$1 1,\n/gms
 		/home/node/node_modules/eslint-config-airbnb-base/rules/best-practices.js
 
 WORKDIR ${APP_HOME}
+
+COPY --chown=${USER_NAME}:${USER_NAME} . ${APP_HOME}
+
+USER ${USER_NAME}
 
 EXPOSE ${SERVER_PORT} ${HTTPS_PORT} ${LIVERELOAD_PORT}
 
