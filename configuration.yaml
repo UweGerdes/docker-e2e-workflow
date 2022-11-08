@@ -7,6 +7,13 @@ gulp:
       tests:
         - 'test-modules'
       default:
+        - 'jsonlint'
+        - 'yamllint'
+        - 'puglint'
+        - 'less'
+        - 'js'
+        - 'locales'
+        - 'jsdoc'
         - 'watch'
         - 'livereload-start'
         - 'server-start'
@@ -26,6 +33,7 @@ gulp:
         - 'lesshint'
       server:
         - 'server-changed'
+        - 'livereload-all'
         - 'test-modules'
       deploy:
         - 'deploy'
@@ -193,3 +201,6 @@ server:
   verbose: false
   httpsKey: ./key/selfsigned.key
   httpsCert: ./key/selfsigned.crt
+  languages:
+    - de
+    - en

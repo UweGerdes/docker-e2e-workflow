@@ -9,9 +9,18 @@ block header
               a.header-breadcrumb-link(href='/app/') Home
       if session
         .flex-block.flex-right
-          #login-status.login-status= __('User')
+          #language.language=__('Languages')
+            block language
+              ul#language-list.language-list.expand-list.list
+                each language in languages
+                  li.language-list-item.list-item
+                    if locale==language
+                      span.current=__(language)
+                    else
+                      a.link(href=url.baseUrl + url.path + '?lang=' + language)=__(language)
+          #login-status.login-status=__('User')
             block loginStatus
-              ul#login-status-list.login-status-list.list
+              ul#login-status-list.login-status-list.expand-list.list
                 if session.userdata
                   li.list-item.login-status-ok= 'Angemeldet über ' + session.oauthProvider + ' als '  + session.userdata.username
                   | #{' '}
@@ -20,6 +29,7 @@ block header
                   li.list-item.login-status-logout
                     a.link.logout-link(href=(session.logoutLink ? session.logoutLink : '/login/logout/')) abmelden
                 else
+                  li.list-item.login-status-ok=__('Not logged in')
                   li.list-item.login-status-loginLayer
                     span.link.loginLayer-link&attributes({
                       'data-xhr': '/login/include/loginform',

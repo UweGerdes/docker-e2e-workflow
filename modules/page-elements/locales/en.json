@@ -1,5 +1,9 @@
 {
+  "Languages": "Languages",
+  "de": "German",
+  "en": "English",
   "User": "User",
+  "Not logged in": "Not logged in",
   "login": "login",
   "sign up": "sign up",
   "Street": "Street",

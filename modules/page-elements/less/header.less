@@ -1,56 +1,90 @@
 // header.less
 
+@header-background-color: #f0f0f0;
+@header-color: #000000;
+@header-link-color: @header-color;
+@header-hover-background-color: #ffffff;
+@header-list-background-color: #cccccc;
+@header-list-color: #666666;
+@header-list-border: 1px solid #999999;
+
+.mixin-expand-list() {
+  .expand-list {
+    background-color: @header-list-background-color;
+    border: @header-list-border;
+    display: none;
+    margin-right: -3em;
+    padding: 0;
+    position: absolute;
+    right: 3em;
+    top: 2em;
+    z-index: 100;
+  }
+
+  &:hover .expand-list {
+    display: block;
+  }
+
+  .list-item {
+    display: block;
+
+    &:hover {
+      background-color: @header-hover-background-color;
+      color: @header-list-color;
+    }
+
+    .link {
+      color: @header-link-color;
+      cursor: pointer;
+      display: inline-block;
+      padding: 1em;
+      text-decoration: none;
+    }
+  }
+}
+
 .header {
-  background-color: #f0f0f0;
+  background-color: @header-background-color;
 
   &-content {
     margin: 0 auto;
     max-width: ~'calc(1200px + 2em)';
     padding: 0 1em;
 
-    .login-status {
-      color: #000000;
+    .language {
+      color: @header-color;
       display: inline-block;
       padding: 1em;
       position: relative;
       text-align: right;
 
+      .mixin-expand-list();
+
+      .current {
+        background: @header-hover-background-color;
+        display: block;
+        padding: 1em;
+      }
+    }
+
+    .login-status {
+      color: @header-color;
+      display: inline-block;
+      padding: 1em;
+      position: relative;
+      text-align: center;
+
+      .mixin-expand-list();
+
+      .expand-list {
+        min-width: 8em;
+      }
+
       &-ok {
-        display: inline-block;
-        margin-right: -1em;
-        padding: 1em;
-      }
-
-      &-list {
-        background-color: #cccccc;
-        border: 1px solid #999999;
-        display: none;
-        margin-right: -3em;
-        padding: 0;
-        position: absolute;
-        right: 3em;
-        top: 2em;
-      }
-
-      &:hover .login-status-list {
-        display: block;
-      }
-
-      .list-item {
-        display: block;
-
-        &:hover {
-          background-color: #ffffff;
-          color: #666666;
-        }
-      }
-
-      .link {
-        color: #000000;
-        cursor: pointer;
+        background: @header-hover-background-color;
         display: inline-block;
         padding: 1em;
-        text-decoration: none;
+        text-align: left;
       }
     }
 
@@ -79,15 +113,15 @@
     float: left;
 
     &-link {
-      color: #000000;
+      color: @header-color;
       display: block;
       padding: 1em;
       text-align: center;
       text-decoration: none;
 
       &:hover {
-        background-color: #ffffff;
-        color: #666666;
+        background-color: @header-hover-background-color;
+        color: @header-link-color;
       }
 
       &:before {
@@ -102,7 +136,7 @@
     }
 
     &-label {
-      color: #000000;
+      color: @header-color;
       padding: 1em;
 
       &:before {

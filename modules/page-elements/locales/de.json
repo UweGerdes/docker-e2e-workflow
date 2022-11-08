@@ -1,5 +1,9 @@
 {
+  "Languages": "Sprache",
+  "de": "Deutsch",
+  "en": "Englisch",
   "User": "Benutzer",
+  "Not logged in": "Nicht angemeldet",
   "login": "anmelden",
   "sign up": "registrieren",
   "Street": "Straße",
