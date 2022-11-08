@@ -17,7 +17,10 @@ USER root
 RUN apt-get update && \
 	apt-get dist-upgrade -y && \
 	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+	mv ${NODE_HOME}/node_modules ${NODE_HOME}/boilerplate_node_modules
+
+ENV NODE_PATH ${NODE_PATH}:${NODE_HOME}/boilerplate_node_modules
 
 COPY --chown=${USER_NAME}:${USER_NAME} package.json ${NODE_HOME}/
 
