@@ -1,8 +1,0 @@
-//- views/form/output.pug
-mixin output(pretext, name, posttext)
-  .field.field-output(class='field_' + name)
-    .field-label= pretext
-    .field-value
-      .field-value-output(class='field-value-output-' + name)
-        if posttext
-          label(class='output-label')= posttext
