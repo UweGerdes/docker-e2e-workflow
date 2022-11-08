@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.6.0
+rebase on docker-expressjs-boilerplate
+
 ## v0.5.3
 added waitForElements, update jsdoc, linting, refactoring
 

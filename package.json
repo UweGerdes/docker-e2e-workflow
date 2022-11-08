@@ -1,7 +1,7 @@
 {
   "name": "e2e-workflow",
   "description": "execute workflows in html frontend",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "license": "MIT",
   "keywords": [
     "html",
@@ -13,7 +13,7 @@
     "email": "entwicklung@uwegerdes.de"
   },
   "engines": {
-    "node": ">=10.10.0"
+    "node": ">=16.0.0"
   },
   "dependencies": {
     "chai-as-promised": "^7.1.1",
