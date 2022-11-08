@@ -31,7 +31,7 @@ RUN perl -i.bak -0pe 's/(.+prefer-regex-literals.+?:).+?\n.+?\n.+?\n/$1 1,\n/gms
 
 WORKDIR ${APP_HOME}
 
-COPY --chown=${USER_NAME}:${USER_NAME} * ${APP_HOME}/
+COPY --chown=${USER_NAME}:${USER_NAME} . ${APP_HOME}
 
 USER ${USER_NAME}
 
