@@ -2,6 +2,7 @@
 /coverage
 /deploy
 /docs/jsdoc
+/fixture
 /generated
 /key
 /locales

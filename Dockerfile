@@ -31,9 +31,7 @@ RUN perl -i.bak -0pe 's/(.+prefer-regex-literals.+?:).+?\n.+?\n.+?\n/$1 1,\n/gms
 
 WORKDIR ${APP_HOME}
 
-COPY --chown=${USER_NAME}:${USER_NAME} package.json ${APP_HOME}/
-COPY --chown=${USER_NAME}:${USER_NAME} key ${APP_HOME}/key
-COPY --chown=${USER_NAME}:${USER_NAME} modules/e2e ${APP_HOME}/modules/e2e
+COPY --chown=${USER_NAME}:${USER_NAME} * ${APP_HOME}/
 
 USER ${USER_NAME}
 
