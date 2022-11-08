@@ -25,3 +25,22 @@ $ docker-compose up
 ```
 
 Open the server address listed in the output. Read content.
+
+## Run the Docker container standalone
+
+Run the container with:
+
+```bash
+$ docker run -it --rm \
+  -v $(pwd)/modules/e2e:/home/node/app/modules/e2e \
+  -v $(pwd)/fixture:/home/node/app/fixture \
+  -v $(pwd)/results:/home/node/app/results \
+  -v $(pwd)/modules:/home/node/app/config/modules \
+  -p 29080:8080 \
+  -p 29443:8443 \
+  -p 29081:8081 \
+  -e 'LIVERELOAD_PORT=29081' \
+  --name e2e-workflow \
+  uwegerdes/e2e-workflow \
+  bash
+```

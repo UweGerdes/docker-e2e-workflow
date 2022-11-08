@@ -17,7 +17,7 @@ services:
     environment:
       LIVERELOAD_PORT: 51281
     volumes:
-      - .:/home/node/app
+      - ./modules/e2e:/home/node/app/modules/e2e
       - ./modules:/home/node/app/config/modules
     command: npm run dev
 
@@ -74,7 +74,9 @@ services:
       NODE_ENV: staging
       LIVERELOAD_PORT: 51381
     volumes:
-      - .:/home/node/app
+      - ./modules/e2e:/home/node/app/modules/e2e
+      - ./fixture:/home/node/app/fixture
+      - ./results:/home/node/app/results
       - ./modules:/home/node/app/config/modules
 #      - ../[test-project]/modules:/home/node/app/config/modules
 #      - ./tests/[test-module]/e2e-workflow:/home/node/app/config/modules/[test-module]/tests/e2e-workflow
