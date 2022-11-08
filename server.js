@@ -111,7 +111,7 @@ app.use(cookieParser());
  * @name use_i18n
  */
 i18n.configure({
-  defaultLocale: 'de',
+  defaultLocale: config.server.languages[0],
   directory: config.gulp.build.locales.dest,
   autoReload: true,
   updateFiles: false,
