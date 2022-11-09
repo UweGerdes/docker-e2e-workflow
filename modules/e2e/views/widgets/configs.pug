@@ -15,4 +15,4 @@ mixin configs()
               )= label
           if config.summary && config.summary.fail > 0
             = ': '
-            h3.error= config.summary.fail + ' Fehler'
+            h3.error=__n('%s Error', '%s Errors', config.summary.fail)

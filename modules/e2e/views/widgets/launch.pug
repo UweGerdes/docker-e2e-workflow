@@ -2,14 +2,14 @@
 mixin launch()
   if locals.configFile
     span.launch&attributes({
-      title: 'starten',
+      title: __('launch'),
       'data-xhr': '/e2e/run/?config=' + configFile,
       'data-xhr-response': '#output-content',
       'data-toggle': '#output'
-    })= config.name
+    })=__(config.name)
     if queryCase
       span= ' - ' + queryCase
       if queryStep
         span= ': ' + queryStep
   else
-    | Keine Config geladen
+    =__('Select Test Suite')

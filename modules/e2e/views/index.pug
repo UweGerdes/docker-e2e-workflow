@@ -15,7 +15,7 @@ append breadcrumbs
     a.header-breadcrumb-link(href='/'+ modulePath + '/')= module.name
   if locals.config && config.name
     li.header-breadcrumb
-      a.header-breadcrumb-link(href='/'+ modulePath + '/')= config.name
+      a.header-breadcrumb-link(href='/'+ modulePath + '/')=__(config.name)
     if locals.queryCase
       li.header-breadcrumb
         .header-breadcrumb-label= queryCase
