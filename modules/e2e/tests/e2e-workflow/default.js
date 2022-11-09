@@ -70,8 +70,8 @@ module.exports = {
         'home': {
           title: 'E2E Workflow',
           elements: {
-            '//h1': 'Keine Config geladen',
-            '#configs .config a': 'E2E Workflow'
+            '//h1': 'Select Test Suite',
+            '#configs .config a': 'E2E Workflow Selftest'
           },
           elementsNotExist: [
             '//a[@href="/app/config/default.js"]'

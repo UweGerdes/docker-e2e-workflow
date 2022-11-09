@@ -79,9 +79,6 @@ const index = async (req, res, next) => {
       ...config.getData(req),
       model: model.getData(),
       configs: await getConfigs(),
-      config: {
-        name: 'Keine Config geladen'
-      },
       results: { status: 'not executed' }
     };
     res.render(path.join(viewBase, 'index.pug'), data);
