@@ -37,11 +37,11 @@ services:
       - /dev/shm:/dev/shm
     depends_on:
       - e2e-hub
+      - e2e-server
     environment:
       SE_EVENT_BUS_HOST: e2e-hub
       SE_EVENT_BUS_PUBLISH_PORT: 4442
       SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
-      TEST_SERVER: e2e-server
       JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
   e2e-firefox:
@@ -51,11 +51,11 @@ services:
       - /dev/shm:/dev/shm
     depends_on:
       - e2e-hub
+      - e2e-server
     environment:
       SE_EVENT_BUS_HOST: e2e-hub
       SE_EVENT_BUS_PUBLISH_PORT: 4442
       SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
-      TEST_SERVER: e2e-server
       JAVA_OPTS: -Dselenium.LOGGER.level=WARNING
 
   e2e-frontend:
