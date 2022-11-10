@@ -28,8 +28,8 @@ let testData = null,
   driver;
 
 const filenames = argv.cfg || path.join('config', 'default.js');
-// const driverBrowser = 'firefox';
-const driverBrowser = 'chrome';
+const driverBrowser = 'firefox';
+// const driverBrowser = 'chrome';
 
 const testCaseHandler = {
   waitForElements: async (testStep) => {
@@ -265,7 +265,12 @@ async function execTestStep(testCaseName, label, testStep, resultPath, viewportN
         console.log('[%s] %s', entry.level.name, entry.message);
       });
     })
-    .catch(error => { console.log('ERR', error); });
+    .catch(error => {
+      // get rid of misleading error message
+      if (driverBrowser === 'firefox' && error.toString().indexOf('HTTP method not allowed') < 0) {
+        console.log('WARN', error);
+      }
+    });
 
   for (const filename of filenames.split(',')) {
     const configPath = path.join('/home', 'node', 'app', filename);
