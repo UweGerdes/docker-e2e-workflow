@@ -33,7 +33,7 @@ block content
         + configs()
         + results()
       .flex-center
-        if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep]
+        if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep] && results.testCases[queryCase].steps[queryStep].verticalScrollbar
           .image-legend(style= 'width: ' + (results.viewports[queryViewport].width) + 'px;')
             .image-legend-left
               + viewports()
@@ -47,6 +47,9 @@ block content
               height=results.viewports[queryViewport].height,
               data-click-color=".colorpicker-color"
             )
+        else
+          h2.no-result
+            = __('No Results')
     if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep]
       pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
