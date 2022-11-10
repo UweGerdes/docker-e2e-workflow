@@ -48,8 +48,9 @@ block content
               data-click-color=".colorpicker-color"
             )
         else
-          h2.no-result
-            = __('No Results')
+          if !locals.results
+            h2.no-result
+              = __('No Results')
     if locals.results && locals.queryCase && locals.queryStep && results.testCases[queryCase] && results.testCases[queryCase].steps[queryStep]
       pre#queryStep.queryStep= 'stepConfig = ' + JSON.stringify(results.testCases[queryCase].steps[queryStep], null, 2)
   #output.modalLayer.hidden&attributes({ 'data-toggle': '#output' })
