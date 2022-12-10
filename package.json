@@ -1,7 +1,7 @@
 {
   "name": "e2e-workflow",
   "description": "execute workflows in html frontend",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "license": "MIT",
   "keywords": [
     "html",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "chai-as-promised": "^7.1.1",
-    "del": "^7.0.0",
+    "del": "^6.1.1",
     "libqp": "^2.0.1",
     "make-dir": "^3.1.0",
     "minimist": "^1.2.7",

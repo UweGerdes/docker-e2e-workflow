@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.6.1
+upgrade packages, updates
+
 ## v0.6.0
 rebase on docker-expressjs-boilerplate
 
