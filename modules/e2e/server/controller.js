@@ -56,7 +56,7 @@ const index = async (req, res, next) => {
         let data = {
           ...config.getData(req),
           model: model.getData(),
-          configs: await getConfigs(),
+          configs: await model.getConfigs(),
           configFile: req.query.config,
           config: configuration,
           queryViewport: req.query.viewport || '',
@@ -78,7 +78,7 @@ const index = async (req, res, next) => {
     let data = {
       ...config.getData(req),
       model: model.getData(),
-      configs: await getConfigs(),
+      configs: await model.getConfigs(),
       results: { status: 'not executed' }
     };
     res.render(path.join(viewBase, 'index.pug'), data);
@@ -129,31 +129,3 @@ module.exports = {
   runConfig: runConfig,
   useExpress: useExpress
 };
-
-/**
- * get configuration files and labels
- *
- * @function getConfigs
- * @returns {Object} configuration data
- */
-async function getConfigs () {
-  let paths = config.modules.e2e.configs;
-  let configs = {};
-  for (const filepath of paths) {
-    for (const filename of await files.getFilenames(filepath)) { // eslint-disable-line no-await-in-loop
-      let config = { };
-      let resultFile = path.join('.', 'results', filename.replace(/\.js$/, ''), 'results.json');
-      try {
-        config = files.requireFile(resultFile); // eslint-disable-line no-await-in-loop
-      } catch (error) {
-        config = files.requireFile(filename); // eslint-disable-line no-await-in-loop
-      }
-      config.filename = filename;
-      if (configs[config.name]) {
-        throw new Error('duplicate test name: ' + config.name);
-      }
-      configs[config.name] = config;
-    }
-  }
-  return configs;
-}
