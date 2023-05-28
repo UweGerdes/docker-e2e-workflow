@@ -34,6 +34,7 @@ Run the container with:
 $ docker run -it --rm \
   -v $(pwd)/modules/e2e:/home/node/app/modules/e2e \
   -v $(pwd)/fixture:/home/node/app/fixture \
+  -v $(pwd)/key:/home/node/app/key \
   -v $(pwd)/results:/home/node/app/results \
   -v $(pwd)/modules:/home/node/app/config/modules \
   -p 29080:8080 \
