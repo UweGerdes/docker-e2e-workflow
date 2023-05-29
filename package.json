@@ -26,8 +26,6 @@
     "selenium-webdriver": "^4.9.2"
   },
   "devDependencies": {
-    "gulp-sequence": "^1.0.0",
-    "stream-combiner2": "^1.1.1"
   },
   "repository": {
     "type": "git",
