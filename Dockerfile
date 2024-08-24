@@ -8,9 +8,9 @@ ARG SERVER_PORT='8080'
 ARG HTTPS_PORT='8443'
 ARG LIVERELOAD_PORT='8081'
 
-ENV SERVER_PORT ${SERVER_PORT}
-ENV HTTPS_PORT ${HTTPS_PORT}
-ENV LIVERELOAD_PORT ${LIVERELOAD_PORT}
+ENV SERVER_PORT=${SERVER_PORT}
+ENV HTTPS_PORT=${HTTPS_PORT}
+ENV LIVERELOAD_PORT=${LIVERELOAD_PORT}
 
 USER root
 
@@ -20,7 +20,7 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	mv ${NODE_HOME}/node_modules ${NODE_HOME}/boilerplate_node_modules
 
-ENV NODE_PATH ${NODE_PATH}:${NODE_HOME}/boilerplate_node_modules
+ENV NODE_PATH=${NODE_PATH}:${NODE_HOME}/boilerplate_node_modules
 
 COPY --chown=${USER_NAME}:${USER_NAME} package.json ${NODE_HOME}/
 
