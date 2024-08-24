@@ -1,6 +1,6 @@
 //- widgets/launch.pug
 mixin launch()
-  if locals.configFile
+  if locals.configFile && config
     span.launch&attributes({
       title: __('launch'),
       'data-xhr': '/e2e/run/?config=' + configFile,

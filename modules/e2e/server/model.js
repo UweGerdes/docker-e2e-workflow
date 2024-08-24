@@ -6,9 +6,10 @@
 
 'use strict';
 
-const path = require('path'),
+const { globSync } = require('glob'),
+  path = require('path'),
   config = require('../../../lib/config'),
-  files = require('../../../lib/files-promises');
+  { requireFile } = require('./lib/requireFile');
 
 let data = { modelData: 'boilerplate data' };
 
@@ -28,23 +29,31 @@ module.exports = {
    * @function getConfigs
    * @returns {Object} configuration data
    */
-  getConfigs: async () => {
+  getConfigsSync: () => {
     let paths = config.modules.e2e.configs;
     let configs = {};
     for (const filepath of paths) {
-      for (const filename of await files.getFilenames(filepath)) { // eslint-disable-line no-await-in-loop
+      for (const filename of globSync(filepath)) { // eslint-disable-line no-await-in-loop
         let config = { };
         let resultFile = path.join('.', 'results', filename.replace(/\.js$/, ''), 'results.json');
+        console.log('filename', filename);
         try {
-          config = files.requireFile(resultFile); // eslint-disable-line no-await-in-loop
+          config = requireFile(resultFile); // eslint-disable-line no-await-in-loop
+          console.log('resultFile', resultFile);
         } catch (error) {
-          config = files.requireFile(filename); // eslint-disable-line no-await-in-loop
+          const filepath = path.join('/home/node/app/', filename);
+          console.log('filepath', filepath);
+          config = requireFile(filename); // eslint-disable-line no-await-in-loop
         }
-        config.filename = filename;
-        if (configs[config.name]) {
-          throw new Error('duplicate test name: ' + config.name);
+        if (config) {
+          config.filename = filename;
+          if (configs[config.name]) {
+            throw new Error('duplicate test name: ' + config.name);
+          }
+          configs[config.name] = config;
+        } else {
+          console.log('config file not found', path.join('/home/node/app/', filename));
         }
-        configs[config.name] = config;
       }
     }
     return configs;

@@ -16,3 +16,5 @@ mixin configs()
           if config.summary && config.summary.fail > 0
             = ': '
             h3.error=__n('%s Error', '%s Errors', config.summary.fail)
+  else
+    h2.error=__('No configurations found')

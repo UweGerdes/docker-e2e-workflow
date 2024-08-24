@@ -12,7 +12,7 @@ const exec = require('child_process').exec,
   path = require('path'),
   ansiColors = require('./lib/ansiColors'),
   config = require('../../../lib/config'),
-  files = require('../../../lib/files-promises'),
+  { requireFile } = require('./lib/requireFile'),
   model = require('./model');
 
 const viewBase = path.join(path.dirname(__dirname), 'views');
@@ -40,23 +40,23 @@ const useExpress = async (app) => {
  * @param {object} res - result
  * @param {object} next - for error handling
  */
-const index = async (req, res, next) => {
+const index = (req, res, next) => {
   if (req.query.config) {
     if (req.query.config.match(/^\/config\/.+$/)) {
       try {
-        const configuration = files.requireFile(req.query.config);
+        const configuration = requireFile(req.query.config);
         const resultsFilename = req.query.config || path.join('config', 'default.js');
         const resultsPath = path.join('results', resultsFilename.replace(/\.js$/, ''));
         let results;
         try {
-          results = files.requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
+          results = requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
         } catch (error) {
           // console.log(error.message);
         }
         let data = {
           ...config.getData(req),
           model: model.getData(),
-          configs: await model.getConfigs(),
+          configs: model.getConfigsSync(),
           configFile: req.query.config,
           config: configuration,
           queryViewport: req.query.viewport || '',
@@ -67,7 +67,7 @@ const index = async (req, res, next) => {
         };
         res.render(path.join(viewBase, 'index.pug'), data);
       } catch (error) {
-        req.error = { code: 500, name: 'File read error: ' + req.query.config, error: error.message };
+        req.error = { code: 500, name: 'File read error: ' + req.query.config, error: error };
         next();
       }
     } else {
@@ -78,7 +78,7 @@ const index = async (req, res, next) => {
     let data = {
       ...config.getData(req),
       model: model.getData(),
-      configs: await model.getConfigs(),
+      configs: model.getConfigsSync(),
       results: { status: 'not executed' }
     };
     res.render(path.join(viewBase, 'index.pug'), data);
