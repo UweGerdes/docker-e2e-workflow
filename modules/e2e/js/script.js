@@ -21,8 +21,6 @@ handler['data-click-color'] = {
     const canvas = document.querySelector('canvas#imgCanvas');
     if (canvas) {
       const canvasContext = canvas.getContext('2d');
-      const colorOutput = document.querySelector('.colorpicker-color');
-      const positionOutput = document.querySelector('.colorpicker-position');
       buildCanvas();
       element.addEventListener('click', (e) => {
         const rect = e.target.getBoundingClientRect();
@@ -30,8 +28,8 @@ handler['data-click-color'] = {
         const y = Math.round(e.clientY - rect.top); // y position within the element.
         const pix = canvasContext.getImageData(x, y, 1, 1);
         console.log(element.dataset.clickColor, x, y, pix.data[0], pix.data[1], pix.data[2], pix.data[3]);
-        colorOutput.textContent = '#' + rgb2hex([pix.data[0], pix.data[1], pix.data[2]]);
-        positionOutput.textContent = 'x:' + x + ', y:' + y;
+        document.querySelector('.colorpicker-color').textContent = '#' + rgb2hex([pix.data[0], pix.data[1], pix.data[2]]);
+        document.querySelector('.colorpicker-position').textContent = 'x:' + x + ', y:' + y;
       });
     }
   }
