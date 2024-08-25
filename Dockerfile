@@ -2,7 +2,7 @@
 
 FROM uwegerdes/expressjs-boilerplate
 
-MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
+LABEL org.opencontainers.image.authors="entwicklung@uwegerdes.de"
 
 ARG SERVER_PORT='8080'
 ARG HTTPS_PORT='8443'
