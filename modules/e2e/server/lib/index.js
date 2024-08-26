@@ -9,11 +9,8 @@
 'use strict';
 
 const { Builder, By, until } = require('selenium-webdriver'),
-  chrome = require('selenium-webdriver/chrome'),
-  firefox = require('selenium-webdriver/firefox'),
   chai = require('chai'),
   assert = chai.assert,
-  chaiAsPromised = require('chai-as-promised'),
   chalk = require('chalk'),
   dateFormat = require('dateformat'),
   del = require('del'),
@@ -21,8 +18,6 @@ const { Builder, By, until } = require('selenium-webdriver'),
   makeDir = require('make-dir'),
   argv = require('minimist')(process.argv.slice(2)),
   path = require('path');
-
-chai.use(chaiAsPromised);
 
 let testData = null,
   driver;
@@ -328,8 +323,6 @@ function buildDriver (driverBrowser) {
   return new Builder()
     .forBrowser(driverBrowser)
     .usingServer('http://' + process.env.HUB_HOST + ':' + process.env.HUB_PORT + '/wd/hub')
-    .setChromeOptions(new chrome.Options().addArguments('--kiosk').headless())
-    .setFirefoxOptions(new firefox.Options().headless())
     .build();
 }
 
