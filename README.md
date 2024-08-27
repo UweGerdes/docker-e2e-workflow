@@ -21,7 +21,7 @@ $ docker build -t uwegerdes/e2e-workflow .
 For the development time a gulpfile.js is included to generate css from less and restart the server.
 
 ```bash
-$ docker-compose up
+$ docker compose up
 ```
 
 Open the server address listed in the output. Read content.
