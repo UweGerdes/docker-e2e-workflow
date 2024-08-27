@@ -17,7 +17,6 @@ const fs = require('fs'),
  */
 function requireFile (filename) {
   const filepath = path.join(__dirname, '../../../..', filename);
-  console.log('requireFile filepath', filepath);
   if (fs.existsSync(filepath)) {
     if (require.cache[require.resolve(filepath)]) {
       delete require.cache[require.resolve(filepath)];

@@ -33,17 +33,14 @@ module.exports = {
     let paths = config.modules.e2e.configs;
     let configs = {};
     for (const filepath of paths) {
-      for (const filename of globSync(filepath)) { // eslint-disable-line no-await-in-loop
+      for (const filename of globSync(filepath)) {
         let config = { };
         let resultFile = path.join('.', 'results', filename.replace(/\.js$/, ''), 'results.json');
         console.log('filename', filename);
         try {
-          config = requireFile(resultFile); // eslint-disable-line no-await-in-loop
-          console.log('resultFile', resultFile);
+          config = requireFile(resultFile);
         } catch (error) {
-          const filepath = path.join('/home/node/app/', filename);
-          console.log('filepath', filepath);
-          config = requireFile(filename); // eslint-disable-line no-await-in-loop
+          config = requireFile(filename);
         }
         if (config) {
           config.filename = filename;

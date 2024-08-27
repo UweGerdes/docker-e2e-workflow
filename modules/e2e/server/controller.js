@@ -51,7 +51,7 @@ const index = (req, res, next) => {
         try {
           results = requireFile(path.join(resultsPath, req.query.viewport, 'results.json'));
         } catch (error) {
-          // console.log(error.message);
+          // console.log('path not found', resultsPath, error.message);
         }
         let data = {
           ...config.getData(req),
@@ -95,9 +95,9 @@ const index = (req, res, next) => {
 function runConfig (req, res) {
   res.status(200);
   if (req.query.config) {
-    console.log('run node ' + __dirname + '/lib/index.js --cfg=' + req.query.config);
+    console.log('run node ' + process.env.APP_HOME + '/index.js --cfg=' + req.query.config);
     res.write('<p>');
-    const loader = exec('export FORCE_COLOR=1; node ' + __dirname + '/lib/index.js --cfg=' + req.query.config);
+    const loader = exec('export FORCE_COLOR=1; node ' + process.env.APP_HOME + '/index.js --cfg=' + req.query.config);
     loader.stdout.on('data', (data) => {
       console.log(data.toString().trim());
       res.write(ansiColors.toHTML(data.toString().trim().replace(/\n/, '<br />')) + '<br />');
